@@ -196,6 +196,7 @@
     <Content Include="Views\Home\SignIn.cshtml" />
     <Content Include="Views\Home\MemberCentre.cshtml" />
     <Content Include="Views\Home\Shoppingcart.cshtml" />
+    <Content Include="Views\Home\EmailValidationView.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

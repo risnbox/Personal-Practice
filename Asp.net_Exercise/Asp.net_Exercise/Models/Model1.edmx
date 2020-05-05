@@ -16,7 +16,8 @@
           <Property Name="Password" Type="nvarchar" MaxLength="50" />
           <Property Name="Gender" Type="nvarchar" MaxLength="50" />
           <Property Name="Address" Type="nvarchar" MaxLength="50" />
-          <Property Name="Enable" Type="nvarchar" MaxLength="50" />
+          <Property Name="Enable" Type="tinyint" />
+          <Property Name="ErrorCount" Type="int" />
         </EntityType>
         <EntityContainer Name="DatabaseModelStoreContainer">
           <EntitySet Name="Member" EntityType="Self.Member" Schema="dbo" store:Type="Tables" />
@@ -39,7 +40,8 @@
           <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Gender" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Enable" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Enable" Type="Byte" />
+          <Property Name="ErrorCount" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -50,6 +52,7 @@
           <EntitySetMapping Name="Member">
             <EntityTypeMapping TypeName="DatabaseModel.Member">
               <MappingFragment StoreEntitySet="Member">
+                <ScalarProperty Name="ErrorCount" ColumnName="ErrorCount" />
                 <ScalarProperty Name="Enable" ColumnName="Enable" />
                 <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="Gender" ColumnName="Gender" />

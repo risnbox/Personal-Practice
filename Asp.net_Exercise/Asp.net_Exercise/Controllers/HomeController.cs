@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Asp.net_Exercise.Models;
+using System.Net.Mail;
 
 namespace Asp.net_Exercise.Controllers
 {
@@ -48,9 +49,15 @@ namespace Asp.net_Exercise.Controllers
                         ViewBag.MemberErrorMessage = "兩次輸入密碼不一致";
                         return View();
                     }
+                    //加入啟用狀態以及驗證碼錯誤次數
+                    Postback.ErrorCount = 0;
+                    Postback.Enable = 0;
                     DB.Member.Add(Postback);
                     DB.SaveChanges();
-                    TempData["SignUpSuccess"] = "註冊成功,即將進入登入頁面";
+                    var code = Randomcode();
+                    Session["Veriflcationcode"] = code;
+                    EmailValidation(Postback.Email, Session["Veriflcationcode"] as string);
+                    TempData["SignUpSuccess"] = "註冊成功,已寄出認證信,請收信登入輸入驗證碼";
                     
                     return RedirectToAction("SignIn");
                 }
@@ -78,6 +85,10 @@ namespace Asp.net_Exercise.Controllers
                 {
                     Session["Member"] = data.Id;
                     Session["MemberName"] = data.Name;
+                    if (DB.Member.Where(m => m.Id==data.Id && m.Enable == 0).FirstOrDefault()!=null)
+                    {
+                        return RedirectToAction("EmailValidationView");
+                    }
                     return RedirectToAction("Index");
                 }
                 else
@@ -123,22 +134,16 @@ namespace Asp.net_Exercise.Controllers
             {
                 if (DB.Member.Where(m => D.Password == postback.Password).FirstOrDefault() != null)
                 {
-                    
-                    if (DB.Member.Where(m => m.Id==D.Id&m.Email == postback.Email).FirstOrDefault() != null)
+
+                    if (DB.Member.Where(m => m.Id == D.Id && m.Email == postback.Email).FirstOrDefault() != null) 
                     {
                         if (DB.Member.Where(m => D.Phone == postback.Phone).FirstOrDefault() != null)
                         {
                             postback.Id = D.Id;
                             postback.Enable = D.Enable;
+                            postback.ErrorCount = D.ErrorCount;
                             DB.Entry(D).CurrentValues.SetValues(postback);
-                            try
-                            {
-                                DB.SaveChanges();
-                            }
-                            catch(Exception e)
-                            {
-                                ViewBag.EditErrorMessage = e.Message;
-                            }
+                            DB.SaveChanges();
                             ViewBag.EditErrorMessage = "修改成功";
                             return View();
                         }
@@ -178,7 +183,88 @@ namespace Asp.net_Exercise.Controllers
                 return View();
             }
             return View();
-            
+        }
+        public void EmailValidation(string Email,string Veriflcationcode)
+        {
+            try
+            {
+                //設定郵件相關參數
+                MailMessage Mail = new MailMessage();
+                Mail.To.Add(Email);
+                Mail.From = new MailAddress(Email, "Lativ", System.Text.Encoding.UTF8);
+                Mail.Subject = "帳號驗證";
+                Mail.SubjectEncoding = System.Text.Encoding.UTF8;
+                Mail.Body = Veriflcationcode;
+                Mail.BodyEncoding = System.Text.Encoding.UTF8;
+                Mail.IsBodyHtml = true;
+
+                //寄出參數
+                SmtpClient Smtp = new SmtpClient();
+                Smtp.Credentials = new System.Net.NetworkCredential("risnbox@gmail.com", "RISNFOX753159");
+                Smtp.Host = ("smtp.gmail.com");
+                Smtp.Port = 25;
+                Smtp.EnableSsl = true;
+                Smtp.Send(Mail);
+                Smtp.Dispose();
+                TempData["MailValidation"] = "驗證碼寄出成功";
+            }
+            catch(Exception)
+            {
+                TempData["MailValidation"] = "驗證碼寄出失敗";
+            }
+        }
+        //產生驗證碼 說明在Google書籤
+        public string Randomcode()
+        {
+            string allowwords = "QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuioplkjhgfdsazxcvbnm0123456789";
+            char[] Chr = new char[6];
+            Random rd = new Random();
+
+            for(var i = 0; i < 6; i++)
+            {
+                Chr[i] = allowwords[rd.Next(0, 61)];
+            }
+            string code = new string(Chr);
+            return code;
+        }
+        public ActionResult EmailValidationView()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult EmailValidationView(string Veriflcationcode)
+        {
+            var d = Convert.ToInt32(Session["Member"].ToString());
+
+            var data = DB.Member.Where(m => m.Id == d).FirstOrDefault();
+
+            if(Session["Veriflcationcode"] as string == Veriflcationcode)
+            {
+                ViewBag.ValidationErrorMessage = "恭喜您已完成信箱驗證!即將返回首頁";
+                data.Enable = 1;
+                data.ErrorCount = 0;
+                DB.Entry(data).CurrentValues.SetValues(data);
+                DB.SaveChanges();
+                RedirectToAction("Index");
+            }
+            if (data.ErrorCount >= 3)
+            {
+                var code = Randomcode();
+                Session["Veriflcationcode"] = code;
+                ViewBag.ValidationErrorMessage = "驗證碼輸入錯誤次數超過3次,已重新寄出驗證信";
+                EmailValidation(data.Email, Session["Veriflcationcode"] as string);
+                var Newdata = data;
+                Newdata.ErrorCount=0;
+                DB.Entry(data).CurrentValues.SetValues(Newdata);
+                DB.SaveChanges();
+                return View();
+            }
+            ViewBag.ValidationErrorMessage = "驗證碼輸入錯誤,錯誤達三次則須重新收取驗證碼";
+            var newdata = data;
+            newdata.ErrorCount++;
+            DB.Entry(data).CurrentValues.SetValues(newdata);
+            DB.SaveChanges();
+            return View();
         }
     }
 }

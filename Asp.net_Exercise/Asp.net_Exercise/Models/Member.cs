@@ -21,6 +21,7 @@ namespace Asp.net_Exercise.Models
         public string Password { get; set; }
         public string Gender { get; set; }
         public string Address { get; set; }
-        public string Enable { get; set; }
+        public Nullable<byte> Enable { get; set; }
+        public Nullable<int> ErrorCount { get; set; }
     }
 }
