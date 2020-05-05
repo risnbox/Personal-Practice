@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Asp.net_Exercise.Models;
 using System.Net.Mail;
+using System.Globalization;
 
 namespace Asp.net_Exercise.Controllers
 {
@@ -14,7 +15,7 @@ namespace Asp.net_Exercise.Controllers
         DatabaseEntities DB = new DatabaseEntities();
         public ActionResult Index()
         {
-
+            
             return View();
         }
         public ActionResult SignUp()
@@ -87,6 +88,7 @@ namespace Asp.net_Exercise.Controllers
                     Session["MemberName"] = data.Name;
                     if (DB.Member.Where(m => m.Id==data.Id && m.Enable == 0).FirstOrDefault()!=null)
                     {
+                        TempData["EnableMessage"] = "驗證尚未完成,即將前往驗證頁面";
                         return RedirectToAction("EmailValidationView");
                     }
                     return RedirectToAction("Index");
@@ -235,17 +237,17 @@ namespace Asp.net_Exercise.Controllers
         public ActionResult EmailValidationView(string Veriflcationcode)
         {
             var d = Convert.ToInt32(Session["Member"].ToString());
-
             var data = DB.Member.Where(m => m.Id == d).FirstOrDefault();
-
-            if(Session["Veriflcationcode"] as string == Veriflcationcode)
+            Veriflcationcode.Trim();
+            if(string.Equals(Session["Veriflcationcode"] as string,Veriflcationcode))
             {
-                ViewBag.ValidationErrorMessage = "恭喜您已完成信箱驗證!即將返回首頁";
+                
+                TempData["ValidationErrorMessage"] = "恭喜您已完成信箱驗證!即將返回首頁";
                 data.Enable = 1;
                 data.ErrorCount = 0;
                 DB.Entry(data).CurrentValues.SetValues(data);
                 DB.SaveChanges();
-                RedirectToAction("Index");
+                return RedirectToAction("Index");
             }
             if (data.ErrorCount >= 3)
             {
