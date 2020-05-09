@@ -39,7 +39,7 @@ namespace Asp.net_Exercise.Models
         [DisplayName("姓別")]
         public string Gender { get; set; }
         [DisplayName("地址")]
-        [Required(ErrorMessage = "地址為必填")]
+        [RegularExpression(@"^.")]
         public string Address { get; set; }
     }
     //使用enum列舉型別來建立下拉式選單需要的項目

@@ -6,6 +6,14 @@ using System.Web.Mvc;
 using Asp.net_Exercise.Models;
 using System.Net.Mail;
 using System.Globalization;
+using System.Runtime.CompilerServices;
+using System.Net;
+using System.Net.Http;
+using System.Web.Services.Protocols;
+using System.Web.UI;
+using System.Threading.Tasks;
+using System.IO;
+using System.Xml;
 
 namespace Asp.net_Exercise.Controllers
 {
@@ -273,6 +281,44 @@ namespace Asp.net_Exercise.Controllers
             DB.Entry(data).CurrentValues.SetValues(data);
             DB.SaveChanges();
             return View();
+        }
+        public ActionResult Location()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Location(string Address)
+        {
+            return View();
+        }
+        public string Get711(string city, string town)
+        {
+
+            var url = "https://emap.pcsc.com.tw/EMapSDK.aspx?commandid=SearchStore&city=" + city + "&town=" + town;
+            HttpWebRequest request = null;
+            HttpWebResponse response = null;
+            Stream stream = null;
+            string xml = "";
+            try
+            {
+                request = WebRequest.Create(url) as HttpWebRequest;
+                response = request.GetResponse() as HttpWebResponse;
+                stream = response.GetResponseStream();
+                StreamReader streamReader = new StreamReader(stream);
+                xml = streamReader.ReadToEnd();
+                streamReader.Close();
+                stream.Close();
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(xml);
+                string json = Newtonsoft.Json.JsonConvert.SerializeXmlNode(doc);
+                return json;
+            }
+            catch (Exception e)
+            {
+                
+                return ("請求失敗" + e);
+            }
+
         }
     }
 }

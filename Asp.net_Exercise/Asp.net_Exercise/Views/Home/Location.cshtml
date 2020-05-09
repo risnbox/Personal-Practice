@@ -1,0 +1,140 @@
+﻿<link rel="stylesheet" href="~/Content/leaflet.css" />
+<script src="~/Scripts/leaflet-0.7.3.js"></script>
+<script src="~/Scripts/ObjTree.js"></script>
+
+@{
+    ViewBag.Title = "Location";
+}
+<style>
+    #Maps {
+        width: 400px;
+        height: 300px;
+    }
+    iframe{
+        width: 400px;
+        height: 300px;
+    }
+    #city #town{
+        width:100px;
+    }
+</style>
+<script>
+
+    $(function () {
+        //透過OpenGeocodingAPI把地址轉成經緯度供地圖API使用,但對台灣詳細地址搜尋不夠完善無法套用
+        function Getdata(city, town) {
+            $.ajax({
+                url: "https://localhost:44353/Home/Get711?city=" + escape(city) + "&town=" + town,
+                type:"get",
+                success: function (data) {
+                    console.log(data);
+                    JSON.parse(data);
+                    console.log(data);
+                    console.log(data.iMapSDKOutput.GeoPosition[0])
+                    $("#POIID").each(function (i, data) {
+                        $("#POIID").append(
+                            "<td>"+data[i].POIID+"</td>"
+                        )
+                    })
+
+                }
+            })
+        }
+
+        $("#Openbtn").on("click", function () {
+            //添加element
+            $("#MapFather").append("<h4 id='label1' class='col-md-offset-5 control-label'>Leaflet</h4><div id='Maps'></div>");
+            var city = document.getElementById('city');
+            var c = city.value;
+            var town = document.getElementById('town');
+            var t = town.value;
+            var xhr = new XMLHttpRequest();//建立連接
+            //開啟連接
+            xhr.open('get', 'https://open.mapquestapi.com/geocoding/v1/address?key=Xjuwkm0tafwYk8AjY4Vg6XBya9vCGStX&location=' + c + t, true)
+            xhr.send(null);//傳送請求
+            xhr.onload = function () {
+                if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+                    var data = JSON.parse(xhr.responseText);//將JSON文字檔轉為JS物件
+                    var Lat = data.results[0].locations[0].latLng.lat//需至API說明內看詳細屬性,有陣列要[](區分大小寫)
+                    var Lng = data.results[0].locations[0].latLng.lng
+                    //顯示輸入地址為中心的地圖
+                    var Map = L.map('Maps', {
+                        center: [Lat, Lng],
+                        zoom: 13
+                    });
+                    //leaflet底圖設定
+                    L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 14,
+                        attribution: 'Map data: © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: © <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+                    }).addTo(Map);
+                    Getdata(c, t);
+                    console.log(c, t);
+                }
+                else {
+                    console.log("error")
+                }
+            }
+
+        })
+
+        //清除舊地圖
+        $("#Deletebtn").on("click", function () {
+            $("#Maps").remove();
+            $("#label1").remove();
+        })
+
+        $("#Deletebtn2").on("click", function () {
+            $("iframe").remove();
+            $("#label2").remove();
+        })
+
+        $("#Openbtn2").on("click", function () {
+            var address = $("#address2").val();
+            var text = "<h4 id='label2' class='control-label col-md-offset-5'>Google</h4>";
+            var text1 = "<iframe src = 'https://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=" + address + "&z=13&output=embed&t='></iframe>";
+            $("#MapFather2").append(text);
+            $("#MapFather2").append(text1);
+        })
+
+    })
+
+</script>
+
+@using (Html.BeginForm())
+{
+    <hr />
+    <h4 class="col-md-offset-5">設定取貨地點</h4>
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">使用OpenGeocodingAPI以及Leaflet</label>
+            <input type="text" id="city" class="form-control" placeholder="__市" />
+            <input type="text" id="town" class="form-control" placeholder="__區" />
+            <input type="button" id="Openbtn" value="查詢地圖" />
+            <input type="button" id="Deletebtn" value="清除地圖" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">使用GoogleURL不透過API</label>
+            <input type="text" class="form-control" placeholder="可完整查詢" id="address2" />
+            <input type="button" id="Openbtn2" value="查詢地圖" />
+            <input type="button" id="Deletebtn2" value="清除地圖" />
+        </div>
+        <div class="form-inline">
+            <div id="MapFather" class="form-group">
+
+            </div>
+            <div id="MapFather2" class="form-group col-md-offset-3">
+
+            </div>
+        </div>
+        <table class="table" id="table">
+            <tr>
+                <th>分店名</th>
+                <th>地址</th>
+                <th id="POIID">店編號</th>
+                <th>市內電話</th>
+            </tr>
+        </table>
+    </div>
+
+}
+
