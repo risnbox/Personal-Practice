@@ -26,5 +26,7 @@ namespace Asp.net_Exercise.Models
         }
     
         public virtual DbSet<Member> Member { get; set; }
+        public virtual DbSet<Member_Store> Member_Store { get; set; }
+        public virtual DbSet<Store> Store { get; set; }
     }
 }

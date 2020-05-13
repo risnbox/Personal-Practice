@@ -5,15 +5,13 @@ using System.Web;
 using System.Web.Mvc;
 using Asp.net_Exercise.Models;
 using System.Net.Mail;
-using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Net;
-using System.Net.Http;
-using System.Web.Services.Protocols;
 using System.Web.UI;
-using System.Threading.Tasks;
 using System.IO;
 using System.Xml;
+using System.Text;
+using Newtonsoft.Json;
+using System.Web.Helpers;
 
 namespace Asp.net_Exercise.Controllers
 {
@@ -23,7 +21,7 @@ namespace Asp.net_Exercise.Controllers
         DatabaseEntities DB = new DatabaseEntities();
         public ActionResult Index()
         {
-            
+
             return View();
         }
         public ActionResult SignUp()
@@ -31,7 +29,7 @@ namespace Asp.net_Exercise.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult SignUp(Member Postback,string check)
+        public ActionResult SignUp(Member Postback, string check)
         {
             var Phone = Postback.Phone;
             var Email = Postback.Email;
@@ -85,18 +83,18 @@ namespace Asp.net_Exercise.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult SignIn(string User,string Psw)
+        public ActionResult SignIn(string User, string Psw)
         {
             //檢查帳號是否存在,若無則顯示無此帳號
             var data = DB.Member.Where(m => m.Email == User | m.Phone == User).FirstOrDefault();
-            if (data != null) 
+            if (data != null)
             {
-                if (data.Password == Psw) 
+                if (data.Password == Psw)
                 {
                     Session["Member"] = data.Id;
                     Session["MemberName"] = data.Name;
                     //檢查該帳號的啟用狀態,或未啟用則進入驗證View
-                    if (DB.Member.Where(m => m.Id==data.Id && m.Enable == 0).FirstOrDefault()!=null)
+                    if (DB.Member.Where(m => m.Id == data.Id && m.Enable == 0).FirstOrDefault() != null)
                     {
                         TempData["EnableMessage"] = "驗證尚未完成,即將前往驗證頁面";
                         return RedirectToAction("EmailValidationView");
@@ -141,10 +139,10 @@ namespace Asp.net_Exercise.Controllers
             var D = DB.Member.Where(m => m.Id == d).FirstOrDefault();
             if (ModelState.IsValid)
             {
-                
+
                 if (DB.Member.Where(m => D.Password == postback.Password).FirstOrDefault() != null)
                 {
-                    if (DB.Member.Where(m => m.Id == D.Id && m.Email == postback.Email).FirstOrDefault() != null) 
+                    if (DB.Member.Where(m => m.Id == D.Id && m.Email == postback.Email).FirstOrDefault() != null)
                     {
                         if (DB.Member.Where(m => D.Phone == postback.Phone).FirstOrDefault() != null)
                         {
@@ -198,7 +196,7 @@ namespace Asp.net_Exercise.Controllers
             }
             return View();
         }
-        public void EmailValidation(string Email,string Veriflcationcode)
+        public void EmailValidation(string Email, string Veriflcationcode)
         {
             try
             {
@@ -224,7 +222,7 @@ namespace Asp.net_Exercise.Controllers
                 Smtp.Dispose();//關閉連線
                 TempData["MailValidation"] = "驗證碼寄出成功";
             }
-            catch(Exception)
+            catch (Exception)
             {
                 TempData["MailValidation"] = "驗證碼寄出失敗";
             }
@@ -237,7 +235,7 @@ namespace Asp.net_Exercise.Controllers
             char[] Chr = new char[6];//字串長度
             Random rd = new Random();
 
-            for(var i = 0; i < 6; i++)//使用for迴圈執行六次來獲得六碼隨機碼
+            for (var i = 0; i < 6; i++)//使用for迴圈執行六次來獲得六碼隨機碼
             {
                 Chr[i] = allowwords[rd.Next(0, 61)];//定義亂數範圍
             }
@@ -254,9 +252,9 @@ namespace Asp.net_Exercise.Controllers
             var d = Convert.ToInt32(Session["Member"].ToString());
             var data = DB.Member.Where(m => m.Id == d).FirstOrDefault();
             Veriflcationcode.Trim();//去除頭尾空白避免字串比較因空白出錯
-            if(string.Equals(Session["Veriflcationcode"] as string,Veriflcationcode))
+            if (string.Equals(Session["Veriflcationcode"] as string, Veriflcationcode))
             {
-                
+
                 TempData["ValidationErrorMessage"] = "恭喜您已完成信箱驗證!即將返回首頁";
                 data.Enable = 1;//改為啟用
                 data.ErrorCount = 0;//初始化錯誤次數
@@ -284,12 +282,18 @@ namespace Asp.net_Exercise.Controllers
         }
         public ActionResult Location()
         {
+
+            var x = new SelectList(Enum.GetValues(typeof(CitySelect)));
+            ViewBag.CitySelect = x;
             return View();
         }
         [HttpPost]
-        public ActionResult Location(string Address)
+        public bool SelectStore(string Name, string ID, string Address, string TelNo)
         {
-            return View();
+            var d = Convert.ToInt32(Session["Member"].ToString());
+            var D = DB.Member.Where(m => m.Id == d).FirstOrDefault();
+            
+            
         }
         public string Get711(string city, string town)
         {
@@ -308,17 +312,37 @@ namespace Asp.net_Exercise.Controllers
                 xml = streamReader.ReadToEnd();
                 streamReader.Close();
                 stream.Close();
+                xml = xml.Remove(0, 38);
+                xml = xml.Replace(" ", "");
+                Console.WriteLine(xml);
+                //將XML轉為JSON
                 XmlDocument doc = new XmlDocument();
                 doc.LoadXml(xml);
-                string json = Newtonsoft.Json.JsonConvert.SerializeXmlNode(doc);
+                string json = JsonConvert.SerializeXmlNode(doc);
                 return json;
             }
             catch (Exception e)
             {
-                
+
                 return ("請求失敗" + e);
             }
-
         }
-    }
+
+        public string Gettown(string city)
+        {
+            var data = System.IO.File.ReadAllText(@"C:\Users\admin\Documents\GitHub\Personal-Practice\Asp.net_Exercise\Asp.net_Exercise\Models\Taiwantown.json", Encoding.UTF8);
+            List<data2> d2 = JsonConvert.DeserializeObject<List<data2>>(data);
+            List<data1> d1 = JsonConvert.DeserializeObject<List<data1>>(data);
+            var City = d1.Where(m => m.name == city).FirstOrDefault();
+            var L = City.districts.ToList();
+            var Town = new List<string> { };
+            foreach(var i in L)
+            {
+                Town.Add(i.name);
+            }
+            var Json = JsonConvert.SerializeObject(Town);
+            return Json;
+            
+        }
+    }    
 }

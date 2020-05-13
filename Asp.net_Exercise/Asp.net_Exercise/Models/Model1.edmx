@@ -15,12 +15,63 @@
           <Property Name="Phone" Type="nvarchar" MaxLength="50" />
           <Property Name="Password" Type="nvarchar" MaxLength="50" />
           <Property Name="Gender" Type="nvarchar" MaxLength="50" />
-          <Property Name="Address" Type="nvarchar" MaxLength="50" />
           <Property Name="Enable" Type="tinyint" />
           <Property Name="ErrorCount" Type="int" />
         </EntityType>
+        <EntityType Name="Member_Store">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Member_Id" Type="int" />
+          <Property Name="Store_Id" Type="int" />
+        </EntityType>
+        <EntityType Name="Store">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StoreName" Type="nvarchar" MaxLength="50" />
+          <Property Name="StoreId" Type="nvarchar" MaxLength="50" />
+          <Property Name="StoreAddress" Type="nvarchar" MaxLength="50" />
+          <Property Name="StoreTelNo" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <Association Name="FK__Member_St__Membe__6FE99F9F">
+          <End Role="Member" Type="Self.Member" Multiplicity="0..1" />
+          <End Role="Member_Store" Type="Self.Member_Store" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Member_Store">
+              <PropertyRef Name="Member_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Member_St__Store__70DDC3D8">
+          <End Role="Store" Type="Self.Store" Multiplicity="0..1" />
+          <End Role="Member_Store" Type="Self.Member_Store" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Member_Store">
+              <PropertyRef Name="Store_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="DatabaseModelStoreContainer">
           <EntitySet Name="Member" EntityType="Self.Member" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Member_Store" EntityType="Self.Member_Store" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Store" EntityType="Self.Store" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Member_St__Membe__6FE99F9F" Association="Self.FK__Member_St__Membe__6FE99F9F">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Member_Store" EntitySet="Member_Store" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Member_St__Store__70DDC3D8" Association="Self.FK__Member_St__Store__70DDC3D8">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="Member_Store" EntitySet="Member_Store" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -28,6 +79,16 @@
       <Schema Namespace="DatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="DatabaseEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Member" EntityType="DatabaseModel.Member" />
+          <EntitySet Name="Member_Store" EntityType="DatabaseModel.Member_Store" />
+          <EntitySet Name="Store" EntityType="DatabaseModel.Store" />
+          <AssociationSet Name="FK__Member_St__Membe__6FE99F9F" Association="DatabaseModel.FK__Member_St__Membe__6FE99F9F">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Member_Store" EntitySet="Member_Store" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Member_St__Store__70DDC3D8" Association="DatabaseModel.FK__Member_St__Store__70DDC3D8">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="Member_Store" EntitySet="Member_Store" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Member">
           <Key>
@@ -39,10 +100,55 @@
           <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Gender" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Enable" Type="Byte" />
           <Property Name="ErrorCount" Type="Int32" />
+          <NavigationProperty Name="Member_Store" Relationship="DatabaseModel.FK__Member_St__Membe__6FE99F9F" FromRole="Member" ToRole="Member_Store" />
         </EntityType>
+        <EntityType Name="Member_Store">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Member_Id" Type="Int32" />
+          <Property Name="Store_Id" Type="Int32" />
+          <NavigationProperty Name="Member" Relationship="DatabaseModel.FK__Member_St__Membe__6FE99F9F" FromRole="Member_Store" ToRole="Member" />
+          <NavigationProperty Name="Store" Relationship="DatabaseModel.FK__Member_St__Store__70DDC3D8" FromRole="Member_Store" ToRole="Store" />
+        </EntityType>
+        <EntityType Name="Store">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StoreName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StoreId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StoreAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StoreTelNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Member_Store" Relationship="DatabaseModel.FK__Member_St__Store__70DDC3D8" FromRole="Store" ToRole="Member_Store" />
+        </EntityType>
+        <Association Name="FK__Member_St__Membe__6FE99F9F">
+          <End Type="DatabaseModel.Member" Role="Member" Multiplicity="0..1" />
+          <End Type="DatabaseModel.Member_Store" Role="Member_Store" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Member_Store">
+              <PropertyRef Name="Member_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Member_St__Store__70DDC3D8">
+          <End Type="DatabaseModel.Store" Role="Store" Multiplicity="0..1" />
+          <End Type="DatabaseModel.Member_Store" Role="Member_Store" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Member_Store">
+              <PropertyRef Name="Store_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -54,12 +160,31 @@
               <MappingFragment StoreEntitySet="Member">
                 <ScalarProperty Name="ErrorCount" ColumnName="ErrorCount" />
                 <ScalarProperty Name="Enable" ColumnName="Enable" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="Gender" ColumnName="Gender" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="Phone" ColumnName="Phone" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Member_Store">
+            <EntityTypeMapping TypeName="DatabaseModel.Member_Store">
+              <MappingFragment StoreEntitySet="Member_Store">
+                <ScalarProperty Name="Store_Id" ColumnName="Store_Id" />
+                <ScalarProperty Name="Member_Id" ColumnName="Member_Id" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Store">
+            <EntityTypeMapping TypeName="DatabaseModel.Store">
+              <MappingFragment StoreEntitySet="Store">
+                <ScalarProperty Name="StoreTelNo" ColumnName="StoreTelNo" />
+                <ScalarProperty Name="StoreAddress" ColumnName="StoreAddress" />
+                <ScalarProperty Name="StoreId" ColumnName="StoreId" />
+                <ScalarProperty Name="StoreName" ColumnName="StoreName" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

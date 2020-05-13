@@ -79,14 +79,6 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(m => m.Address, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Address, new { @class = "form-control" ,name="Address"})
-                @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
             @Html.LabelFor(m => m.Gender, new { @class="control-label col-md-2"})
             <div class="col-md-10">
                 @Html.DropDownListFor(m=>m.Gender,new SelectList(Enum.GetValues(typeof(GenderSelect)),new { @class="form-control"}))

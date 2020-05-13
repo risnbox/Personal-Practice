@@ -1,4 +1,6 @@
-﻿<link rel="stylesheet" href="~/Content/leaflet.css" />
+﻿@using Asp.net_Exercise.Models
+
+<link rel="stylesheet" href="~/Content/leaflet.css" />
 <script src="~/Scripts/leaflet-0.7.3.js"></script>
 <script src="~/Scripts/ObjTree.js"></script>
 
@@ -21,36 +23,103 @@
 <script>
 
     $(function () {
-        //透過OpenGeocodingAPI把地址轉成經緯度供地圖API使用,但對台灣詳細地址搜尋不夠完善無法套用
+
+        $("#CitySelect").append(
+            "<option value='0' disabled selected>-請選擇-</option>"
+        )
+
+        $("#TownSelect").append(
+            "<option value='0' disabled selected>-請先選擇縣市-</option>"
+        )
+
+        //選市後產生該市所有行政區
+        $("#CitySelect").change(function () {
+            $("#TownSelect").empty();
+            var city = $("#CitySelect").find("option:selected").text();
+            $.ajax({
+                url: "https://localhost:44353/Home/Gettown?city=" + city,
+                type: "get",
+                success: function (data) {
+                    data = JSON.parse(data);
+                    for (var i in data) {
+                        $("#TownSelect").append(
+                            "<option>" + data[i] + "</option>"
+                        )
+                    }
+                }
+            })
+        })
+
+        $("#Openbtn").on('click', function () {
+            $('table #S').remove();
+            var city = $('#CitySelect').find('option:selected').text();
+            var town = $('#TownSelect').find('option:selected').text();
+            Getdata(city, town);
+        })
+
         function Getdata(city, town) {
             $.ajax({
-                url: "https://localhost:44353/Home/Get711?city=" + escape(city) + "&town=" + town,
-                type:"get",
+                url: "https://localhost:44353/Home/Get711?city=" + escape(city) + "&town=" + escape(town),
+                type: "get",
                 success: function (data) {
-                    console.log(data);
-                    JSON.parse(data);
-                    console.log(data);
-                    console.log(data.iMapSDKOutput.GeoPosition[0])
-                    $("#POIID").each(function (i, data) {
-                        $("#POIID").append(
-                            "<td>"+data[i].POIID+"</td>"
+                    data = JSON.parse(data);
+                    var L = 0;
+                    for (var i in data.iMapSDKOutput.GeoPosition) {
+                        L++;
+                    }
+                    for (var i = 0; L > i; i++) {
+                        $("table").append(
+                            "<tr id='S'><td id='N" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].POIName + "</td>" +
+                            "<td id='A" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].Address + "</td>" +
+                            "<td id='I" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].POIID + "</td>" +
+                            "<td id='T" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].Telno + "</td>" +
+                            "<td><a href='https://www.google.com.tw/maps/place/" + data.iMapSDKOutput.GeoPosition[i].Address + " 'target='_blank' class='btn btn-info'>地圖 </td>" +
+                            "<td><input class='btn btn-default' type='button' value='選擇' id='Selectbtn" + i + "'/></td></tr>"
                         )
-                    })
-
+                        $("#Selectbtn" + i).on('click', {Id:i} ,SelectStore)
+                        
+                    }
                 }
             })
         }
+        function SelectStore(event) {
 
-        $("#Openbtn").on("click", function () {
+            var i = event.data.Id
+            var name = $("#N" + i).text();
+            var Address = $('#A' + i).text();
+            var Id = $('#I' + i).text();
+            var TelNo = $('#T' + i).text();
+            $.ajax({
+                url: 'https://localhost:44353/Home/SelectStore',
+                type: 'POST',
+                dataType: 'text',
+                data: { Name: name, Address: Address, ID: Id, TelNo: TelNo },
+                success: function (data) {
+                    if (data==true) {
+                        alert("新增取貨門市成功");
+                        location.href='MemberCenter.cshtml'
+                    }
+                    console.log("error")
+                }
+            })
+            
+        }
+    })
+        /*
+         * 原本規劃時預計是輸入地址後取得該區所有711後顯示住家地址及周遭711(使用圖標),但Leaflet因使用的地圖引擎是OpenStreet該引擎不支援台灣詳細地址所以無法使用
+         * 而GoogleAPI則因為改為收費制如無付費則會強硬顯示只為開發用無法實現所要功能,因此只好放棄地圖部分
+         * 
+        
+        
+        //透過OpenGeocodingAPI把地址轉成經緯度供地圖API使用,但對台灣詳細地址搜尋不夠完善無法套用
+            $("#Openbtn").on("click", function () {
             //添加element
             $("#MapFather").append("<h4 id='label1' class='col-md-offset-5 control-label'>Leaflet</h4><div id='Maps'></div>");
-            var city = document.getElementById('city');
-            var c = city.value;
-            var town = document.getElementById('town');
-            var t = town.value;
+            var city = $('#CitySelect').find('option:selected').text();
+            var town = $('#TownSelect').find('option:selected').text();
             var xhr = new XMLHttpRequest();//建立連接
             //開啟連接
-            xhr.open('get', 'https://open.mapquestapi.com/geocoding/v1/address?key=Xjuwkm0tafwYk8AjY4Vg6XBya9vCGStX&location=' + c + t, true)
+            xhr.open('get', 'https://open.mapquestapi.com/geocoding/v1/address?key=Xjuwkm0tafwYk8AjY4Vg6XBya9vCGStX&location=' + city + town, true)
             xhr.send(null);//傳送請求
             xhr.onload = function () {
                 if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
@@ -67,8 +136,7 @@
                         maxZoom: 14,
                         attribution: 'Map data: © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: © <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
                     }).addTo(Map);
-                    Getdata(c, t);
-                    console.log(c, t);
+                    Getdata(city, town);
                 }
                 else {
                     console.log("error")
@@ -81,6 +149,8 @@
         $("#Deletebtn").on("click", function () {
             $("#Maps").remove();
             $("#label1").remove();
+            $('table #S').remove();
+            
         })
 
         $("#Deletebtn2").on("click", function () {
@@ -95,8 +165,8 @@
             $("#MapFather2").append(text);
             $("#MapFather2").append(text1);
         })
+        */
 
-    })
 
 </script>
 
@@ -105,32 +175,34 @@
     <hr />
     <h4 class="col-md-offset-5">設定取貨地點</h4>
     <div class="form-inline">
-        <div class="form-group">
-            <label class="control-label">使用OpenGeocodingAPI以及Leaflet</label>
-            <input type="text" id="city" class="form-control" placeholder="__市" />
-            <input type="text" id="town" class="form-control" placeholder="__區" />
-            <input type="button" id="Openbtn" value="查詢地圖" />
-            <input type="button" id="Deletebtn" value="清除地圖" />
-        </div>
-        <div class="form-group">
-            <label class="control-label">使用GoogleURL不透過API</label>
-            <input type="text" class="form-control" placeholder="可完整查詢" id="address2" />
-            <input type="button" id="Openbtn2" value="查詢地圖" />
-            <input type="button" id="Deletebtn2" value="清除地圖" />
-        </div>
-        <div class="form-inline">
-            <div id="MapFather" class="form-group">
+        <div class="form-group col-md-offset-3">
+            <label class="control-label">請先選擇縣市</label>
 
-            </div>
-            <div id="MapFather2" class="form-group col-md-offset-3">
-
-            </div>
+            @Html.DropDownList("city", ViewBag.CitySelect as SelectList, new { @class = "form-control", @id = "CitySelect" })
+            <select class="form-control" id="TownSelect"></select>
+            <input type="button" id="Openbtn" value="查詢711" />
         </div>
+        <!--
+            <div class="form-group">
+                <label class="control-label">使用GoogleURL不透過API</label>
+                <input type="text" class="form-control" placeholder="可完整查詢" id="address2" />
+                <input type="button" id="Openbtn2" value="查詢地圖" />
+                <input type="button" id="Deletebtn2" value="清除地圖" />
+            </div>
+            <div class="form-inline">
+                <div id="MapFather" class="form-group">
+
+                </div>
+                <div id="MapFather2" class="form-group col-md-offset-3">
+
+                </div>
+            </div>
+        -->
         <table class="table" id="table">
             <tr>
                 <th>分店名</th>
                 <th>地址</th>
-                <th id="POIID">店編號</th>
+                <th>店編號</th>
                 <th>市內電話</th>
             </tr>
         </table>

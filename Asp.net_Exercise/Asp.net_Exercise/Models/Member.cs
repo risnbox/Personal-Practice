@@ -14,14 +14,22 @@ namespace Asp.net_Exercise.Models
     
     public partial class Member
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Member()
+        {
+            this.Member_Store = new HashSet<Member_Store>();
+        }
+    
         public int Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
         public string Password { get; set; }
         public string Gender { get; set; }
-        public string Address { get; set; }
         public Nullable<byte> Enable { get; set; }
         public Nullable<int> ErrorCount { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Member_Store> Member_Store { get; set; }
     }
 }
