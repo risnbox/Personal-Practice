@@ -8,6 +8,39 @@
     ViewBag.Title = "Location";
 }
 <style>
+    .list-group-horizontal .list-group-item 
+    {
+		display: inline-block;
+	}
+	.list-group-horizontal .list-group-item 
+    {
+		margin-bottom: 0;
+		margin-left:1px;
+		margin-right: 0;
+	}
+	.list-group-horizontal .list-group-item:first-child 
+    {
+		border-top-right-radius:0;
+		border-bottom-left-radius:4px;
+	}
+	.list-group-horizontal .list-group-item:last-child 
+    {
+		border-top-right-radius:4px;
+		
+	}
+    .L{
+        background-color:inherit;
+        padding:10px 50px 10px 50px;
+        border-style:none;
+        border-left-style:solid;
+        border-right-style:solid;
+        
+    }
+    .U{
+        background-color:#f5f5f5;
+        padding-top:10px;
+        padding-left:10px;
+    }
     #Maps {
         width: 400px;
         height: 300px;
@@ -74,7 +107,7 @@
                             "<td id='I" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].POIID + "</td>" +
                             "<td id='T" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].Telno + "</td>" +
                             "<td><a href='https://www.google.com.tw/maps/place/" + data.iMapSDKOutput.GeoPosition[i].Address + " 'target='_blank' class='btn btn-info'>地圖 </td>" +
-                            "<td><input class='btn btn-default' type='button' value='選擇' id='Selectbtn" + i + "'/></td></tr>"
+                            "<td><input class='btn btn-default' type='submit' value='選擇' id='Selectbtn" + i + "'/></td></tr>"
                         )
                         $("#Selectbtn" + i).on('click', {Id:i} ,SelectStore)
                         
@@ -95,11 +128,18 @@
                 dataType: 'text',
                 data: { Name: name, Address: Address, ID: Id, TelNo: TelNo },
                 success: function (data) {
-                    if (data==true) {
-                        alert("新增取貨門市成功");
-                        location.href='MemberCenter.cshtml'
+                    if (data == 0) {
+                        
+                        location.href = 'MemberCenter';
                     }
-                    console.log("error")
+                    if (data == 1) {
+                        alert("已選擇過該門市");
+                        location.href = 'Location';
+                    }
+                    if (data == 2) {
+                        alert("資料庫異常");
+                        location.href = 'Location';
+                    }
                 }
             })
             
@@ -169,10 +209,19 @@
 
 
 </script>
-
+<div class="container">
+    <div class="row" style="padding-top:30px">
+        <div class="U list-group list-group-horizontal">
+            <a href="/Home/Shoppingcart" class="L list-group-item"><span>購物車</span></a>
+            <a class="L list-group-item active">設定取貨門市</a>
+            <a class="L list-group-item" href="@Url.Action("MemberCenter")">修改會員資料</a>
+        </div>
+    </div>
+</div>
 @using (Html.BeginForm())
 {
     <hr />
+    <h3>@TempData["SelectError"]</h3>
     <h4 class="col-md-offset-5">設定取貨地點</h4>
     <div class="form-inline">
         <div class="form-group col-md-offset-3">

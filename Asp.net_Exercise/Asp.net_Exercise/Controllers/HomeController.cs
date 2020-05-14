@@ -120,20 +120,39 @@ namespace Asp.net_Exercise.Controllers
             Session["MemberName"] = null;
             return RedirectToAction("Index");
         }
-        public ActionResult MemberCentre()
+        public ActionResult MemberCenter()
         {
             //若Session為空或該會員是未啟用狀態則導回登入頁面,避免未登入或是未啟用帳戶透過網址進入
-            var d = Convert.ToInt32(Session["Member"].ToString());
-            var D = DB.Member.Where(m => m.Id == d).FirstOrDefault();
-            if (Session["Member"] == null && DB.Member.Where(m => m.Id == D.Id && m.Enable == 0).FirstOrDefault() != null)
+
+            if (Session["Member"] == null)
             {
+                TempData["SignUpSuccess"] = "您尚未登入";
                 return RedirectToAction("SignIn");
             }
+            var d = Convert.ToInt32(Session["Member"].ToString());
+            var D = DB.Member.Where(m => m.Id == d).FirstOrDefault();
+            if (DB.Member.Where(m => m.Id == D.Id && m.Enable == 0).FirstOrDefault() != null)
+            {
+                @TempData["SignUpSuccess"] = "您尚未啟用";
+                return RedirectToAction("EmailValidationView");
+            }
+            var Store = DB.Member_Store.Where(m => m.Member_Id == d).ToList();
+            List<string> str = new List<string>();
+            foreach (var i in Store)
+            {
+                var Lt = DB.Store.Where(m => m.StoreId == i.Store_Id).ToList();
+                foreach (var x in Lt)
+                {
+                    str.Add(x.StoreName);
+                }
+            }
+
+            ViewBag.Store = string.Join(",", str);
             D.Password = null;
             return View(D);
         }
         [HttpPost]
-        public ActionResult MemberCentre(Member postback)
+        public ActionResult MemberCenter(Member postback)
         {
             var d = Convert.ToInt32(Session["Member"].ToString());
             var D = DB.Member.Where(m => m.Id == d).FirstOrDefault();
@@ -282,18 +301,51 @@ namespace Asp.net_Exercise.Controllers
         }
         public ActionResult Location()
         {
-
+            //新增City欄位項目表(使用Enum)
             var x = new SelectList(Enum.GetValues(typeof(CitySelect)));
             ViewBag.CitySelect = x;
             return View();
         }
         [HttpPost]
-        public bool SelectStore(string Name, string ID, string Address, string TelNo)
+        public int SelectStore(string Name, int ID, string Address, string TelNo)
         {
             var d = Convert.ToInt32(Session["Member"].ToString());
-            var D = DB.Member.Where(m => m.Id == d).FirstOrDefault();
-            
-            
+            var D = DB.Member.Include("Member_Store").Where(m => m.Id == d).FirstOrDefault();
+            var Sdata = new Store();
+            if (DB.Store.Where(m => m.StoreId == ID).FirstOrDefault() == null) 
+            {
+                Sdata.StoreAddress = Address;
+                Sdata.StoreId = ID;
+                Sdata.StoreName = Name;
+                Sdata.StoreTelNo = TelNo;
+                DB.Store.Add(Sdata);
+            }
+            Sdata = DB.Store.Find(ID);
+            if(DB.Member_Store.Where(m => m.Member_Id == d && m.Store_Id == ID).FirstOrDefault() != null)
+            {
+                TempData["SelectError"] = "您已選擇過該門市";
+                return 1;
+            }
+            var Linkdata = new Member_Store();
+            Linkdata.Member = D;
+            Linkdata.Store = Sdata;
+            DB.Member_Store.Add(Linkdata);
+            try
+            {
+                DB.SaveChanges();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+                TempData["SelectError"] = "選擇門市失敗,ErrorCode:" + e;
+                return 2;
+            }
+            TempData["SelectError"] = "選擇門市成功,門市名稱為" + Sdata.StoreName;
+            return 0;
+
+
+
+
         }
         public string Get711(string city, string town)
         {
@@ -330,7 +382,9 @@ namespace Asp.net_Exercise.Controllers
 
         public string Gettown(string city)
         {
-            var data = System.IO.File.ReadAllText(@"C:\Users\admin\Documents\GitHub\Personal-Practice\Asp.net_Exercise\Asp.net_Exercise\Models\Taiwantown.json", Encoding.UTF8);
+            //此處需引用JSON檔 如若下載專案後爆錯更改地址即可(應該是因IIS沒設定導致相對位置無法套用 只好暫時用絕對位置)
+
+            var data = System.IO.File.ReadAllText(@"C:\Users\risnf\Documents\GitHub\Personal-Practice\Asp.net_Exercise\Asp.net_Exercise\Models\Taiwantown.json", Encoding.UTF8);
             List<data2> d2 = JsonConvert.DeserializeObject<List<data2>>(data);
             List<data1> d1 = JsonConvert.DeserializeObject<List<data1>>(data);
             var City = d1.Where(m => m.name == city).FirstOrDefault();

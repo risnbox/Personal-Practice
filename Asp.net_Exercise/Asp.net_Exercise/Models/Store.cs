@@ -20,9 +20,8 @@ namespace Asp.net_Exercise.Models
             this.Member_Store = new HashSet<Member_Store>();
         }
     
-        public int Id { get; set; }
         public string StoreName { get; set; }
-        public string StoreId { get; set; }
+        public int StoreId { get; set; }
         public string StoreAddress { get; set; }
         public string StoreTelNo { get; set; }
     

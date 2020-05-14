@@ -219,7 +219,7 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
     <Content Include="Views\Home\SignUp.cshtml" />
     <Content Include="Views\Home\SignIn.cshtml" />
-    <Content Include="Views\Home\MemberCentre.cshtml" />
+    <Content Include="Views\Home\MemberCenter.cshtml" />
     <Content Include="Views\Home\Shoppingcart.cshtml" />
     <Content Include="Views\Home\EmailValidationView.cshtml" />
     <Content Include="Views\Home\Location.cshtml" />

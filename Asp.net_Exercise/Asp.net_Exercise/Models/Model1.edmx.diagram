@@ -6,12 +6,11 @@
     <edmx:Diagrams>
       <Diagram DiagramId="1a8d83c86a794690b7c219bc0288e97e" Name="Diagram1">
         <EntityTypeShape EntityType="DatabaseModel.Member" Width="1.5" PointX="3.125" PointY="1.375" />
-        <EntityTypeShape EntityType="DatabaseModel.Member_Store" Width="1.5" PointX="6.125" PointY="2.375" />
-        <EntityTypeShape EntityType="DatabaseModel.Store" Width="1.5" PointX="8.75" PointY="1.625" />
-        <AssociationConnector Association="DatabaseModel.FK__Member_St__Membe__6FE99F9F" ManuallyRouted="false" >
-        </AssociationConnector>
-        <AssociationConnector Association="DatabaseModel.FK__Member_St__Store__70DDC3D8" />
-      </Diagram>
+        <EntityTypeShape EntityType="DatabaseModel.Member_Store" Width="1.5" PointX="5.375" PointY="1.75" />
+        <EntityTypeShape EntityType="DatabaseModel.Store" Width="1.5" PointX="8.5" PointY="1.875" />
+        <AssociationConnector Association="DatabaseModel.FK__Member_St__Membe__02FC7413" />
+        <AssociationConnector Association="DatabaseModel.FK__Member_St__Store__160F4887" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>
