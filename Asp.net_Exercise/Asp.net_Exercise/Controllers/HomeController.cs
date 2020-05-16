@@ -136,6 +136,7 @@ namespace Asp.net_Exercise.Controllers
                 @TempData["SignUpSuccess"] = "您尚未啟用";
                 return RedirectToAction("EmailValidationView");
             }
+            //顯示會員已選擇的門市
             var Store = DB.Member_Store.Where(m => m.Member_Id == d).ToList();
             List<string> str = new List<string>();
             foreach (var i in Store)
@@ -306,13 +307,26 @@ namespace Asp.net_Exercise.Controllers
             ViewBag.CitySelect = x;
             return View();
         }
+        public string ViewStore()
+        {
+            var d = Convert.ToInt32(Session["Member"].ToString());
+            var MS = DB.Member_Store.Where(m => m.Member_Id == d).ToList();
+            var Stores = new List<Store>();
+            foreach(var i in MS)
+            {
+                Stores.Add(i.Store);
+            }
+            string json = JsonConvert.SerializeObject(Stores);
+            return json;
+
+        }
         [HttpPost]
         public int SelectStore(string Name, int ID, string Address, string TelNo)
         {
             var d = Convert.ToInt32(Session["Member"].ToString());
             var D = DB.Member.Include("Member_Store").Where(m => m.Id == d).FirstOrDefault();
             var Sdata = new Store();
-            if (DB.Store.Where(m => m.StoreId == ID).FirstOrDefault() == null) 
+            if (DB.Store.Where(m => m.StoreId == ID).FirstOrDefault() == null) //檢查該門市是否已被新增過
             {
                 Sdata.StoreAddress = Address;
                 Sdata.StoreId = ID;
@@ -321,10 +335,10 @@ namespace Asp.net_Exercise.Controllers
                 DB.Store.Add(Sdata);
             }
             Sdata = DB.Store.Find(ID);
-            if(DB.Member_Store.Where(m => m.Member_Id == d && m.Store_Id == ID).FirstOrDefault() != null)
+            if(DB.Member_Store.Where(m => m.Member_Id == d && m.Store_Id == ID).FirstOrDefault() != null)//檢查使用者是否已選擇過該門市
             {
                 TempData["SelectError"] = "您已選擇過該門市";
-                return 1;
+                return 1;//由於使用AJAX因此轉址部分需透過Jquery 所以回傳int讓Jquery判斷情況為何
             }
             var Linkdata = new Member_Store();
             Linkdata.Member = D;
@@ -338,65 +352,66 @@ namespace Asp.net_Exercise.Controllers
             {
                 Console.WriteLine(e);
                 TempData["SelectError"] = "選擇門市失敗,ErrorCode:" + e;
-                return 2;
+                return 2;//由於使用AJAX因此轉址部分需透過Jquery 所以回傳int讓Jquery判斷情況為何
             }
             TempData["SelectError"] = "選擇門市成功,門市名稱為" + Sdata.StoreName;
-            return 0;
-
-
-
-
+            return 0;//由於使用AJAX因此轉址部分需透過Jquery 所以回傳int讓Jquery判斷情況為何
         }
         public string Get711(string city, string town)
         {
-
+            //利用HttpWeb發出請求取711門市資料
             var url = "https://emap.pcsc.com.tw/EMapSDK.aspx?commandid=SearchStore&city=" + city + "&town=" + town;
-            HttpWebRequest request = null;
-            HttpWebResponse response = null;
-            Stream stream = null;
-            string xml = "";
             try
             {
-                request = WebRequest.Create(url) as HttpWebRequest;
-                response = request.GetResponse() as HttpWebResponse;
-                stream = response.GetResponseStream();
-                StreamReader streamReader = new StreamReader(stream);
-                xml = streamReader.ReadToEnd();
+                var request = WebRequest.Create(url) as HttpWebRequest;//發送請求
+                var response = request.GetResponse() as HttpWebResponse;//取得回應
+                var stream = response.GetResponseStream();//取得回應資料流
+                StreamReader streamReader = new StreamReader(stream);//讀取資料流內容
+                var xml = streamReader.ReadToEnd();//將內容寫入變數
                 streamReader.Close();
-                stream.Close();
-                xml = xml.Remove(0, 38);
-                xml = xml.Replace(" ", "");
+                stream.Close();//關閉資料流
+                xml = xml.Remove(0, 38);//因傳入的資料是XML格式 此處用處是刪除XML固定標頭 版本號及編碼類別
+                xml = xml.Replace(" ", "");//清除資料內的空格避免轉為JSON格式錯誤
                 Console.WriteLine(xml);
                 //將XML轉為JSON
                 XmlDocument doc = new XmlDocument();
-                doc.LoadXml(xml);
+                doc.LoadXml(xml);//利用XMLDoc將傳入的xml字串轉為xml物件
                 string json = JsonConvert.SerializeXmlNode(doc);
                 return json;
             }
             catch (Exception e)
             {
-
                 return ("請求失敗" + e);
             }
         }
 
         public string Gettown(string city)
         {
-            //此處需引用JSON檔 如若下載專案後爆錯更改地址即可(應該是因IIS沒設定導致相對位置無法套用 只好暫時用絕對位置)
-
-            var data = System.IO.File.ReadAllText(@"C:\Users\risnf\Documents\GitHub\Personal-Practice\Asp.net_Exercise\Asp.net_Exercise\Models\Taiwantown.json", Encoding.UTF8);
-            List<data2> d2 = JsonConvert.DeserializeObject<List<data2>>(data);
-            List<data1> d1 = JsonConvert.DeserializeObject<List<data1>>(data);
-            var City = d1.Where(m => m.name == city).FirstOrDefault();
-            var L = City.districts.ToList();
-            var Town = new List<string> { };
+            //此處需引用JSON檔 如若下載專案後報錯更改地址即可(應該是因IIS沒設定導致相對位置無法套用? 只好暫時用絕對位置)
+            //通常為C:\Users\_使用者名稱_\Documents\GitHub\Personal-Practice\Asp.net_Exercise\Asp.net_Exercise\Models\Taiwantown.json
+            //PC路徑在此_@"C:\Users\risnf\Documents\GitHub\Personal-Practice\Asp.net_Exercise\Asp.net_Exercise\Models\Taiwantown.json"
+            //筆電路徑_@"C:\Users\admin\Documents\GitHub\Personal-Practice\Asp.net_Exercise\Asp.net_Exercise\Models\Taiwantown.json"
+            var data = System.IO.File.ReadAllText(@"C:\Users\admin\Documents\GitHub\Personal-Practice\Asp.net_Exercise\Asp.net_Exercise\Models\Taiwantown.json", Encoding.UTF8);
+            List<data2> d2 = JsonConvert.DeserializeObject<List<data2>>(data);//將JSON轉成List物件操作
+            List<data1> d1 = JsonConvert.DeserializeObject<List<data1>>(data);//因此JSON為多層結構所以需要轉多層
+            var City = d1.Where(m => m.name == city).FirstOrDefault();//配對城市名稱
+            var L = City.districts.ToList();//將該城市清單轉為List
+            var Town = new List<string> { };//創造新的StringList
             foreach(var i in L)
             {
-                Town.Add(i.name);
+                Town.Add(i.name);//利用loop將資料寫入要list
             }
-            var Json = JsonConvert.SerializeObject(Town);
+            var Json = JsonConvert.SerializeObject(Town);//將list轉回JSON回傳至前端供Jquery操作
             return Json;
-            
         }
+        
+        public void DeleteStore(int store)
+        {
+            var d = Convert.ToInt32(Session["Member"].ToString());
+            var MS = DB.Member_Store.Where(m => m.Member_Id == d).ToList();
+            var delete = MS.Where(m => m.Store_Id == store).FirstOrDefault();
+            DB.Member_Store.Remove(delete);
+            DB.SaveChanges();
+        } 
     }    
 }

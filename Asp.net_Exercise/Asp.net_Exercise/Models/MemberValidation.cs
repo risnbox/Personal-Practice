@@ -71,7 +71,8 @@ namespace Asp.net_Exercise.Models
         台東縣,
         花蓮縣
     }
-
+    //複製JSON字串再利用VisualStudio內建功能 選擇性貼上=>JSON格式
+    //此為首層結構,通常不會用到此層
     public class Jsclass
     {
         public data1[] Property1 { get; set; }

@@ -82,14 +82,14 @@
                 }
             })
         })
-
+        //透過下拉選單得到地區後取得711資料
         $("#Openbtn").on('click', function () {
-            $('table #S').remove();
+            $('table #S').remove();//清空舊資料
             var city = $('#CitySelect').find('option:selected').text();
             var town = $('#TownSelect').find('option:selected').text();
             Getdata(city, town);
         })
-
+        //取得711資料的Function
         function Getdata(city, town) {
             $.ajax({
                 url: "https://localhost:44353/Home/Get711?city=" + escape(city) + "&town=" + escape(town),
@@ -97,27 +97,27 @@
                 success: function (data) {
                     data = JSON.parse(data);
                     var L = 0;
-                    for (var i in data.iMapSDKOutput.GeoPosition) {
+                    for (var i in data.iMapSDKOutput.GeoPosition) {//確認資料長度
                         L++;
                     }
-                    for (var i = 0; L > i; i++) {
+                    for (var i = 0; L > i; i++) {//將資料新增到Table
                         $("table").append(
                             "<tr id='S'><td id='N" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].POIName + "</td>" +
                             "<td id='A" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].Address + "</td>" +
                             "<td id='I" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].POIID + "</td>" +
                             "<td id='T" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].Telno + "</td>" +
-                            "<td><a href='https://www.google.com.tw/maps/place/" + data.iMapSDKOutput.GeoPosition[i].Address + " 'target='_blank' class='btn btn-info'>地圖 </td>" +
+                            "<td><a href='https://www.google.com.tw/maps/place/" + data.iMapSDKOutput.GeoPosition[i].Address + " 'target='_blank' class='btn btn-info'>地圖</td>" +
                             "<td><input class='btn btn-default' type='submit' value='選擇' id='Selectbtn" + i + "'/></td></tr>"
                         )
-                        $("#Selectbtn" + i).on('click', {Id:i} ,SelectStore)
+                        $("#Selectbtn" + i).on('click', {Id:i} ,SelectStore)//傳值到Function
                         
                     }
                 }
             })
         }
-        function SelectStore(event) {
+        function SelectStore(e) {
 
-            var i = event.data.Id
+            var i = e.data.Id
             var name = $("#N" + i).text();
             var Address = $('#A' + i).text();
             var Id = $('#I' + i).text();
@@ -143,6 +143,47 @@
                 }
             })
             
+        }
+        $("#ViewStore").on('click',viewstore)
+
+        function viewstore() {
+            $.ajax({
+                url: "https://localhost:44353/Home/ViewStore",
+                type: "GET",
+                success: function (data) {
+                    data = JSON.parse(data);
+                    $("table #S").remove();
+                    var L = 0;
+                    for (var i in data) {
+                        L++;//確認JSON共幾筆資料
+                    }
+                    for (var i = 0; L > i; i++) {
+                        $("#table").append(
+                            "<tr id='S'><td id='N" + i + "'>" + data[i].StoreName + "</td>" +
+                            "<td id='A" + i + "'>" + data[i].StoreAddress + "</td>" +
+                            "<td id='I" + i + "'>" + data[i].StoreId + "</td>" +
+                            "<td id='T" + i + "'>" + data[i].StoreTelNo + "</td>" +
+                            "<td><a href='https://www.google.com.tw/maps/place/" + data[i].StoreAddress + " 'target='_blank' class='btn btn-info'>地圖</td>" +
+                            "<td><input type='button' id='Sbtn" + i + "' value='刪除' class='btn btn-danger'/></tr>"
+                        )
+                        $("#Sbtn" + i).on('click', { Sid: data[i].StoreId }, DeleteStore);
+                    }
+
+                }
+            })
+        }
+
+        function DeleteStore(e) {
+            $.ajax({
+                url: "https://localhost:44353/Home/DeleteStore?store=" + e.data.Sid,
+                type: "Get",
+                success: function () {
+                    
+                    alert("刪除成功");
+
+                    viewstore();
+                }
+            })
         }
     })
         /*
@@ -223,10 +264,18 @@
     <hr />
     <h3>@TempData["SelectError"]</h3>
     <h4 class="col-md-offset-5">設定取貨地點</h4>
+    
     <div class="form-inline">
-        <div class="form-group col-md-offset-3">
-            <label class="control-label">請先選擇縣市</label>
+        <div class="form-group col-md-offset-3 col-md-9">
+            <h4>查詢及修改已選擇的門市</h4>
+            <label class="control-label">顯示已選擇的門市</label>
+            <input type="button" id="ViewStore" value="顯示門市" class="btn btn-default" />
+        </div>
 
+
+        <div class="form-group col-md-offset-3 col-md-9">
+            <h4>新增門市</h4>
+            <label class="control-label">請先選擇縣市</label>
             @Html.DropDownList("city", ViewBag.CitySelect as SelectList, new { @class = "form-control", @id = "CitySelect" })
             <select class="form-control" id="TownSelect"></select>
             <input type="button" id="Openbtn" value="查詢711" />
