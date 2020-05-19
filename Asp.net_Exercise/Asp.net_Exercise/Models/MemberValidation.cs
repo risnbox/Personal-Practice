@@ -71,6 +71,20 @@ namespace Asp.net_Exercise.Models
         台東縣,
         花蓮縣
     }
+    public enum TypeSelect
+    {
+        請選擇=0,
+        women=1,
+        men=2,
+        kids=3
+    }
+    public enum ClassSelect
+    {
+        請選擇=0,
+        上衣=1,
+        外套=2,
+        下身=3
+    }
     //複製JSON字串再利用VisualStudio內建功能 選擇性貼上=>JSON格式
     //此為首層結構,通常不會用到此層
     public class Jsclass

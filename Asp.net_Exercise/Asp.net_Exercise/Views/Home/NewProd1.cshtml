@@ -1,0 +1,70 @@
+﻿@using Asp.net_Exercise.Models
+
+@{
+    ViewBag.Title = "NewProd1";
+}
+
+@if (@ViewBag.error != null)
+{
+    <script>
+            alert("@ViewBag.error")
+    </script>
+}
+
+<script>
+
+    $(function () {
+
+        
+
+    })
+
+</script>
+
+@using (Html.BeginForm("NewProd1","Home",FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <h3>新增產品</h3>
+    <h3>@ViewBag.error</h3>
+    <hr />
+
+    <div class="form-horizontal">
+
+        <div class="form-group">
+            <label class="control-label col-md-4">品名</label>
+            <input type="text" name="name" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-4">單價</label>
+            <input type="number" name="price" class="form-control " required />
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-4">種類</label>
+            @Html.DropDownList("type", new SelectList(Enum.GetNames(typeof(TypeSelect)), Enum.GetValues(typeof(TypeSelect))), new { @class = "form-control", @id = "TypeSelect", @name = "type" })
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-4">類別</label>
+            @Html.DropDownList("Class", new SelectList(Enum.GetValues(typeof(ClassSelect)), Enum.GetValues(typeof(ClassSelect))), new { @class = "form-control", @id = "ClassSelect", @name = "Class" })
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-4">圖檔</label>
+            <input type="file" name="file" class="form-control " required />
+        </div>
+
+        <input type="submit" class="btn btn-info col-md-offset-5" value="下一步" />
+
+    </div>
+
+}
+<hr />
+<table class="table">
+    <tr>
+        <th>品名</th>
+        <th>單價</th>
+        <th>種類</th>
+        <th>類別</th>
+    </tr>
+</table>

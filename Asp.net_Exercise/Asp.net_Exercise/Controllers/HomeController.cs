@@ -12,6 +12,7 @@ using System.Xml;
 using System.Text;
 using Newtonsoft.Json;
 using System.Web.Helpers;
+using System.Data.Entity.Core.Mapping;
 
 namespace Asp.net_Exercise.Controllers
 {
@@ -85,6 +86,13 @@ namespace Asp.net_Exercise.Controllers
         [HttpPost]
         public ActionResult SignIn(string User, string Psw)
         {
+            //判斷是否為管理員
+            if (string.Compare(User, "Admin", false) == 0 && string.Compare(Psw, "Admin01", false) == 0)
+            {
+                Session["Member"] = 12;
+                Session["MemberName"] = "Admin";
+                return RedirectToAction("NewProd1");
+            }
             //檢查帳號是否存在,若無則顯示無此帳號
             var data = DB.Member.Where(m => m.Email == User | m.Phone == User).FirstOrDefault();
             if (data != null)
@@ -387,11 +395,8 @@ namespace Asp.net_Exercise.Controllers
 
         public string Gettown(string city)
         {
-            //此處需引用JSON檔 如若下載專案後報錯更改地址即可(應該是因IIS沒設定導致相對位置無法套用? 只好暫時用絕對位置)
-            //通常為C:\Users\_使用者名稱_\Documents\GitHub\Personal-Practice\Asp.net_Exercise\Asp.net_Exercise\Models\Taiwantown.json
-            //PC路徑在此_@"C:\Users\risnf\Documents\GitHub\Personal-Practice\Asp.net_Exercise\Asp.net_Exercise\Models\Taiwantown.json"
-            //筆電路徑_@"C:\Users\admin\Documents\GitHub\Personal-Practice\Asp.net_Exercise\Asp.net_Exercise\Models\Taiwantown.json"
-            var data = System.IO.File.ReadAllText(@"C:\Users\admin\Documents\GitHub\Personal-Practice\Asp.net_Exercise\Asp.net_Exercise\Models\Taiwantown.json", Encoding.UTF8);
+            //Server.MapPath可取得專案實體位置
+            var data = System.IO.File.ReadAllText(Server.MapPath("~/Models/Taiwantown.json"), Encoding.UTF8);
             List<data2> d2 = JsonConvert.DeserializeObject<List<data2>>(data);//將JSON轉成List物件操作
             List<data1> d1 = JsonConvert.DeserializeObject<List<data1>>(data);//因此JSON為多層結構所以需要轉多層
             var City = d1.Where(m => m.name == city).FirstOrDefault();//配對城市名稱
@@ -413,5 +418,58 @@ namespace Asp.net_Exercise.Controllers
             DB.Member_Store.Remove(delete);
             DB.SaveChanges();
         } 
+        
+        public ActionResult NewProd1()
+        {
+            if (Convert.ToInt32(Session["Member"].ToString()) != 12&&Session["Member"]==null)
+            {
+                Session["Member"] = "";
+                return RedirectToAction("Index");
+            }
+
+            return View();
+        }
+        public string GetProd()
+        {
+            var data = DB.Prod_Class_Type.ToList();
+            var json = JsonConvert.SerializeObject(data);
+            return json;
+        }
+        [HttpPost]
+        public ActionResult NewProd1(string name, int price, string type, string Class, HttpPostedFileBase file)
+        {
+            if (type == null && Class == null)
+            {
+                ViewBag.error = "請選擇種類和類別";
+                return View();
+            }
+            var E = file.FileName.Split('.');
+            var Exn = E[1];
+            string[] VD = { "jpg", "img", "png", "jpeg" };
+            var bl = false;
+            foreach (var i in VD)
+            {
+                if (Exn == i)
+                {
+                    bl = true;
+                }
+            }
+            if (bl == false)
+            {
+                ViewBag.error = "只接受圖檔";
+                return View();
+            }
+            var PH = Path.Combine(Server.MapPath("~/UpdataFiles/"), E[0] + "." + E[1]);
+            file.SaveAs(PH);
+            var prod = new Product() { Name = name, Price = price, Img=E[0] };
+            var cid = (int)Enum.Parse(typeof(ClassSelect), Class);
+            int tid = (int)Enum.Parse(typeof(TypeSelect), type);
+            DB.Product.Add(prod);
+            var PC = new Prod_Class_Type() { Cid = cid, Product = prod, Tid = tid };
+            DB.Prod_Class_Type.Add(PC);
+            DB.SaveChanges();
+            ViewBag.error = "新增成功";
+            return View();
+        }
     }    
 }
