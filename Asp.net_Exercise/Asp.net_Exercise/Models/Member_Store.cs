@@ -18,7 +18,7 @@ namespace Asp.net_Exercise.Models
         public Nullable<int> Member_Id { get; set; }
         public Nullable<int> Store_Id { get; set; }
     
-        public virtual Store Store { get; set; }
         public virtual Member Member { get; set; }
+        public virtual Store Store { get; set; }
     }
 }

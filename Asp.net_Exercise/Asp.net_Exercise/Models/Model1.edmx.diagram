@@ -5,19 +5,11 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="1a8d83c86a794690b7c219bc0288e97e" Name="Diagram1">
+        <EntityTypeShape EntityType="DatabaseModel.Member" Width="1.5" PointX="3.125" PointY="1.375" />
         <EntityTypeShape EntityType="DatabaseModel.Member_Store" Width="1.5" PointX="5.375" PointY="1.75" />
         <EntityTypeShape EntityType="DatabaseModel.Store" Width="1.5" PointX="8.5" PointY="1.875" />
-        <AssociationConnector Association="DatabaseModel.FK__Member_St__Store__160F4887" />
-        <EntityTypeShape EntityType="DatabaseModel.Class" Width="1.5" PointX="7.5" PointY="4.625" />
-        <EntityTypeShape EntityType="DatabaseModel.Featrue" Width="1.5" PointX="10.125" PointY="4.875" />
-        <EntityTypeShape EntityType="DatabaseModel.Member" Width="1.5" PointX="3.125" PointY="1.375" />
         <AssociationConnector Association="DatabaseModel.FK__Member_St__Membe__02FC7413" />
-        <EntityTypeShape EntityType="DatabaseModel.Prod_Class_Type" Width="1.5" PointX="5.125" PointY="4.625" />
-        <EntityTypeShape EntityType="DatabaseModel.Type" Width="1.5" PointX="5.125" PointY="7.375" />
-        <AssociationConnector Association="DatabaseModel.FK__Prod_Class___Cid__5224328E" />
-        <AssociationConnector Association="DatabaseModel.FK__Prod_Class___Tid__531856C7" />
-        <EntityTypeShape EntityType="DatabaseModel.Product" Width="1.5" PointX="2.125" PointY="4.75" />
-        <AssociationConnector Association="DatabaseModel.FK__Prod_Class___Pid__51300E55" />
+        <AssociationConnector Association="DatabaseModel.FK__Member_St__Store__160F4887" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

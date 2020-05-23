@@ -10,24 +10,9 @@
     <script src="~/Scripts/modernizr-2.8.3.js"></script>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
-    
-    <style>
-        #navtext {
-            width: 150px;
-            margin-bottom: 5px;
-            text-align: center;
-            border-bottom-style:none;
-            border-top-style:none;
-            border-left-style:none;
-            border-right-style:solid;
-            border-width:1px;
-            border-color: #dedede;
-            color:#808080;
-        }
-    </style>
 </head>
 <body>
-    <div class="navbar navbar-collapse navbar-fixed-top">
+    <div class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -38,52 +23,32 @@
                 <a href="@Url.Action("Index","Home")" class="navbar-brand"><img src="~/Img/logo-2011.png" /></a>
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a class="h4" id="navtext" style="border-left-style:solid" href="#">WOMEN</a></li> 
-                    <li><a class="h4" id="navtext" href="#">MEN</a></li>
-                    <li><a class="h4" id="navtext" href="#">KIDS</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <!--檢查Session是否為空,若是則顯示註冊及登入選項,否則顯示會員中心及登出選項-->
-                        @if (Session["Member"] == null)
-                        {
-                            <!--Class為Bootsrap內件的圖示-->
-                            <li><a href="@Url.Action("SignUp","Home")"><span class="glyphicon glyphicon-user">註冊</span></a></li>
-                            <li><a href="@Url.Action("SignIn","Home")"><span class="glyphicon glyphicon-log-in">登入</span></a></li>
-                        }
+                <ul class="nav navbar-nav navbar-right">
+                    <!--檢查Session是否為空,若是則顯示註冊及登入選項,否則顯示會員中心及登出選項-->
+                    @if (Session["Member"]==null)
+                    {
+                        <!--Class為Bootsrap內件的圖示-->
+                        <li><a href="@Url.Action("SignUp","Home")"><span class="glyphicon glyphicon-user">註冊</span></a></li>
+                        <li><a href="@Url.Action("SignIn","Home")"><span class="glyphicon glyphicon-log-in">登入</span></a></li>
+                    }
 
-                        else
-                        {
-                            if (Convert.ToInt32(Session["Member"].ToString()) == 12)
-                            {
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    @Session["MemberName"]您好
-                                    <b class="caret"></b>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="@Url.Action("NewProd1", "Home")"><span class="glyphicon glyphicon-user">新增商品</span></a></li>
-                                    <li><a href="@Url.Action("SignOut", "Home")"><span class="glyphicon glyphicon-log-out">登出</span></a></li>
-                                </ul>
-                            </li>
-                            }
-                            else
-                            {
-                            <!--下拉式選單在Goolge書籤有紀錄-->
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    @Session["MemberName"]您好
-                                    <b class="caret"></b>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="@Url.Action("MemberCenter", "Home")"><span class="glyphicon glyphicon-user">會員中心</span></a></li>
-                                    <li><a href="@Url.Action("SignOut", "Home")"><span class="glyphicon glyphicon-log-out">登出</span></a></li>
-                                </ul>
-                            </li>
-                            }
-                        }
-                    </ul>
-                </div>
+                    else
+                    {
+                        <!--下拉式選單在Goolge書籤有紀錄-->
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                @Session["MemberName"]您好
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="@Url.Action("MemberCenter","Home")"><span class="glyphicon glyphicon-user">會員中心</span></a></li>
+                                <li><a href="@Url.Action("SignOut","Home")"><span class="glyphicon glyphicon-log-out">登出</span></a></li>
+                            </ul>
+                        </li>
+
+                    }
+                </ul>
+            </div>
         </div>
     </div>
 

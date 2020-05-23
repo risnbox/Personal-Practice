@@ -26,7 +26,7 @@ namespace Asp.net_Exercise.Models
         public string Phone { get; set; }
         public string Password { get; set; }
         public string Gender { get; set; }
-        public Nullable<int> Enable { get; set; }
+        public Nullable<byte> Enable { get; set; }
         public Nullable<int> ErrorCount { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
