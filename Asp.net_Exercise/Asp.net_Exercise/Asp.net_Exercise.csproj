@@ -131,7 +131,6 @@
     <Content Include="Content\Site.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Img\1589858293806.jpg" />
     <Content Include="Img\logo-2011.png" />
     <Content Include="Models\Model1.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -241,7 +240,6 @@
     <Content Include="Views\Home\EmailValidationView.cshtml" />
     <Content Include="Views\Home\Location.cshtml" />
     <Content Include="Views\Home\NewProd1.cshtml" />
-    <Content Include="Views\Home\Women.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

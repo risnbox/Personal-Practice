@@ -186,12 +186,74 @@
             })
         }
     })
+        /*
+         * 原本規劃時預計是輸入地址後取得該區所有711後顯示住家地址及周遭711(使用圖標),但Leaflet因使用的地圖引擎是OpenStreet該引擎不支援台灣詳細地址所以無法使用
+         * 而GoogleAPI則因為改為收費制如無付費則會強硬顯示只為開發用無法實現所要功能,因此只好放棄地圖部分
+         * 
+        
+        
+        //透過OpenGeocodingAPI把地址轉成經緯度供地圖API使用,但對台灣詳細地址搜尋不夠完善無法套用
+            $("#Openbtn").on("click", function () {
+            //添加element
+            $("#MapFather").append("<h4 id='label1' class='col-md-offset-5 control-label'>Leaflet</h4><div id='Maps'></div>");
+            var city = $('#CitySelect').find('option:selected').text();
+            var town = $('#TownSelect').find('option:selected').text();
+            var xhr = new XMLHttpRequest();//建立連接
+            //開啟連接
+            xhr.open('get', 'https://open.mapquestapi.com/geocoding/v1/address?key=Xjuwkm0tafwYk8AjY4Vg6XBya9vCGStX&location=' + city + town, true)
+            xhr.send(null);//傳送請求
+            xhr.onload = function () {
+                if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+                    var data = JSON.parse(xhr.responseText);//將JSON文字檔轉為JS物件
+                    var Lat = data.results[0].locations[0].latLng.lat//需至API說明內看詳細屬性,有陣列要[](區分大小寫)
+                    var Lng = data.results[0].locations[0].latLng.lng
+                    //顯示輸入地址為中心的地圖
+                    var Map = L.map('Maps', {
+                        center: [Lat, Lng],
+                        zoom: 13
+                    });
+                    //leaflet底圖設定
+                    L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 14,
+                        attribution: 'Map data: © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: © <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+                    }).addTo(Map);
+                    Getdata(city, town);
+                }
+                else {
+                    console.log("error")
+                }
+            }
+
+        })
+
+        //清除舊地圖
+        $("#Deletebtn").on("click", function () {
+            $("#Maps").remove();
+            $("#label1").remove();
+            $('table #S').remove();
+            
+        })
+
+        $("#Deletebtn2").on("click", function () {
+            $("iframe").remove();
+            $("#label2").remove();
+        })
+
+        $("#Openbtn2").on("click", function () {
+            var address = $("#address2").val();
+            var text = "<h4 id='label2' class='control-label col-md-offset-5'>Google</h4>";
+            var text1 = "<iframe src = 'https://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=" + address + "&z=13&output=embed&t='></iframe>";
+            $("#MapFather2").append(text);
+            $("#MapFather2").append(text1);
+        })
+        */
+
 
 </script>
 <div class="container">
     <div class="row" style="padding-top:30px">
         <div class="U list-group list-group-horizontal">
-            <a href="@Url.Action("Shoppingcart")" class="L list-group-item"><span>購物車</span></a>
+            <a href="/Home/Shoppingcart" class="L list-group-item"><span>購物車</span></a>
             <a class="L list-group-item active">設定取貨門市</a>
             <a class="L list-group-item" href="@Url.Action("MemberCenter")">修改會員資料</a>
         </div>
@@ -218,7 +280,22 @@
             <select class="form-control" id="TownSelect"></select>
             <input type="button" id="Openbtn" value="查詢711" />
         </div>
+        <!--
+            <div class="form-group">
+                <label class="control-label">使用GoogleURL不透過API</label>
+                <input type="text" class="form-control" placeholder="可完整查詢" id="address2" />
+                <input type="button" id="Openbtn2" value="查詢地圖" />
+                <input type="button" id="Deletebtn2" value="清除地圖" />
+            </div>
+            <div class="form-inline">
+                <div id="MapFather" class="form-group">
 
+                </div>
+                <div id="MapFather2" class="form-group col-md-offset-3">
+
+                </div>
+            </div>
+        -->
         <table class="table" id="table">
             <tr>
                 <th>分店名</th>
