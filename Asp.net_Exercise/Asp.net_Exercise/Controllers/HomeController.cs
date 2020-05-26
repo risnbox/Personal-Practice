@@ -429,12 +429,6 @@ namespace Asp.net_Exercise.Controllers
 
             return View();
         }
-        public string GetProd()
-        {
-            var data = DB.Prod_Class_Type.ToList();
-            var json = JsonConvert.SerializeObject(data);
-            return json;
-        }
         [HttpPost]
         public ActionResult NewProd1(string name, int price, string type, string Class, HttpPostedFileBase file)
         {
@@ -469,6 +463,55 @@ namespace Asp.net_Exercise.Controllers
             DB.Prod_Class_Type.Add(PC);
             DB.SaveChanges();
             ViewBag.error = "新增成功";
+            return View();
+        }
+        public string GetProd(string Stype, string SClass)
+        {
+            var data = (from PCT in DB.Prod_Class_Type
+                        join C in DB.Class on PCT.Class.ClassName equals SClass
+                        join T in DB.Type on PCT.Type.TypeName equals Stype
+                        join P in DB.Product on PCT.Pid equals P.Id
+                        where PCT.Cid == C.Id && PCT.Tid == T.Id && PCT.Pid == P.Id
+                        select new
+                        {
+                            Prod = PCT.Product,
+                            Clas = PCT.Class,
+                            type = PCT.Type
+                        }
+                        ).ToList();
+
+            var json = JsonConvert.SerializeObject(data);
+            return json;
+        }
+
+        public int DelProd(string name)
+        {
+            int? data = null;
+            foreach (var i in DB.Prod_Class_Type)
+            {
+                if (i.Product.Name == name)
+                {
+                    data = i.Pid;
+                }
+            }
+            var Delete1 = DB.Product.Where(m => m.Id == data).FirstOrDefault();
+            var Delete2 = DB.Prod_Class_Type.Where(m => m.Pid == data).FirstOrDefault();
+            try
+            {
+                DB.Product.Remove(Delete1);
+                DB.Prod_Class_Type.Remove(Delete2);
+                DB.SaveChanges();
+                return 1;
+            }
+            catch
+            {
+
+                return 0;
+            }
+        }
+
+        public ActionResult Women()
+        {
             return View();
         }
     }    
