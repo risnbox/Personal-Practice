@@ -465,7 +465,7 @@ namespace Asp.net_Exercise.Controllers
             ViewBag.error = "新增成功";
             return View();
         }
-        public string GetProd(string Stype, string SClass)
+        public string SearchProd(string Stype, string SClass)
         {
             var data = (from PCT in DB.Prod_Class_Type
                         join C in DB.Class on PCT.Class.ClassName equals SClass
@@ -513,6 +513,17 @@ namespace Asp.net_Exercise.Controllers
         public ActionResult Women()
         {
             return View();
+        }
+        public string WGetProd()
+        {
+            var Women = DB.Prod_Class_Type.Where(m => m.Type.TypeName == "women").ToList();
+            List<Product> Prod = new List<Product>();
+            foreach(var i in Women)
+            {
+                Prod.Add(i.Product);
+            }
+            var json = JsonConvert.SerializeObject(Prod);
+            return json;
         }
     }    
 }

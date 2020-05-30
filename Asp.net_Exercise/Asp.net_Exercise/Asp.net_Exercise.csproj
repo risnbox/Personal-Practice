@@ -127,6 +127,12 @@
     <Content Include="Content\Site.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Img\40172_3P588_1180X557_200525_TW2.jpg" />
+    <Content Include="Img\46338_1P249_1180X557_200526_TW.jpg" />
+    <Content Include="Img\46595_DRYPOLO_1180X557_200515_TW.jpg" />
+    <Content Include="Img\46671_2P660_1180X557_200525_TW.jpg" />
+    <Content Include="Img\46962_M_01_n.jpg" />
+    <Content Include="Img\46965_1010X400_200430_TW.jpg" />
     <Content Include="Img\logo-2011.png" />
     <Content Include="Models\Model1.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -236,6 +242,7 @@
     <Content Include="Views\Home\EmailValidationView.cshtml" />
     <Content Include="Views\Home\Location.cshtml" />
     <Content Include="Views\Home\NewProd1.cshtml" />
+    <Content Include="Views\Home\Women.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -15,13 +15,13 @@
 
     $(function () {
 
-        $("#Search").on('click', GetProd)
-        function GetProd() {
+        $("#Search").on('click', SearchProd)
+        function SearchProd() {
             $("table .S").remove();
             var T = $('#SType').find("option:selected").text();
             var C = $('#SClass').find("option:selected").text();
             $.ajax({
-                url: "https://localhost:44353/Home/GetProd?Stype=" + escape(T) + "&Sclass=" + escape(C),
+                url: "https://AspTest.nctu.me:45678/Home/SearchProd?Stype=" + escape(T) + "&Sclass=" + escape(C),
                 type: "GET",
                 success: function (data) {
                     data = JSON.parse(data);
@@ -45,7 +45,7 @@
             var Name = e.data.name;
             if (confirm("確定刪除嗎?")) {
                 $.ajax({
-                    url: "https://localhost:44353/Home/DelProd?name=" + Name,
+                    url: "https://AspTest.nctu.me:45678/Home/DelProd?name=" + Name,
                     type: "Get",
                     success: function (data) {
                         if (data == 0) {

@@ -70,7 +70,7 @@
             $("#TownSelect").empty();
             var city = $("#CitySelect").find("option:selected").text();
             $.ajax({
-                url: "https://localhost:44353/Home/Gettown?city=" + city,
+                url: "https://AspTest.nctu.me:45678/Home/Gettown?city=" + city,
                 type: "get",
                 success: function (data) {
                     data = JSON.parse(data);
@@ -92,7 +92,7 @@
         //取得711資料的Function
         function Getdata(city, town) {
             $.ajax({
-                url: "https://localhost:44353/Home/Get711?city=" + escape(city) + "&town=" + escape(town),
+                url: "https://AspTest.nctu.me:45678/Home/Get711?city=" + escape(city) + "&town=" + escape(town),
                 type: "get",
                 success: function (data) {
                     data = JSON.parse(data);
@@ -123,7 +123,7 @@
             var Id = $('#I' + i).text();
             var TelNo = $('#T' + i).text();
             $.ajax({
-                url: 'https://localhost:44353/Home/SelectStore',
+                url: 'https://AspTest.nctu.me:45678/Home/SelectStore',
                 type: 'POST',
                 dataType: 'text',
                 data: { Name: name, Address: Address, ID: Id, TelNo: TelNo },
@@ -148,7 +148,7 @@
 
         function viewstore() {
             $.ajax({
-                url: "https://localhost:44353/Home/ViewStore",
+                url: "https://AspTest.nctu.me:45678/Home/ViewStore",
                 type: "GET",
                 success: function (data) {
                     data = JSON.parse(data);
@@ -175,7 +175,7 @@
 
         function DeleteStore(e) {
             $.ajax({
-                url: "https://localhost:44353/Home/DeleteStore?store=" + e.data.Sid,
+                url: "https://AspTest.nctu.me:45678/Home/DeleteStore?store=" + e.data.Sid,
                 type: "Get",
                 success: function () {
                     
