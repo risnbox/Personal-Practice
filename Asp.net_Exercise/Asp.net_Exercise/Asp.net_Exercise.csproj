@@ -127,13 +127,21 @@
     <Content Include="Content\Site.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Img\car.jpg" />
     <Content Include="Img\40172_3P588_1180X557_200525_TW2.jpg" />
+    <Content Include="Img\4616901_48.jpg" />
+    <Content Include="Img\4616902_48.jpg" />
+    <Content Include="Img\4616903_48.jpg" />
     <Content Include="Img\46338_1P249_1180X557_200526_TW.jpg" />
     <Content Include="Img\46595_DRYPOLO_1180X557_200515_TW.jpg" />
     <Content Include="Img\46671_2P660_1180X557_200525_TW.jpg" />
     <Content Include="Img\46962_M_01_n.jpg" />
     <Content Include="Img\46965_1010X400_200430_TW.jpg" />
+    <Content Include="Img\btn_del.png" />
+    <Content Include="Img\icon_size.png" />
+    <Content Include="Img\ITS_TW_0.jpg" />
     <Content Include="Img\logo-2011.png" />
+    <Content Include="Img\star_hollow.png" />
     <Content Include="Models\Model1.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Model1.Context.cs</LastGenOutput>
@@ -166,6 +174,21 @@
     <Content Include="Scripts\leaflet-0.7.3.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\ObjTree.js" />
+    <Content Include="UpdataFiles\4611501_500.jpg" />
+    <Content Include="UpdataFiles\46115_D_01.jpg" />
+    <Content Include="UpdataFiles\46115_D_03.jpg" />
+    <Content Include="UpdataFiles\4616901_500.jpg" />
+    <Content Include="UpdataFiles\46169_D_01_0.jpg" />
+    <Content Include="UpdataFiles\46169_D_02_1.jpg" />
+    <Content Include="UpdataFiles\4629401_500.jpg" />
+    <Content Include="UpdataFiles\46294_D_01.jpg" />
+    <Content Include="UpdataFiles\46294_D_02.jpg" />
+    <Content Include="UpdataFiles\4630901_500.jpg" />
+    <Content Include="UpdataFiles\46309_D_01.jpg" />
+    <Content Include="UpdataFiles\46309_D_02.jpg" />
+    <Content Include="UpdataFiles\4631801_500.jpg" />
+    <Content Include="UpdataFiles\46318_D_01.jpg" />
+    <Content Include="UpdataFiles\46318_D_02.jpg" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -176,13 +199,25 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Cart_Detail.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Class.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Featrue.cs">
+    <Compile Include="Models\Color.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Details.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Img.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\JsonIgnore.cs" />
+    <Compile Include="Models\Keep.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Member.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -205,10 +240,25 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model1.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProdFeature.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Product.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Prod_Class_Type.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Prod_Img.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Quantity.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ShoppingCar.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Size.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Store.cs">
@@ -238,11 +288,13 @@
     <Content Include="Views\Home\SignUp.cshtml" />
     <Content Include="Views\Home\SignIn.cshtml" />
     <Content Include="Views\Home\MemberCenter.cshtml" />
-    <Content Include="Views\Home\Shoppingcart.cshtml" />
     <Content Include="Views\Home\EmailValidationView.cshtml" />
     <Content Include="Views\Home\Location.cshtml" />
     <Content Include="Views\Home\NewProd1.cshtml" />
     <Content Include="Views\Home\Women.cshtml" />
+    <Content Include="Views\Home\ProdDetails.cshtml" />
+    <Content Include="Views\Home\KeepView.cshtml" />
+    <Content Include="Views\Home\CarPartial.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -250,9 +302,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UpdataFiles\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>

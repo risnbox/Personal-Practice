@@ -6,13 +6,11 @@ using System.Web.Mvc;
 using Asp.net_Exercise.Models;
 using System.Net.Mail;
 using System.Net;
-using System.Web.UI;
 using System.IO;
 using System.Xml;
 using System.Text;
 using Newtonsoft.Json;
-using System.Web.Helpers;
-using System.Data.Entity.Core.Mapping;
+
 
 namespace Asp.net_Exercise.Controllers
 {
@@ -107,6 +105,19 @@ namespace Asp.net_Exercise.Controllers
                         TempData["EnableMessage"] = "驗證尚未完成,即將前往驗證頁面";
                         return RedirectToAction("EmailValidationView");
                     }
+                    if (DB.ShoppingCar.Where(m => m.Userid == data.Id).FirstOrDefault() == null)
+                    {
+                        var cart = new ShoppingCar() { Userid = data.Id, Pay = "false", Guid = Guid.NewGuid().ToString() };
+                        DB.ShoppingCar.Add(cart);
+                        var detail = new Details();
+                        DB.Details.Add(detail);
+                        DB.SaveChanges();
+                        Cart_Detail CD = new Cart_Detail() { Cid = cart.Id, Did = detail.Id };
+                        DB.Cart_Detail.Add(CD);
+                        DB.SaveChanges();
+                    }
+                    var C = DB.ShoppingCar.Where(m => m.Userid == data.Id).FirstOrDefault();
+                    Session["Cart"] = C.Id;
                     return RedirectToAction("Index");
                 }
                 else
@@ -419,6 +430,46 @@ namespace Asp.net_Exercise.Controllers
             DB.SaveChanges();
         } 
         
+        public ActionResult KeepView()
+        {
+            var d = Convert.ToInt32(Session["Member"].ToString());
+            var data = (from keep in DB.Keep
+                        where keep.Userid == d
+                        join prod in DB.Product on keep.Prodid equals prod.Id
+                        join PM in DB.Prod_Img on keep.Prodid equals PM.Pid
+                        join img in DB.Img on PM.Mid equals img.Id
+                        where img.Type == "previewed"
+                        select new
+                        {
+                            prod = prod,
+                            img = img
+                        }).ToList();
+            var json = JsonConvert.SerializeObject(data);
+            json = json.Replace(" ", "");
+            ViewBag.json = json;
+            return View();
+        }
+
+        public void Keep(int Pid)
+        {
+            
+            var keep = new Keep() { Userid = Convert.ToInt32(Session["Member"].ToString()),Prodid=Pid };
+            if (DB.Keep.Where(m => m.Userid == keep.Userid && m.Prodid == keep.Prodid).FirstOrDefault() == null)
+            {
+                DB.Keep.Add(keep);
+                DB.SaveChanges();
+            }
+            
+        }
+
+        public void DelKeep(int Pid)
+        {
+            var U = Convert.ToInt32(Session["Member"].ToString());
+            var data = DB.Keep.Where(m => m.Prodid == Pid && m.Userid == U).FirstOrDefault();
+            DB.Keep.Remove(data);
+            DB.SaveChanges();
+        }
+
         public ActionResult NewProd1()
         {
             if (Convert.ToInt32(Session["Member"].ToString()) != 12&&Session["Member"]==null)
@@ -429,38 +480,79 @@ namespace Asp.net_Exercise.Controllers
 
             return View();
         }
+        
+        public bool UpdataFile(HttpPostedFileBase file, string Type)
+        {
+            var E = file.FileName.Split('.');//分割字串
+            string[] VD = { "jpg", "img", "png", "jpeg" };//驗證副檔名
+            var bl = false;
+            if (E.Length > 2) 
+            {
+                return false;
+            }
+            else
+            {
+                foreach (var i in VD)
+                {
+                    if (E[1] == i)
+                    {
+                        bl = true;
+                    }
+                }
+                if (bl == false)
+                {
+                    return false;
+                }
+                else
+                {
+                    var PH = Path.Combine(Server.MapPath("~/UpdataFiles/"), file.FileName);//編輯儲存路徑
+                    file.SaveAs(PH);//執行儲存
+                    var Img = new Img() { Type = Type, FileName = file.FileName };
+                    DB.Img.Add(Img);
+                    return true;
+                }
+            }
+        }
         [HttpPost]
-        public ActionResult NewProd1(string name, int price, string type, string Class, HttpPostedFileBase file)
+        public ActionResult NewProd1(string name, int price, string type, string Class, HttpPostedFileBase previewed ,HttpPostedFileBase title, HttpPostedFileBase content)
         {
             if (type == null && Class == null)
             {
                 ViewBag.error = "請選擇種類和類別";
                 return View();
             }
-            var E = file.FileName.Split('.');
-            var Exn = E[1];
-            string[] VD = { "jpg", "img", "png", "jpeg" };
-            var bl = false;
-            foreach (var i in VD)
+            if ((UpdataFile(title, "title")&UpdataFile(previewed, "previewed")&UpdataFile(content, "content"))==false)
             {
-                if (Exn == i)
-                {
-                    bl = true;
-                }
-            }
-            if (bl == false)
-            {
-                ViewBag.error = "只接受圖檔";
+                ViewBag.error = "新增失敗,只接受圖檔並且檔名不可包含'.'請重新操作";
                 return View();
             }
-            var PH = Path.Combine(Server.MapPath("~/UpdataFiles/"), E[0] + "." + E[1]);
-            file.SaveAs(PH);
-            var prod = new Product() { Name = name, Price = price, Img=E[0] };
+            var E = previewed.FileName.Split('.');
+            var prod = new Product() { Name = name, Price = price};
             var cid = (int)Enum.Parse(typeof(ClassSelect), Class);
             int tid = (int)Enum.Parse(typeof(TypeSelect), type);
             DB.Product.Add(prod);
             var PC = new Prod_Class_Type() { Cid = cid, Product = prod, Tid = tid };
             DB.Prod_Class_Type.Add(PC);
+            DB.SaveChanges();
+            var P = DB.Product.Where(m => m.Name == name).FirstOrDefault();
+            var Pid = P.Id;
+            var I = DB.Img.Where(m => m.FileName == title.FileName).FirstOrDefault();
+            var Iid = I.Id;
+            var M = DB.Img.Where(m => m.FileName == previewed.FileName).FirstOrDefault();
+            var Mid = M.Id;
+            var G = DB.Img.Where(m => m.FileName == content.FileName).FirstOrDefault();
+            var Gid = G.Id; 
+            Prod_Img[] PM = new Prod_Img[3];
+            for(int i = 0; PM.Length > i; i++)
+            {
+                PM[i] = new Prod_Img();
+                PM[i].Pid = Pid;
+                if (i == 0) { PM[i].Mid = Iid; }
+                if (i == 1) { PM[i].Mid = Mid; }
+                if (i == 2) { PM[i].Mid = Gid; }
+                DB.Prod_Img.Add(PM[i]);
+            }
+            var p = PM;
             DB.SaveChanges();
             ViewBag.error = "新增成功";
             return View();
@@ -514,16 +606,109 @@ namespace Asp.net_Exercise.Controllers
         {
             return View();
         }
-        public string WGetProd()
+        public string GetProd(string TYPE)
         {
-            var Women = DB.Prod_Class_Type.Where(m => m.Type.TypeName == "women").ToList();
-            List<Product> Prod = new List<Product>();
-            foreach(var i in Women)
-            {
-                Prod.Add(i.Product);
-            }
-            var json = JsonConvert.SerializeObject(Prod);
+            var data = (from Img in DB.Img
+                        join PCT in DB.Prod_Class_Type on TYPE equals PCT.Type.TypeName
+                        join PM in DB.Prod_Img on PCT.Pid equals PM.Pid
+                        where Img.Id == PM.Mid && Img.Type == "previewed"
+                        select new
+                        {
+                            img = Img,
+                            prod = PM.Product
+
+                        }).ToList();
+            var json = JsonConvert.SerializeObject(data);
+            json = json.Replace(" ", "");
             return json;
         }
+        public ActionResult ProdDetails(int Pid)
+        {
+            string keep = null;
+            if (Session["Member"] != null)
+            {
+                var U = Convert.ToInt32(Session["Member"].ToString());
+                if (DB.Keep.Where(m => m.Userid == U && m.Prodid == Pid).FirstOrDefault() != null)
+                {
+                    keep = "true";
+                }
+            }
+            var data = (from img in DB.Img
+                        join prod in DB.Product on Pid equals prod.Id
+                        join PM in DB.Prod_Img on Pid equals PM.Pid
+                        where img.Id == PM.Mid
+                        select new
+                        {
+                            prod = prod,
+                            img = img,
+                            keep = keep
+                        }
+                      ).ToList();
+            string json = JsonConvert.SerializeObject(data);
+            var V = json.Replace(" ","");
+            ViewBag.json = V;
+            return View();
+        }
+        public string AddCart(int pid, string color, string size)
+        {
+            if (Session["Cart"] == null)
+            {
+                return "false";
+            }
+            var c = Convert.ToInt32(Session["Cart"].ToString());
+            var data = (from Cart in DB.ShoppingCar
+                        where Cart.Id == c
+                        join C in DB.Color on color equals C.Name
+                        join S in DB.Size on size equals S.Name
+                        join CD in DB.Cart_Detail on c equals CD.Cid
+                        select new
+                        {
+                            Cart = Cart,
+                            CD = CD,
+                            C = C.Id,
+                            S = S.Id
+                        }).FirstOrDefault();
+            var pf = DB.ProdFeature.Where(m => m.Pid == pid && m.Cid == data.C && m.Sid == data.S).FirstOrDefault();
+            if (pf == null)
+            {
+                pf = new ProdFeature() { Pid = pid, Cid = data.C, Sid = data.S };
+                DB.ProdFeature.Add(pf);
+            }
+            var q = DB.Quantity.Where(m => m.PFid == pf.Id && m.Did == data.CD.Did).FirstOrDefault();
+            if (q != null)
+            {
+                q.Qty++;
+            }
+            else
+            {
+                q = new Quantity() { PFid = pf.Id, Did = data.CD.Did, Qty = 1 };
+                DB.Quantity.Add(q);
+            }
+            DB.SaveChanges();
+            return "";
+        }
+        public ActionResult CarPartial()
+        {
+            var c = Convert.ToInt32(Session["Cart"].ToString());
+            var data = (from Cart in DB.ShoppingCar
+                        where Cart.Id == c
+                        join CD in DB.Cart_Detail on Cart.Id equals CD.Cid
+                        join Qty in DB.Quantity on CD.Did equals Qty.Did
+                        join pf in DB.ProdFeature on Qty.PFid equals pf.Id
+                        join prod in DB.Product on pf.Pid equals prod.Id
+                        select new
+                        {
+                            name = prod.Name,
+                            quantity = Qty.Qty,
+                            color = pf.Color.Name,
+                            size = pf.Size.Name,
+                            pid = pf.Pid
+                        }
+                        ).ToList();
+            string json = JsonConvert.SerializeObject(data);
+            ViewBag.json = json.Replace(" ", "");
+            return PartialView();
+        }
+
     }    
 }

@@ -20,7 +20,7 @@ namespace Asp.net_Exercise.Models
         public Nullable<int> Tid { get; set; }
     
         public virtual Class Class { get; set; }
-        public virtual Type Type { get; set; }
         public virtual Product Product { get; set; }
+        public virtual Type Type { get; set; }
     }
 }

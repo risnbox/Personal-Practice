@@ -1,0 +1,193 @@
+﻿
+@{
+    ViewBag.Title = "ProdDetails";
+}
+
+<style>
+    #title{
+        font: bolder 15px/1.8 bolder;
+        color:#666;
+    }
+    #price{
+        font-size:60px;
+        color:#EA0000;
+        font-family: 'lativAbweb','Century Gothic','Tw Cen MT Condensed';
+        font-weight: bold;
+    }
+    #currency{
+        position:relative;
+        color:#EA0000;
+        bottom: 32px;
+        font-family: Arial;
+        font-weight: bold;
+        font-size:14px;
+    }
+    .color{
+        width:24px;
+        height:24px;
+        margin-right:10px;
+        margin-bottom:15px;
+    }
+    .Size{
+        height:28px;
+        line-height: 28px;
+        vertical-align: middle;
+        padding: 0 15px;
+        background-color:#EEE;
+        margin: 16px 16px 0 0;
+        text-align:center
+    }
+    #SizeExplain{
+        padding-left:23px;
+        background:url(/Img/icon_size.png) no-repeat -2px 4px;
+        padding-top:8px;
+        margin-left:30px;
+    }
+    .keep{
+        padding-left:20px;
+        background:url(/Img/star_hollow.png) no-repeat -2px 2px;
+        padding-top:8px;
+        margin-left:30px;
+    }
+    .keepon{
+        background: url(/img/star_hollow.png) no-repeat -2px -26px;
+        padding-left:20px;
+        padding-top:8px;
+        margin-left:30px;
+    }
+    .AddCart{
+        background-color: #5d3b24;
+        padding: 5px 60px 5px 60px;
+        font-size:16px;
+        color: #EEE;
+        border: 0;
+        border-radius: 5px;
+    }
+    .select{
+        border:1px solid #555;
+        padding:2px;
+    }
+    .Select{
+        border:1px solid #555;
+    }
+    a:focus, a:hover {
+    color: #23527c;
+    text-decoration: none;
+    }
+
+</style>
+
+<script>
+    function SelectColor(Color) {
+        $("img").removeClass("select")
+        $("#"+Color).addClass("select")
+    }
+    function SelectSize(Size) {
+        $("a").removeClass("Select")
+        $("#"+Size).addClass("Select")
+    }
+    function AddCart() {
+        var color = $(".select").attr("id");
+        var size = $(".Select").attr("id");
+        if (color == null && size == null) {
+            alert('請選擇顏色及尺寸')
+        }
+        else {
+            $.ajax({
+                url: "https://AspTest.nctu.me:45678/Home/AddCart?pid=" + data[0].prod.Id + "&color=" + color + "&size=" + size,
+                success: function (data) {
+                    if (data == "false") {
+                        alert('請先登入')
+                    }
+                    else {
+                        alert('成功新增')
+                        window.location.reload();
+                    }
+                },
+                error: function () {
+                    alert('伺服器錯誤')
+                }
+            })
+        }
+    }
+    function Keep() {
+        @if (Session["Member"] == null)
+        {
+            <text>
+                alert('登入後才能使用收藏功能')
+            </text>
+        }
+        else {
+            <text>
+            if ($('#keep').hasClass('keepon')) {
+                $.ajax({
+                url: "https://AspTest.nctu.me:45678/Home/DelKeep?Pid=" + data[0].prod.Id,
+                    success: function (data) {
+                        $('#keep').removeClass('keepon');
+                        $('#keep').addClass('keep');
+                    }
+                })
+            }
+            else {
+                $.ajax({
+                url: "https://AspTest.nctu.me:45678/Home/Keep?Pid=" + data[0].prod.Id,
+                    success: function (data) {
+                        $('#keep').removeClass('keep')
+                        $('#keep').addClass('keepon');
+                    }
+                })
+            }
+            </text>
+        }
+    }
+    $(function () {
+        data = JSON.parse('@Html.Raw(ViewBag.json)');
+        console.log(data);
+        if (data[0].keep != null) {
+            $('#keep').removeClass('keep')
+            $('#keep').addClass('keepon');
+        }
+        $("#Img").append(
+            "<img src='/UpdataFiles/" + data[0].img.FileName + "' style=' width:500px;height:500px;' />"
+        )
+        $("#Title").append(
+            "<p id='title'>" + data[0].prod.Name + "</p>"
+        )
+        $("#currency").after(
+            "<span id='price'>" + data[0].prod.Price + "</span>"
+        )
+        $("#Img2").before(
+            "<img src='/UpdataFiles/" + data[2].img.FileName + "' style='width:760px;height:910px;' />"
+        )
+    })
+
+</script>
+<div id="Img" class="col-md-4"></div>
+<div id="Title" class="col-md-offset-6"></div>
+<div class="col-md-offset-10">
+    <span id="currency">NT$</span>
+</div>
+<hr />
+<div class="col-md-offset-6" style="padding-top:30px">
+    <a href="javascript:void()" onclick="SelectColor('White')"><img class="color" id="White" src="~/Img/4616901_48.jpg" /></a>
+    <a href="javascript:void" onclick="SelectColor('Yello')"><img class="color" id="Yello" src="~/Img/4616902_48.jpg" /></a>
+    <a href="javascript:void" onclick="SelectColor('Red')"><img class="color" id="Red" src="~/Img/4616903_48.jpg" /></a>
+</div>
+<div class="col-md-offset-6" style="height:64px">
+    <a href="javascript:void" onclick="SelectSize('S')" id="S" class="Size col-md-1">S</a>
+    <a href="javascript:void" onclick="SelectSize('M')" id="M" class="Size col-md-1">M</a>
+    <a href="javascript:void" onclick="SelectSize('L')" id="L" class="Size col-md-1">L</a>
+    <a href="javascript:void" onclick="SelectSize('XL')" id="XL" class="Size col-md-1">XL</a>
+</div>
+<div class="col-md-offset-6">
+    <a href="javascript:void" id="SizeExplain">尺寸表</a>
+    <a href="javascript:void" onclick="Keep()" class="keep" id="keep">收藏商品</a>
+</div>
+<hr />
+<div class="col-md-offset-7">
+    <a href="javascript:void" onclick="AddCart()" class="AddCart">加入購物車</a>
+</div>
+<hr style="margin-bottom: 30px;margin-top: 180px;border-top-width: 1px;width: 100%;"/>
+<div style="text-align:center">
+    <img id="Img2" style="margin-top:30px" src="~/Img/ITS_TW_0.jpg" />
+</div>

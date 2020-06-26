@@ -5,7 +5,8 @@
 
 <style>
     #Pimg{
-
+        width:220px;
+        height:284px
     }
     #Ptext{
         text-align:center;
@@ -17,15 +18,37 @@
     }
     #Prod{
         width:220px;
+        display:inline-block;
+        margin:20px 43px 10px 0px;
     }
 </style>
 
 <script>
 
+    function GotoView(id) {
+        window.open("https://asptest.nctu.me:45678/Home/ProdDetails?Pid=" + id,"_blank");
+        }
     $(function () {
+
         $.ajax({
-            url:"http://220.132.206.75:45678/Home/GetProd"
+            url: "https://asptest.nctu.me:45678/Home/GetProd?TYPE=women",
+            type: "GET",
+            success: function (data) {
+                var L = 0;
+                data = JSON.parse(data)
+                console.log(data)
+                for (var x in data) {
+                    L++;
+                }
+                for (var i = 0; L > i; i++) {
+                    $("#Father").append("<div id='Prod'><a id='P" + i + "' href='javascript:void(0);' onclick='GotoView(" + data[i].prod.Id + ")'>" +
+                        "<img id='Pimg' src='/UpdataFiles/" + data[i].img.FileName +"' / ></a><p id='Ptext'>" + data[i].prod.Name +
+                        "</p><p id='Ptext'>NT$" + data[i].prod.Price + "</p></div>"
+                    )
+                }
+            }
         })
+        
     })
 
 </script>
@@ -35,12 +58,6 @@
 </div>
 
 <div id="Father">
-
-    <div id="Prod">
-        <a id="P0" href="#"><img id="Pimg" src="~/Img/46962_M_01_n.jpg" /></a>
-        <p id="Ptext">輕型長版風衣外套-女</p>
-        <p id="Ptext">NT$590</p>
-    </div>
 
 </div>
 

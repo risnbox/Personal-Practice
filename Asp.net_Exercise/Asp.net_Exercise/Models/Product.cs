@@ -17,15 +17,23 @@ namespace Asp.net_Exercise.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Product()
         {
+            this.Keep = new HashSet<Keep>();
             this.Prod_Class_Type = new HashSet<Prod_Class_Type>();
+            this.Prod_Img = new HashSet<Prod_Img>();
+            this.ProdFeature = new HashSet<ProdFeature>();
         }
     
         public int Id { get; set; }
         public string Name { get; set; }
         public Nullable<int> Price { get; set; }
-        public string Img { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Keep> Keep { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Prod_Class_Type> Prod_Class_Type { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Prod_Img> Prod_Img { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProdFeature> ProdFeature { get; set; }
     }
 }

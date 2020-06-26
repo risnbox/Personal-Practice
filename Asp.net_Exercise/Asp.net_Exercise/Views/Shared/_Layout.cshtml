@@ -24,6 +24,7 @@
             border-color: #dedede;
             color:#808080;
         }
+
     </style>
 </head>
 <body>
@@ -80,6 +81,7 @@
                                     <li><a style="margin-top:10px" href="@Url.Action("SignOut", "Home")"><span class="glyphicon glyphicon-log-out">登出</span></a></li>
                                 </ul>
                             </li>
+                            <li>@Html.Action("CarPartial")</li>
                             }
                         }
                     </ul>
@@ -91,7 +93,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            此網站為作品用途 @DateTime.Now
         </footer>
     </div>
 
