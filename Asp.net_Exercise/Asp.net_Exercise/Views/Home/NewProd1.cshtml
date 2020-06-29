@@ -21,7 +21,7 @@
             var T = $('#SType').find("option:selected").text();
             var C = $('#SClass').find("option:selected").text();
             $.ajax({
-                url: "https://AspTest.nctu.me:45678/Home/SearchProd?Stype=" + escape(T) + "&Sclass=" + escape(C),
+                url:"https://localhost:44353/Home/SearchProd?Stype=" + escape(T) + "&Sclass=" + escape(C),
                 type: "GET",
                 success: function (data) {
                     data = JSON.parse(data);
@@ -45,7 +45,7 @@
             var Name = e.data.name;
             if (confirm("確定刪除嗎?")) {
                 $.ajax({
-                    url: "https://AspTest.nctu.me:45678/Home/DelProd?name=" + Name,
+                    url:"https://localhost:44353/Home/DelProd?name=" + Name,
                     type: "Get",
                     success: function (data) {
                         if (data == 0) {

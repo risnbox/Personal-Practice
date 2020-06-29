@@ -26,12 +26,12 @@
 <script>
 
     function GotoView(id) {
-        window.open("https://asptest.nctu.me:45678/Home/ProdDetails?Pid=" + id,"_blank");
+        window.open("https://localhost:44353/Home/ProdDetails?Pid=" + id,"_blank");
         }
     $(function () {
 
         $.ajax({
-            url: "https://asptest.nctu.me:45678/Home/GetProd?TYPE=women",
+            url:"https://localhost:44353/Home/GetProd?TYPE=women",
             type: "GET",
             success: function (data) {
                 var L = 0;

@@ -94,7 +94,7 @@
         }
         else {
             $.ajax({
-                url: "https://AspTest.nctu.me:45678/Home/AddCart?pid=" + data[0].prod.Id + "&color=" + color + "&size=" + size,
+                url:"https://localhost:44353/Home/AddCart?pid=" + data[0].prod.Id + "&color=" + color + "&size=" + size,
                 success: function (data) {
                     if (data == "false") {
                         alert('請先登入')
@@ -121,7 +121,7 @@
             <text>
             if ($('#keep').hasClass('keepon')) {
                 $.ajax({
-                url: "https://AspTest.nctu.me:45678/Home/DelKeep?Pid=" + data[0].prod.Id,
+                url:"https://localhost:44353/Home/DelKeep?Pid=" + data[0].prod.Id,
                     success: function (data) {
                         $('#keep').removeClass('keepon');
                         $('#keep').addClass('keep');
@@ -130,7 +130,7 @@
             }
             else {
                 $.ajax({
-                url: "https://AspTest.nctu.me:45678/Home/Keep?Pid=" + data[0].prod.Id,
+                url:"https://localhost:44353/Home/Keep?Pid=" + data[0].prod.Id,
                     success: function (data) {
                         $('#keep').removeClass('keep')
                         $('#keep').addClass('keepon');

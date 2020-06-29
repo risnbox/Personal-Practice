@@ -76,7 +76,7 @@
     function DelKeep(Pid) {
         console.log(Pid);
         $.ajax({
-            url: "https://AspTest.nctu.me:45678/Home/DelKeep?Pid=" + Pid,
+            url:"https://localhost:44353/Home/DelKeep?Pid=" + Pid,
             success: function (data) {
                 console.log(Pid);
             }
