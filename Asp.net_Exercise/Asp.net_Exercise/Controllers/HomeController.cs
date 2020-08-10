@@ -99,12 +99,6 @@ namespace Asp.net_Exercise.Controllers
                 {
                     Session["Member"] = data.Id;
                     Session["MemberName"] = data.Name;
-                    //檢查該帳號的啟用狀態,或未啟用則進入驗證View
-                    if (DB.Member.Where(m => m.Id == data.Id && m.Enable == 0).FirstOrDefault() != null)
-                    {
-                        TempData["EnableMessage"] = "驗證尚未完成,即將前往驗證頁面";
-                        return RedirectToAction("EmailValidationView");
-                    }
                     if (DB.ShoppingCar.Where(m => m.Userid == data.Id).FirstOrDefault() == null)
                     {
                         var cart = new ShoppingCar() { Userid = data.Id, Pay = "false", Guid = Guid.NewGuid().ToString() };
@@ -118,6 +112,12 @@ namespace Asp.net_Exercise.Controllers
                     }
                     var C = DB.ShoppingCar.Where(m => m.Userid == data.Id).FirstOrDefault();
                     Session["Cart"] = C.Id;
+                    //檢查該帳號的啟用狀態,或未啟用則進入驗證View
+                    if (DB.Member.Where(m => m.Id == data.Id && m.Enable == 0).FirstOrDefault() != null)
+                    {
+                        TempData["EnableMessage"] = "驗證尚未完成,即將前往驗證頁面";
+                        return RedirectToAction("EmailValidationView");
+                    }
                     return RedirectToAction("Index");
                 }
                 else

@@ -1,8 +1,5 @@
-﻿@using Asp.net_Exercise.Models
+﻿
 
-<link rel="stylesheet" href="~/Content/leaflet.css" />
-<script src="~/Scripts/leaflet-0.7.3.js"></script>
-<script src="~/Scripts/ObjTree.js"></script>
 
 @{
     ViewBag.Title = "Location";
@@ -117,28 +114,30 @@
         }
         function SelectStore(e) {
 
-            var i = e.data.Id
+            var i = e.data.Id;
             var name = $("#N" + i).text();
             var Address = $('#A' + i).text();
             var Id = $('#I' + i).text();
             var TelNo = $('#T' + i).text();
             $.ajax({
-                url: 'https://AspTest.nctu.me:45678/Home/SelectStore',
+                url: "https://localhost:44353/Home/SelectStore",
                 type: 'POST',
                 dataType: 'text',
                 data: { Name: name, Address: Address, ID: Id, TelNo: TelNo },
                 success: function (data) {
                     if (data == 0) {
-                        
-                        location.href = 'MemberCenter';
+                        console.log("0");
+                        //location.href = 'MemberCenter';
                     }
                     if (data == 1) {
+                        console.log("1");
                         alert("已選擇過該門市");
-                        location.href = 'Location';
+                        //location.href = 'Location';
                     }
                     if (data == 2) {
+                        console.log("2");
                         alert("資料庫異常");
-                        location.href = 'Location';
+                        //location.href = 'Location';
                     }
                 }
             })
