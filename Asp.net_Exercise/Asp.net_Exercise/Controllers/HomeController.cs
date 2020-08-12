@@ -339,6 +339,42 @@ namespace Asp.net_Exercise.Controllers
             return json;
 
         }
+        public int SelectStore1(string Name, int ID, string Address, string TelNo)
+        {
+            var d = Convert.ToInt32(Session["Member"].ToString());
+            var D = DB.Member.Include("Member_Store").Where(m => m.Id == d).FirstOrDefault();
+            var Sdata = new Store();
+            if (DB.Store.Where(m => m.StoreId == ID).FirstOrDefault() == null) //檢查該門市是否已被新增過
+            {
+                Sdata.StoreAddress = Address;
+                Sdata.StoreId = ID;
+                Sdata.StoreName = Name;
+                Sdata.StoreTelNo = TelNo;
+                DB.Store.Add(Sdata);
+            }
+            Sdata = DB.Store.Find(ID);
+            if (DB.Member_Store.Where(m => m.Member_Id == d && m.Store_Id == ID).FirstOrDefault() != null)//檢查使用者是否已選擇過該門市
+            {
+                TempData["SelectError"] = "您已選擇過該門市";
+                return 1;//由於使用AJAX因此轉址部分需透過Jquery 所以回傳int讓Jquery判斷情況為何
+            }
+            var Linkdata = new Member_Store();
+            Linkdata.Member = D;
+            Linkdata.Store = Sdata;
+            DB.Member_Store.Add(Linkdata);
+            try
+            {
+                DB.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                TempData["SelectError"] = "選擇門市失敗,ErrorCode:" + e;
+                return 2;//由於使用AJAX因此轉址部分需透過Jquery 所以回傳int讓Jquery判斷情況為何
+            }
+            TempData["SelectError"] = "選擇門市成功,門市名稱為" + Sdata.StoreName;
+            return 0;//由於使用AJAX因此轉址部分需透過Jquery 所以回傳int讓Jquery判斷情況為何
+        }
         [HttpPost]
         public int SelectStore(string Name, int ID, string Address, string TelNo)
         {

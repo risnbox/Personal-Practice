@@ -98,14 +98,15 @@
                         L++;
                     }
                     for (var i = 0; L > i; i++) {//將資料新增到Table
-                        $("table").append(
+                        $("#Ltable").append(
                             "<tr id='S'><td id='N" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].POIName + "</td>" +
                             "<td id='A" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].Address + "</td>" +
                             "<td id='I" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].POIID + "</td>" +
                             "<td id='T" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].Telno + "</td>" +
                             "<td><a href='https://www.google.com.tw/maps/place/" + data.iMapSDKOutput.GeoPosition[i].Address + " 'target='_blank' class='btn btn-info'>地圖</td>" +
-                            "<td><input class='btn btn-default' type='submit' value='選擇' id='Selectbtn" + i + "'/></td></tr>"
+                            "<td><input class='btn btn-default' type='button' value='選擇' id='Selectbtn" + i + "'/></td></tr>"
                         )
+                        console.log($("#Selectbtn" + i));
                         $("#Selectbtn" + i).on('click', {Id:i} ,SelectStore)//傳值到Function
                         
                     }
@@ -113,6 +114,38 @@
             })
         }
         function SelectStore(e) {
+
+            var i = e.data.Id;
+            var name = $("#N" + i).text();
+            var Address = $('#A' + i).text();
+            var Id = $('#I' + i).text();
+            var TelNo = $('#T' + i).text();
+            var data = "?Name=" + name + "&Address=" + Address + "&ID=" + Id + "&TelNo=" + TelNo;
+            console.log(data);
+            $.ajax({
+                url: "https://localhost:44353/Home/SelectStore1"+data,
+                type: 'Get',
+                success: function (data) {
+                    if (data == 0) {
+                        console.log("0");
+                        //location.href = 'MemberCenter';
+                    }
+                    if (data == 1) {
+                        console.log("1");
+                        alert("已選擇過該門市");
+                        //location.href = 'Location';
+                    }
+                    if (data == 2) {
+                        console.log("2");
+                        alert("資料庫異常");
+                        //location.href = 'Location';
+                    }
+                }
+            })
+            
+        }
+        //Post
+        /*function SelectStore(e) {
 
             var i = e.data.Id;
             var name = $("#N" + i).text();
@@ -142,7 +175,7 @@
                 }
             })
             
-        }
+        }*/
         $("#ViewStore").on('click',viewstore)
 
         function viewstore() {
@@ -218,7 +251,7 @@
             <input type="button" id="Openbtn" value="查詢711" />
         </div>
 
-        <table class="table" id="table">
+        <table class="table" id="Ltable">
             <tr>
                 <th>分店名</th>
                 <th>地址</th>
