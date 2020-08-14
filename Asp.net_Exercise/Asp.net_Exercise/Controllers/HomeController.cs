@@ -240,7 +240,9 @@ namespace Asp.net_Exercise.Controllers
         {
             try
             {
-                EmailValidation(Session["MemberEmail"] as string, Randomcode());
+                var randomcode = Randomcode();
+                EmailValidation(Session["MemberEmail"] as string, randomcode);
+                Session["Veriflcationcode"] = randomcode;
                 return "成功";
             }
             catch (Exception e)
@@ -256,17 +258,17 @@ namespace Asp.net_Exercise.Controllers
                 MailMessage Mail = new MailMessage();
                 Mail.To.Add(Email);//收件人
                 //參數屬性是寄件人名字及地址但地址似乎會被Gmail覆蓋,此處我的寄件人地址是User但實際收件顯示的依然是Host
-                Mail.From = new MailAddress(Email , "Lativ", System.Text.Encoding.UTF8);
+                Mail.From = new MailAddress(Email , "Lativ", Encoding.UTF8);
                 Mail.Subject = "帳號驗證";//標題
-                Mail.SubjectEncoding = System.Text.Encoding.UTF8;
-                Mail.Body = "您的驗證碼是:" + Veriflcationcode;//內容,如定義為Html信件則可加入Html語法(CSS及Javescript未試過)
-                Mail.BodyEncoding = System.Text.Encoding.UTF8;
+                Mail.SubjectEncoding = Encoding.UTF8;
+                Mail.Body = "您的驗證碼是:" + Veriflcationcode + "<br />Time:" + DateTime.Now;//內容,如定義為Html信件則可加入Html語法(CSS及Javescript未試過)
+                Mail.BodyEncoding = Encoding.UTF8;
                 Mail.IsBodyHtml = true;//是否定義為Html信件
 
                 //寄出參數
                 SmtpClient Smtp = new SmtpClient();
                 //登入信箱用參數,在信箱內部設定:低安全性應用程式→開啟較低的應用程式存取權限,需打開則無法引用
-                Smtp.Credentials = new System.Net.NetworkCredential("risnbox@gmail.com", "RISNBOX8520");
+                Smtp.Credentials = new NetworkCredential("risnbox@gmail.com", "RISNBOX8520");
                 Smtp.Host = ("smtp.gmail.com");//SMTP(簡易郵件傳輸協定)主機地址
                 Smtp.Port = 25;//連接埠
                 Smtp.EnableSsl = true;//驗證開啟(SSL)
@@ -758,6 +760,16 @@ namespace Asp.net_Exercise.Controllers
             ViewBag.json = json.Replace(" ", "");
             return PartialView();
         }
-
+        public ActionResult CheckOut()
+        {
+            var c = Convert.ToInt32(Session["Cart"].ToString());
+            var C_D = DB.Cart_Detail.Where(m => m.Cid == c).FirstOrDefault();
+            var Qty = DB.Quantity.Where(m => m.Did == C_D.Did).FirstOrDefault();
+            if (Qty == null)
+            {
+                
+            }
+            return View();
+        }
     }    
 }

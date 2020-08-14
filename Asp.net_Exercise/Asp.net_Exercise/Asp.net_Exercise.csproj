@@ -295,6 +295,7 @@
     <Content Include="Views\Home\ProdDetails.cshtml" />
     <Content Include="Views\Home\KeepView.cshtml" />
     <Content Include="Views\Home\CarPartial.cshtml" />
+    <Content Include="Views\Home\CheckOut.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
