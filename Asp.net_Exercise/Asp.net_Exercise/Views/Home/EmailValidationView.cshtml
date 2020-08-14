@@ -3,9 +3,9 @@
     ViewBag.Title = "EmailValidationView";
 }
 
-@if (@TempData["EnableMessage"]!= null) {
+@if (Session["EnableMessage"]!= null) {
     <script>
-            alert("@TempData["EnableMessage"]")
+            alert("@Session["EnableMessage"]")
         $(function () {
             function RepeatEmail() {
                 $.ajax({

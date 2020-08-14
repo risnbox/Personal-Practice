@@ -89,18 +89,20 @@
     function AddCart() {
         var color = $(".select").attr("id");
         var size = $(".Select").attr("id");
-        if (color == null && size == null) {
-            alert('請選擇顏色及尺寸')
-        }
-        else {
+        //Javascript邏輯判斷機制與一般語言不同詳:https://ithelp.ithome.com.tw/articles/10191343
+        if (color != null && size != null) {
             $.ajax({
-                url:"https://localhost:44353/Home/AddCart?pid=" + data[0].prod.Id + "&color=" + color + "&size=" + size,
+                url: "https://localhost:44353/Home/AddCart?pid=" + data[0].prod.Id + "&color=" + color + "&size=" + size,
                 success: function (data) {
-                    if (data == "false") {
+                    if (data == 1) {
                         alert('請先登入')
                     }
+                    if (data == 2) {
+                        alert('帳號尚未驗證');
+                        location.href('EmailValidationView');
+                    }
                     else {
-                        alert('成功新增')
+                        alert('成功新增');
                         window.location.reload();
                     }
                 },
@@ -108,6 +110,9 @@
                     alert('伺服器錯誤')
                 }
             })
+        }
+        else {
+            alert('請選擇顏色及尺寸');
         }
     }
     function Keep() {

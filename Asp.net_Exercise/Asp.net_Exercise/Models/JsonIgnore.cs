@@ -82,7 +82,7 @@ namespace Asp.net_Exercise.Models
     public partial class MetaQty
     {
         [JsonIgnore]
-        public virtual Details Details { get; set; }
+        public virtual ShoppingCar ShoppingCar { get; set; }
         [JsonIgnore]
         public virtual ProdFeature ProdFeature { get; set; }
     }

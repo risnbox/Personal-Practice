@@ -25,10 +25,8 @@ namespace Asp.net_Exercise.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Cart_Detail> Cart_Detail { get; set; }
         public virtual DbSet<Class> Class { get; set; }
         public virtual DbSet<Color> Color { get; set; }
-        public virtual DbSet<Details> Details { get; set; }
         public virtual DbSet<Img> Img { get; set; }
         public virtual DbSet<Keep> Keep { get; set; }
         public virtual DbSet<Member> Member { get; set; }

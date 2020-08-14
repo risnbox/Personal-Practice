@@ -16,10 +16,11 @@ namespace Asp.net_Exercise.Models
     {
         public int Id { get; set; }
         public Nullable<int> PFid { get; set; }
-        public Nullable<int> Did { get; set; }
+        public Nullable<int> Cid { get; set; }
         public Nullable<int> Qty { get; set; }
+        public Nullable<int> Total { get; set; }
     
-        public virtual Details Details { get; set; }
         public virtual ProdFeature ProdFeature { get; set; }
+        public virtual ShoppingCar ShoppingCar { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace Asp.net_Exercise.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ShoppingCar()
         {
-            this.Cart_Detail = new HashSet<Cart_Detail>();
+            this.Quantity = new HashSet<Quantity>();
         }
     
         public int Id { get; set; }
@@ -25,8 +25,8 @@ namespace Asp.net_Exercise.Models
         public string Pay { get; set; }
         public string Guid { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Cart_Detail> Cart_Detail { get; set; }
         public virtual Member Member { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Quantity> Quantity { get; set; }
     }
 }

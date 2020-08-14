@@ -5,14 +5,6 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="DatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="Cart_Detail">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Cid" Type="int" />
-          <Property Name="Did" Type="int" />
-        </EntityType>
         <EntityType Name="Class">
           <Key>
             <PropertyRef Name="Id" />
@@ -26,13 +18,6 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nchar" MaxLength="10" />
-        </EntityType>
-        <EntityType Name="Details">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="TotalPrice" Type="int" />
         </EntityType>
         <EntityType Name="Img">
           <Key>
@@ -111,8 +96,9 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PFid" Type="int" />
-          <Property Name="Did" Type="int" />
+          <Property Name="Cid" Type="int" />
           <Property Name="Qty" Type="int" />
+          <Property Name="Total" Type="int" />
         </EntityType>
         <EntityType Name="ShoppingCar">
           <Key>
@@ -146,30 +132,6 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TypeName" Type="nchar" MaxLength="10" />
         </EntityType>
-        <Association Name="FK__Cart_Detail__Cid__56B3DD81">
-          <End Role="ShoppingCar" Type="Self.ShoppingCar" Multiplicity="0..1" />
-          <End Role="Cart_Detail" Type="Self.Cart_Detail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ShoppingCar">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Cart_Detail">
-              <PropertyRef Name="Cid" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Cart_Detail__Did__57A801BA">
-          <End Role="Details" Type="Self.Details" Multiplicity="0..1" />
-          <End Role="Cart_Detail" Type="Self.Cart_Detail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Details">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Cart_Detail">
-              <PropertyRef Name="Did" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK__Keep__Prodid__19AACF41">
           <End Role="Product" Type="Self.Product" Multiplicity="0..1" />
           <End Role="Keep" Type="Self.Keep" Multiplicity="*" />
@@ -314,18 +276,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Quantity__Did__6CA31EA0">
-          <End Role="Details" Type="Self.Details" Multiplicity="0..1" />
-          <End Role="Quantity" Type="Self.Quantity" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Details">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Quantity">
-              <PropertyRef Name="Did" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK__Quantity__PFid__6BAEFA67">
           <End Role="ProdFeature" Type="Self.ProdFeature" Multiplicity="0..1" />
           <End Role="Quantity" Type="Self.Quantity" Multiplicity="*" />
@@ -335,6 +285,18 @@
             </Principal>
             <Dependent Role="Quantity">
               <PropertyRef Name="PFid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Quantity__Sid__7908F585">
+          <End Role="ShoppingCar" Type="Self.ShoppingCar" Multiplicity="0..1" />
+          <End Role="Quantity" Type="Self.Quantity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShoppingCar">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Quantity">
+              <PropertyRef Name="Cid" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -351,10 +313,8 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="DatabaseModelStoreContainer">
-          <EntitySet Name="Cart_Detail" EntityType="Self.Cart_Detail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Class" EntityType="Self.Class" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Color" EntityType="Self.Color" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Details" EntityType="Self.Details" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Img" EntityType="Self.Img" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Keep" EntityType="Self.Keep" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Member" EntityType="Self.Member" Schema="dbo" store:Type="Tables" />
@@ -368,14 +328,6 @@
           <EntitySet Name="Size" EntityType="Self.Size" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Store" EntityType="Self.Store" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Type" EntityType="Self.Type" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Cart_Detail__Cid__56B3DD81" Association="Self.FK__Cart_Detail__Cid__56B3DD81">
-            <End Role="ShoppingCar" EntitySet="ShoppingCar" />
-            <End Role="Cart_Detail" EntitySet="Cart_Detail" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Cart_Detail__Did__57A801BA" Association="Self.FK__Cart_Detail__Did__57A801BA">
-            <End Role="Details" EntitySet="Details" />
-            <End Role="Cart_Detail" EntitySet="Cart_Detail" />
-          </AssociationSet>
           <AssociationSet Name="FK__Keep__Prodid__19AACF41" Association="Self.FK__Keep__Prodid__19AACF41">
             <End Role="Product" EntitySet="Product" />
             <End Role="Keep" EntitySet="Keep" />
@@ -424,12 +376,12 @@
             <End Role="Size" EntitySet="Size" />
             <End Role="ProdFeature" EntitySet="ProdFeature" />
           </AssociationSet>
-          <AssociationSet Name="FK__Quantity__Did__6CA31EA0" Association="Self.FK__Quantity__Did__6CA31EA0">
-            <End Role="Details" EntitySet="Details" />
-            <End Role="Quantity" EntitySet="Quantity" />
-          </AssociationSet>
           <AssociationSet Name="FK__Quantity__PFid__6BAEFA67" Association="Self.FK__Quantity__PFid__6BAEFA67">
             <End Role="ProdFeature" EntitySet="ProdFeature" />
+            <End Role="Quantity" EntitySet="Quantity" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Quantity__Sid__7908F585" Association="Self.FK__Quantity__Sid__7908F585">
+            <End Role="ShoppingCar" EntitySet="ShoppingCar" />
             <End Role="Quantity" EntitySet="Quantity" />
           </AssociationSet>
           <AssociationSet Name="FK__ShoppingC__Useri__10216507" Association="Self.FK__ShoppingC__Useri__10216507">
@@ -442,10 +394,8 @@
     <edmx:ConceptualModels>
       <Schema Namespace="DatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="DatabaseEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Cart_Detail" EntityType="DatabaseModel.Cart_Detail" />
           <EntitySet Name="Class" EntityType="DatabaseModel.Class" />
           <EntitySet Name="Color" EntityType="DatabaseModel.Color" />
-          <EntitySet Name="Details" EntityType="DatabaseModel.Details" />
           <EntitySet Name="Img" EntityType="DatabaseModel.Img" />
           <EntitySet Name="Keep" EntityType="DatabaseModel.Keep" />
           <EntitySet Name="Member" EntityType="DatabaseModel.Member" />
@@ -459,14 +409,6 @@
           <EntitySet Name="Size" EntityType="DatabaseModel.Size" />
           <EntitySet Name="Store" EntityType="DatabaseModel.Store" />
           <EntitySet Name="Type" EntityType="DatabaseModel.Type" />
-          <AssociationSet Name="FK__Cart_Detail__Cid__56B3DD81" Association="DatabaseModel.FK__Cart_Detail__Cid__56B3DD81">
-            <End Role="ShoppingCar" EntitySet="ShoppingCar" />
-            <End Role="Cart_Detail" EntitySet="Cart_Detail" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Cart_Detail__Did__57A801BA" Association="DatabaseModel.FK__Cart_Detail__Did__57A801BA">
-            <End Role="Details" EntitySet="Details" />
-            <End Role="Cart_Detail" EntitySet="Cart_Detail" />
-          </AssociationSet>
           <AssociationSet Name="FK__Prod_Class___Cid__5224328E" Association="DatabaseModel.FK__Prod_Class___Cid__5224328E">
             <End Role="Class" EntitySet="Class" />
             <End Role="Prod_Class_Type" EntitySet="Prod_Class_Type" />
@@ -474,10 +416,6 @@
           <AssociationSet Name="FK__ProdFeature__Cid__373B3228" Association="DatabaseModel.FK__ProdFeature__Cid__373B3228">
             <End Role="Color" EntitySet="Color" />
             <End Role="ProdFeature" EntitySet="ProdFeature" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Quantity__Did__6CA31EA0" Association="DatabaseModel.FK__Quantity__Did__6CA31EA0">
-            <End Role="Details" EntitySet="Details" />
-            <End Role="Quantity" EntitySet="Quantity" />
           </AssociationSet>
           <AssociationSet Name="FK__Prod_Img__Mid__0A688BB1" Association="DatabaseModel.FK__Prod_Img__Mid__0A688BB1">
             <End Role="Img" EntitySet="Img" />
@@ -527,17 +465,11 @@
             <End Role="ProdFeature" EntitySet="ProdFeature" />
             <End Role="Quantity" EntitySet="Quantity" />
           </AssociationSet>
+          <AssociationSet Name="FK__Quantity__Sid__7908F585" Association="DatabaseModel.FK__Quantity__Sid__7908F585">
+            <End Role="ShoppingCar" EntitySet="ShoppingCar" />
+            <End Role="Quantity" EntitySet="Quantity" />
+          </AssociationSet>
         </EntityContainer>
-        <EntityType Name="Cart_Detail">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Cid" Type="Int32" />
-          <Property Name="Did" Type="Int32" />
-          <NavigationProperty Name="ShoppingCar" Relationship="DatabaseModel.FK__Cart_Detail__Cid__56B3DD81" FromRole="Cart_Detail" ToRole="ShoppingCar" />
-          <NavigationProperty Name="Details" Relationship="DatabaseModel.FK__Cart_Detail__Did__57A801BA" FromRole="Cart_Detail" ToRole="Details" />
-        </EntityType>
         <EntityType Name="Class">
           <Key>
             <PropertyRef Name="Id" />
@@ -553,15 +485,6 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <NavigationProperty Name="ProdFeature" Relationship="DatabaseModel.FK__ProdFeature__Cid__373B3228" FromRole="Color" ToRole="ProdFeature" />
-        </EntityType>
-        <EntityType Name="Details">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TotalPrice" Type="Int32" />
-          <NavigationProperty Name="Cart_Detail" Relationship="DatabaseModel.FK__Cart_Detail__Did__57A801BA" FromRole="Details" ToRole="Cart_Detail" />
-          <NavigationProperty Name="Quantity" Relationship="DatabaseModel.FK__Quantity__Did__6CA31EA0" FromRole="Details" ToRole="Quantity" />
         </EntityType>
         <EntityType Name="Img">
           <Key>
@@ -661,10 +584,11 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PFid" Type="Int32" />
-          <Property Name="Did" Type="Int32" />
+          <Property Name="Cid" Type="Int32" />
           <Property Name="Qty" Type="Int32" />
-          <NavigationProperty Name="Details" Relationship="DatabaseModel.FK__Quantity__Did__6CA31EA0" FromRole="Quantity" ToRole="Details" />
+          <Property Name="Total" Type="Int32" />
           <NavigationProperty Name="ProdFeature" Relationship="DatabaseModel.FK__Quantity__PFid__6BAEFA67" FromRole="Quantity" ToRole="ProdFeature" />
+          <NavigationProperty Name="ShoppingCar" Relationship="DatabaseModel.FK__Quantity__Sid__7908F585" FromRole="Quantity" ToRole="ShoppingCar" />
         </EntityType>
         <EntityType Name="ShoppingCar">
           <Key>
@@ -674,8 +598,8 @@
           <Property Name="Userid" Type="Int32" />
           <Property Name="Pay" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
           <Property Name="Guid" Type="String" MaxLength="40" FixedLength="true" Unicode="false" />
-          <NavigationProperty Name="Cart_Detail" Relationship="DatabaseModel.FK__Cart_Detail__Cid__56B3DD81" FromRole="ShoppingCar" ToRole="Cart_Detail" />
           <NavigationProperty Name="Member" Relationship="DatabaseModel.FK__ShoppingC__Useri__10216507" FromRole="ShoppingCar" ToRole="Member" />
+          <NavigationProperty Name="Quantity" Relationship="DatabaseModel.FK__Quantity__Sid__7908F585" FromRole="ShoppingCar" ToRole="Quantity" />
         </EntityType>
         <EntityType Name="Size">
           <Key>
@@ -703,30 +627,6 @@
           <Property Name="TypeName" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <NavigationProperty Name="Prod_Class_Type" Relationship="DatabaseModel.FK__Prod_Class___Tid__531856C7" FromRole="Type" ToRole="Prod_Class_Type" />
         </EntityType>
-        <Association Name="FK__Cart_Detail__Cid__56B3DD81">
-          <End Type="DatabaseModel.ShoppingCar" Role="ShoppingCar" Multiplicity="0..1" />
-          <End Type="DatabaseModel.Cart_Detail" Role="Cart_Detail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ShoppingCar">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Cart_Detail">
-              <PropertyRef Name="Cid" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Cart_Detail__Did__57A801BA">
-          <End Type="DatabaseModel.Details" Role="Details" Multiplicity="0..1" />
-          <End Type="DatabaseModel.Cart_Detail" Role="Cart_Detail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Details">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Cart_Detail">
-              <PropertyRef Name="Did" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK__Prod_Class___Cid__5224328E">
           <End Type="DatabaseModel.Class" Role="Class" Multiplicity="0..1" />
           <End Type="DatabaseModel.Prod_Class_Type" Role="Prod_Class_Type" Multiplicity="*" />
@@ -748,18 +648,6 @@
             </Principal>
             <Dependent Role="ProdFeature">
               <PropertyRef Name="Cid" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Quantity__Did__6CA31EA0">
-          <End Type="DatabaseModel.Details" Role="Details" Multiplicity="0..1" />
-          <End Type="DatabaseModel.Quantity" Role="Quantity" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Details">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Quantity">
-              <PropertyRef Name="Did" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -907,21 +795,24 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__Quantity__Sid__7908F585">
+          <End Type="DatabaseModel.ShoppingCar" Role="ShoppingCar" Multiplicity="0..1" />
+          <End Type="DatabaseModel.Quantity" Role="Quantity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShoppingCar">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Quantity">
+              <PropertyRef Name="Cid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="DatabaseModelStoreContainer" CdmEntityContainer="DatabaseEntities">
-          <EntitySetMapping Name="Cart_Detail">
-            <EntityTypeMapping TypeName="DatabaseModel.Cart_Detail">
-              <MappingFragment StoreEntitySet="Cart_Detail">
-                <ScalarProperty Name="Did" ColumnName="Did" />
-                <ScalarProperty Name="Cid" ColumnName="Cid" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Class">
             <EntityTypeMapping TypeName="DatabaseModel.Class">
               <MappingFragment StoreEntitySet="Class">
@@ -934,14 +825,6 @@
             <EntityTypeMapping TypeName="DatabaseModel.Color">
               <MappingFragment StoreEntitySet="Color">
                 <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Details">
-            <EntityTypeMapping TypeName="DatabaseModel.Details">
-              <MappingFragment StoreEntitySet="Details">
-                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1028,8 +911,9 @@
           <EntitySetMapping Name="Quantity">
             <EntityTypeMapping TypeName="DatabaseModel.Quantity">
               <MappingFragment StoreEntitySet="Quantity">
+                <ScalarProperty Name="Total" ColumnName="Total" />
                 <ScalarProperty Name="Qty" ColumnName="Qty" />
-                <ScalarProperty Name="Did" ColumnName="Did" />
+                <ScalarProperty Name="Cid" ColumnName="Cid" />
                 <ScalarProperty Name="PFid" ColumnName="PFid" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

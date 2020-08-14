@@ -104,11 +104,6 @@ namespace Asp.net_Exercise.Controllers
                     {
                         var cart = new ShoppingCar() { Userid = data.Id, Pay = "false", Guid = Guid.NewGuid().ToString() };
                         DB.ShoppingCar.Add(cart);
-                        var detail = new Details();
-                        DB.Details.Add(detail);
-                        DB.SaveChanges();
-                        Cart_Detail CD = new Cart_Detail() { Cid = cart.Id, Did = detail.Id };
-                        DB.Cart_Detail.Add(CD);
                         DB.SaveChanges();
                     }
                     var C = DB.ShoppingCar.Where(m => m.Userid == data.Id).FirstOrDefault();
@@ -116,7 +111,7 @@ namespace Asp.net_Exercise.Controllers
                     //檢查該帳號的啟用狀態,或未啟用則進入驗證View
                     if (DB.Member.Where(m => m.Id == data.Id && m.Enable == 0).FirstOrDefault() != null)
                     {
-                        TempData["EnableMessage"] = "驗證尚未完成,即將前往驗證頁面";
+                        Session["EnableMessage"] = "驗證尚未完成,即將前往驗證頁面";
                         return RedirectToAction("EmailValidationView");
                     }
                     return RedirectToAction("Index");
@@ -153,7 +148,7 @@ namespace Asp.net_Exercise.Controllers
             var D = DB.Member.Where(m => m.Id == d).FirstOrDefault();
             if (DB.Member.Where(m => m.Id == D.Id && m.Enable == 0).FirstOrDefault() != null)
             {
-                @TempData["SignUpSuccess"] = "您尚未啟用";
+                TempData["SignUpSuccess"] = "您尚未啟用";
                 return RedirectToAction("EmailValidationView");
             }
             //顯示會員已選擇的門市
@@ -354,42 +349,7 @@ namespace Asp.net_Exercise.Controllers
             return json;
 
         }
-        public int SelectStore1(string Name, int ID, string Address, string TelNo)
-        {
-            var d = Convert.ToInt32(Session["Member"].ToString());
-            var D = DB.Member.Include("Member_Store").Where(m => m.Id == d).FirstOrDefault();
-            var Sdata = new Store();
-            if (DB.Store.Where(m => m.StoreId == ID).FirstOrDefault() == null) //檢查該門市是否已被新增過
-            {
-                Sdata.StoreAddress = Address;
-                Sdata.StoreId = ID;
-                Sdata.StoreName = Name;
-                Sdata.StoreTelNo = TelNo;
-                DB.Store.Add(Sdata);
-            }
-            Sdata = DB.Store.Find(ID);
-            if (DB.Member_Store.Where(m => m.Member_Id == d && m.Store_Id == ID).FirstOrDefault() != null)//檢查使用者是否已選擇過該門市
-            {
-                TempData["SelectError"] = "您已選擇過該門市";
-                return 1;//由於使用AJAX因此轉址部分需透過Jquery 所以回傳int讓Jquery判斷情況為何
-            }
-            var Linkdata = new Member_Store();
-            Linkdata.Member = D;
-            Linkdata.Store = Sdata;
-            DB.Member_Store.Add(Linkdata);
-            try
-            {
-                DB.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                TempData["SelectError"] = "選擇門市失敗,ErrorCode:" + e;
-                return 2;//由於使用AJAX因此轉址部分需透過Jquery 所以回傳int讓Jquery判斷情況為何
-            }
-            TempData["SelectError"] = "選擇門市成功,門市名稱為" + Sdata.StoreName;
-            return 0;//由於使用AJAX因此轉址部分需透過Jquery 所以回傳int讓Jquery判斷情況為何
-        }
+
         [HttpPost]
         public int SelectStore(string Name, int ID, string Address, string TelNo)
         {
@@ -700,22 +660,24 @@ namespace Asp.net_Exercise.Controllers
             ViewBag.json = V;
             return View();
         }
-        public string AddCart(int pid, string color, string size)
+        public int AddCart(int pid, string color, string size)
         {
             if (Session["Cart"] == null)
             {
-                return "false";
+                return 1;
+            }
+            if (DB.Member.Where(m => m.Id == Convert.ToInt32(Session["Member"].ToString()) && m.Enable == 0).FirstOrDefault() != null)
+            {
+                return 2;
             }
             var c = Convert.ToInt32(Session["Cart"].ToString());
             var data = (from Cart in DB.ShoppingCar
                         where Cart.Id == c
                         join C in DB.Color on color equals C.Name
                         join S in DB.Size on size equals S.Name
-                        join CD in DB.Cart_Detail on c equals CD.Cid
                         select new
                         {
                             Cart = Cart,
-                            CD = CD,
                             C = C.Id,
                             S = S.Id
                         }).FirstOrDefault();
@@ -725,26 +687,25 @@ namespace Asp.net_Exercise.Controllers
                 pf = new ProdFeature() { Pid = pid, Cid = data.C, Sid = data.S };
                 DB.ProdFeature.Add(pf);
             }
-            var q = DB.Quantity.Where(m => m.PFid == pf.Id && m.Did == data.CD.Did).FirstOrDefault();
+            var q = DB.Quantity.Where(m => m.PFid == pf.Id && m.Cid == c).FirstOrDefault();
             if (q != null)
             {
                 q.Qty++;
             }
             else
             {
-                q = new Quantity() { PFid = pf.Id, Did = data.CD.Did, Qty = 1 };
+                q = new Quantity() { PFid = pf.Id, Cid = c, Qty = 1 };
                 DB.Quantity.Add(q);
             }
             DB.SaveChanges();
-            return "";
+            return 0;
         }
         public ActionResult CarPartial()
         {
             var c = Convert.ToInt32(Session["Cart"].ToString());
             var data = (from Cart in DB.ShoppingCar
                         where Cart.Id == c
-                        join CD in DB.Cart_Detail on Cart.Id equals CD.Cid
-                        join Qty in DB.Quantity on CD.Did equals Qty.Did
+                        join Qty in DB.Quantity on c equals Qty.Cid
                         join pf in DB.ProdFeature on Qty.PFid equals pf.Id
                         join prod in DB.Product on pf.Pid equals prod.Id
                         select new
@@ -762,13 +723,31 @@ namespace Asp.net_Exercise.Controllers
         }
         public ActionResult CheckOut()
         {
-            var c = Convert.ToInt32(Session["Cart"].ToString());
-            var C_D = DB.Cart_Detail.Where(m => m.Cid == c).FirstOrDefault();
-            var Qty = DB.Quantity.Where(m => m.Did == C_D.Did).FirstOrDefault();
-            if (Qty == null)
+            if (DB.Member.Where(m => m.Id == Convert.ToInt32(Session["Member"].ToString()) && m.Enable == 0).FirstOrDefault() != null)
             {
-                
+                return RedirectToAction("EmailValidationView");
             }
+            var c = Convert.ToInt32(Session["Cart"].ToString());
+            var data = (from Cart in DB.ShoppingCar
+                        where Cart.Id == c
+                        join Qty in DB.Quantity on c equals Qty.Cid
+                        join Pf in DB.ProdFeature on Qty.PFid equals Pf.Id
+                        join P in DB.Product on Pf.Pid equals P.Id
+                        join PI in DB.Prod_Img on P.Id equals PI.Pid
+                        join I in DB.Img on PI.Mid equals I.Id
+                        where I.Type == "previewed"
+                        select new
+                        {
+                            Name = P.Name,
+                            Price = P.Price,
+                            Color = Pf.Color.Name,
+                            Size = Pf.Size.Name,
+                            Img = I.FileName,
+                            qty = Qty.Qty
+                        }
+                        ).ToList();
+            var Json = JsonConvert.SerializeObject(data);
+            ViewBag.json = Json.Replace(" ", "");
             return View();
         }
     }    
