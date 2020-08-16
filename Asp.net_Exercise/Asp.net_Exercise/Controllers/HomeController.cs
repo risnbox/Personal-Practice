@@ -723,7 +723,8 @@ namespace Asp.net_Exercise.Controllers
         }
         public ActionResult CheckOut()
         {
-            if (DB.Member.Where(m => m.Id == Convert.ToInt32(Session["Member"].ToString()) && m.Enable == 0).FirstOrDefault() != null)
+            /*var d = Convert.ToInt32(Session["Member"].ToString());
+            if (DB.Member.Where(m => m.Id == d && m.Enable == 0).FirstOrDefault() != null)
             {
                 return RedirectToAction("EmailValidationView");
             }
@@ -734,8 +735,8 @@ namespace Asp.net_Exercise.Controllers
                         join Pf in DB.ProdFeature on Qty.PFid equals Pf.Id
                         join P in DB.Product on Pf.Pid equals P.Id
                         join PI in DB.Prod_Img on P.Id equals PI.Pid
-                        join I in DB.Img on PI.Mid equals I.Id
-                        where I.Type == "previewed"
+                        join I in DB.Img on new {A=PI.Mid, B="previewed"} equals new {A=I.Id, B=I.Type}
+                        //多欄位比較時，欄位名及型別必須完全一致(int? != int 必須在此查詢之前先查好丟進變數或直接更改Model型別(前提是該欄位不會使用到null型別)
                         select new
                         {
                             Name = P.Name,
@@ -747,7 +748,7 @@ namespace Asp.net_Exercise.Controllers
                         }
                         ).ToList();
             var Json = JsonConvert.SerializeObject(data);
-            ViewBag.json = Json.Replace(" ", "");
+            ViewBag.json = Json.Replace(" ", "");*/
             return View();
         }
     }    

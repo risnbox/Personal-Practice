@@ -15,8 +15,8 @@ namespace Asp.net_Exercise.Models
     public partial class Prod_Img
     {
         public int Id { get; set; }
-        public Nullable<int> Pid { get; set; }
-        public Nullable<int> Mid { get; set; }
+        public int Pid { get; set; }
+        public int Mid { get; set; }
     
         public virtual Img Img { get; set; }
         public virtual Product Product { get; set; }
