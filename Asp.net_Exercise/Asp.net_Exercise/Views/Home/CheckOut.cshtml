@@ -7,11 +7,11 @@
 
     .CO_div1 {
         width:640px;
-        margin:0 auto;
+        margin:0 auto 50px auto;
         outline:0;
         padding:30px 0 30px;
     }
-    .CO_div1-1 {
+    .CO_div2 {
         margin:0;
         padding:0;
         border:0;
@@ -59,6 +59,13 @@
         color: #bababa;
         font-size: 16px;
     }
+    .CO_span3 {
+        vertical-align:top;
+        
+    }
+    .CO_span4 {
+        color: #bbb;
+    }
     #CO_span1Select {
         background-color:#ff5353;
     }
@@ -67,16 +74,112 @@
         border-bottom:2px solid #ff5353;
         padding-bottom:2px;
     }
-
+    td {
+        background-color:#ffffff;
+    }
+    .CO- {
+        margin-right:10px;
+    }
+    .CO_Qty {
+        margin-right:10px;
+    }
 </style>
+
+<script>
+
+    function Count(Id) {
+
+        var p = $("#P" + Id).text();
+        var P = parseInt(p, 10);
+        var q = $("#Q" + Id).text();
+        var Q = parseInt(q, 10);
+        var data = P * Q;
+        $("#T" + Id).text(data);
+
+    }
+
+    function Add(e) {
+
+        var Id = e.data.Id;
+        var x = $("#Q" + Id).text();
+        var Q = parseInt(x, 10);
+        Q++;
+        $('#Q' + Id).text(Q);
+        Count(Id);
+        $("#C" + Id).attr("disabled","true");
+
+    }
+
+    function Cut(e) {
+
+        var Id = e.data.Id;
+        var x = $("#Q" + Id).text();
+        var Q = parseInt(x,10);
+        Q--;
+        $('#Q' + Id).text(Q);
+        Count(Id);
+        if (Q <= 1) {
+            $("#C" + Id).attr("disabled", "disabled");
+        }
+
+    }
+
+    function Delete(e) {
+        var T = confirm("確定移除該商品嗎?");
+        if (T == true) {
+            var Id = e.data.Id;
+            var N = $("#N" + Id).text();
+            $.ajax({
+                url: "https://localhost:44353/home/DeleteCart?Name=" + N,
+                success: function (e) {
+                    if (e != "") {
+                        alert("伺服器錯誤,code:" + e);
+                    }
+                    else {
+                        $("#" + Id).remove();
+                    }
+                }
+            });
+        }
+    }
+
+    $(function () {
+        var data = @Html.Raw(ViewBag.json);
+        var L = 0;
+        for (var x in data) {
+            L++;
+        }
+        for (var i = 0; L > i; i++) {
+            $("#CO_tbody").append(
+                "<tr id='" + i + "'><td class'col-md-3'><a><img class='img-rounded'style='width:70px;height:70px;float:left;'src='/UpdataFiles/" + data[i].Img + "' /></a>" +
+                "<h5 class='CO_span3' id='N" + i + "'>" + data[i].Name + "</h5><span class='CO_span4'>" + data[i].Feature + "</span></td>" +
+                "<td class='col-md-2' style='padding-left:0;text-align:left;'><button id='C" + i + "' class='btn btn-default CO-'>-</button><span id='Q" + i + "' class='CO_Qty'>" + data[i].Qty +
+                "</span><button id='A" + i + "' class='btn btn-default CO+'>+</button></td><td class='col-md-1'><span id='P" + i + "'>NT$</span>" + data[i].Price + "</td>" +
+                "<td class='col-md-1'><span id='T" + i +"'>NT$</span>" + data[i].Total + "</td><td class='col-md-1'><a id='D" + i + "' style='float:right;padding-right:10px;text-decoration:none;color:#bbb;cursor:pointer'>X</a></td>" +
+                "</tr>"
+            )
+            $("#A" + i).on("click", { Id: i }, Add);
+            $("#C" + i).on("click", { Id: i }, Cut);
+            $("#D" + i).on("click", { Id: i }, Delete);
+            var q = $("#Q" + i).text();
+            var Q = parseInt(q);
+            if (Q <= 1) {
+                $("#C" + i).attr("disabled", "disabled")
+            }
+            
+        }
+        
+    })
+
+</script>
 
 <div class="CO_div1">
     
     <ul class="CO_ul1">
 
-        <li class="CO_li1">
+        <li class="CO_li1"> 
 
-            <div class="CO_div1-1">
+            <div class="CO_div2">
 
                 <span id="CO_span1Select" class="CO_span1">1</span>
                 <span id="CO_span2Select" class="CO_span2">確認購物車</span>
@@ -116,8 +219,26 @@
 
 </div>
 
-<div class="CO_div2">
+<div class="container">
 
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <table class="table table-hover">
 
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quqntity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+
+                <tbody id="CO_tbody">
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 </div>

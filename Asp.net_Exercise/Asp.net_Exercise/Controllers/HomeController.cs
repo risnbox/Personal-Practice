@@ -662,11 +662,12 @@ namespace Asp.net_Exercise.Controllers
         }
         public int AddCart(int pid, string color, string size)
         {
+            var d = Convert.ToInt32(Session["Member"].ToString());
             if (Session["Cart"] == null)
             {
                 return 1;
             }
-            if (DB.Member.Where(m => m.Id == Convert.ToInt32(Session["Member"].ToString()) && m.Enable == 0).FirstOrDefault() != null)
+            if (DB.Member.Where(m => m.Id ==  d && m.Enable == 0).FirstOrDefault() != null)
             {
                 return 2;
             }
@@ -723,10 +724,15 @@ namespace Asp.net_Exercise.Controllers
         }
         public ActionResult CheckOut()
         {
-            /*var d = Convert.ToInt32(Session["Member"].ToString());
+            var d = Convert.ToInt32(Session["Member"].ToString());
             if (DB.Member.Where(m => m.Id == d && m.Enable == 0).FirstOrDefault() != null)
             {
                 return RedirectToAction("EmailValidationView");
+            }
+            if (DB.Member_Store.Where(m => m.Member_Id == d).FirstOrDefault() != null)
+            {
+                TempData["CartError"] = "請先至會員會員中心選擇711門市";
+                return RedirectToAction("Location");
             }
             var c = Convert.ToInt32(Session["Cart"].ToString());
             var data = (from Cart in DB.ShoppingCar
@@ -741,15 +747,32 @@ namespace Asp.net_Exercise.Controllers
                         {
                             Name = P.Name,
                             Price = P.Price,
-                            Color = Pf.Color.Name,
-                            Size = Pf.Size.Name,
+                            Feature = Pf.Color.Name+"-"+Pf.Size.Name,
                             Img = I.FileName,
-                            qty = Qty.Qty
+                            Qty = Qty.Qty,
+                            Total = P.Price * Qty.Qty
                         }
                         ).ToList();
             var Json = JsonConvert.SerializeObject(data);
-            ViewBag.json = Json.Replace(" ", "");*/
+            ViewBag.json = Json.Replace(" ", "");
             return View();
+        }
+        public string DeleteCart(string Name)
+        {
+            try
+            {
+                var d = Convert.ToInt32(Session["Member"].ToString());
+                var s = DB.ShoppingCar.Where(m => m.Userid == d).FirstOrDefault();
+                var data = DB.Quantity.Where(m => m.Cid == s.Id).ToList();
+                var prod = data.Where(m => m.ProdFeature.Product.Name == Name).FirstOrDefault();
+                DB.Quantity.Remove(prod);
+                DB.SaveChanges();
+                return "";
+            }
+            catch(Exception e)
+            {
+                return e.ToString();
+            }
         }
     }    
 }
