@@ -64,7 +64,7 @@ namespace Asp.net_Exercise.Controllers
                     var code = Randomcode();
                     Session["Veriflcationcode"] = code;
                     //使用System.Net.Mail來寄出驗證碼
-                    EmailValidation(Postback.Email, Session["Veriflcationcode"] as string);
+                    EmailValidation(Postback.Email, "您的驗證碼是:" + code + "<br />Time:" + DateTime.Now);
                     //寫入TempData傳入SignInView來Alert提示使用者
                     TempData["SignUpSuccess"] = "註冊成功,已寄出認證信,請收信後登入輸入驗證碼";
                     return RedirectToAction("SignIn");
@@ -236,7 +236,7 @@ namespace Asp.net_Exercise.Controllers
             try
             {
                 var randomcode = Randomcode();
-                EmailValidation(Session["MemberEmail"] as string, randomcode);
+                EmailValidation(Session["MemberEmail"] as string, "您的驗證碼是:" + randomcode + "<br />Time:" + DateTime.Now);
                 Session["Veriflcationcode"] = randomcode;
                 return "成功";
             }
@@ -245,7 +245,7 @@ namespace Asp.net_Exercise.Controllers
                 return "寄出失敗 code:" + e ;
             }
         }
-        public void EmailValidation(string Email, string Veriflcationcode)
+        public void EmailValidation(string Email, string Body)
         {
             try
             {
@@ -256,7 +256,7 @@ namespace Asp.net_Exercise.Controllers
                 Mail.From = new MailAddress(Email , "Lativ", Encoding.UTF8);
                 Mail.Subject = "帳號驗證";//標題
                 Mail.SubjectEncoding = Encoding.UTF8;
-                Mail.Body = "您的驗證碼是:" + Veriflcationcode + "<br />Time:" + DateTime.Now;//內容,如定義為Html信件則可加入Html語法(CSS及Javescript未試過)
+                Mail.Body = Body;//內容,如定義為Html信件則可加入Html語法(CSS及Javescript未試過)
                 Mail.BodyEncoding = Encoding.UTF8;
                 Mail.IsBodyHtml = true;//是否定義為Html信件
 
@@ -769,6 +769,7 @@ namespace Asp.net_Exercise.Controllers
             ViewBag.json = Json.Replace(" ", "");
             //------------------------------------------
             var s = DB.Member_Store.Where(m => m.Member_Id == d).ToList();
+            var M = DB.Member.Where(m => m.Id == d).FirstOrDefault();
             var S = new List<string>();
             foreach(var x in s)
             {
@@ -776,6 +777,9 @@ namespace Asp.net_Exercise.Controllers
             }
             var l = new SelectList(S);
             ViewBag.storelist = l;
+            ViewBag.Name = M.Name;
+            ViewBag.Phone = M.Phone;
+            ViewBag.Email = M.Email;
             return View();
         }
         public Quantity SearchQuantity(string Name, string Feature)

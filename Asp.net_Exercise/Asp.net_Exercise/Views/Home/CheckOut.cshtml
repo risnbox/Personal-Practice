@@ -336,7 +336,7 @@
                 <div class="col-md-8">
                     <div class="input-group">
                         <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
-                        <input class="form-control" required type="text" />
+                        <input class="form-control" value="@ViewBag.Name" required type="text" />
                     </div>
                 </div>
 
@@ -349,6 +349,30 @@
                     <div class="input-group">
                         <span class="input-group-addon"><span class="glyphicon glyphicon-plane"></span></span>
                         @Html.DropDownList("選取門市", ViewBag.storelist as SelectList, new { @class = "form-control", @id = "StoreSelect", required = "required" })
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="col-md-4 control-label">收件人手機</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-phone"></span></span>
+                        <input class="form-control" value="@ViewBag.Phone" required type="text" />
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="col-md-4 control-label">收件人信箱</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
+                        <input class="form-control" value="@ViewBag.Email" required type="text" />
                     </div>
                 </div>
 
