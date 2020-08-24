@@ -51,8 +51,9 @@
     }
 </style>
 <script>
-    if (@TempData["CartError"] != null) {
-        alert(@TempData["CartError"]);
+    if ("@TempData["CartError"]" != "") {
+        alert("@TempData["CartError"]");
+        console.log("@TempData["CartError"]");
     }
 
     $(function () {
@@ -161,33 +162,40 @@
                     for (var i in data) {
                         L++;//確認JSON共幾筆資料
                     }
-                    for (var i = 0; L > i; i++) {
-                        $("#table").append(
-                            "<tr id='S'><td id='N" + i + "'>" + data[i].StoreName + "</td>" +
-                            "<td id='A" + i + "'>" + data[i].StoreAddress + "</td>" +
-                            "<td id='I" + i + "'>" + data[i].StoreId + "</td>" +
-                            "<td id='T" + i + "'>" + data[i].StoreTelNo + "</td>" +
-                            "<td><a href='https://www.google.com.tw/maps/place/" + data[i].StoreAddress + " 'target='_blank' class='btn btn-info'>地圖</td>" +
-                            "<td><input type='button' id='Sbtn" + i + "' value='刪除' class='btn btn-danger'/></tr>"
-                        )
-                        $("#Sbtn" + i).on('click', { Sid: data[i].StoreId }, DeleteStore);
+                    if (L == 0) {
+                        alert("您還未曾選取門市");
                     }
-
+                    else {
+                        for (var i = 0; L > i; i++) {
+                            $("#Ltable").append(
+                                "<tr id='S'><td id='N" + i + "'>" + data[i].StoreName + "</td>" +
+                                "<td id='A" + i + "'>" + data[i].StoreAddress + "</td>" +
+                                "<td id='I" + i + "'>" + data[i].StoreId + "</td>" +
+                                "<td id='T" + i + "'>" + data[i].StoreTelNo + "</td>" +
+                                "<td><a href='https://www.google.com.tw/maps/place/" + data[i].StoreAddress + " 'target='_blank' class='btn btn-info'>地圖</td>" +
+                                "<td><input type='button' id='Sbtn" + i + "' value='刪除' class='btn btn-danger'/></tr>"
+                            )
+                            $("#Sbtn" + i).on('click', { Sid: data[i].StoreId }, DeleteStore);
+                        }
+                    }
                 }
             })
         }
 
         function DeleteStore(e) {
-            $.ajax({
-                url:"https://localhost:44353/Home/DeleteStore?store=" + e.data.Sid,
-                type: "Get",
-                success: function () {
-                    
-                    alert("刪除成功");
+            var Cf = confirm("確定要移除該門市嗎?");
+            if (Cf == true) {
+                $.ajax({
+                    url: "https://localhost:44353/Home/DeleteStore?store=" + e.data.Sid,
+                    type: "Get",
+                    success: function () {
 
-                    viewstore();
-                }
-            })
+                        alert("刪除成功");
+
+                        viewstore();
+                    }
+                });
+            }
         }
     })
 

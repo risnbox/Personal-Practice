@@ -107,7 +107,6 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Userid" Type="int" />
           <Property Name="Pay" Type="char" MaxLength="5" />
-          <Property Name="Guid" Type="char" MaxLength="40" />
         </EntityType>
         <EntityType Name="Size">
           <Key>
@@ -597,7 +596,6 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Userid" Type="Int32" />
           <Property Name="Pay" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
-          <Property Name="Guid" Type="String" MaxLength="40" FixedLength="true" Unicode="false" />
           <NavigationProperty Name="Member" Relationship="DatabaseModel.FK__ShoppingC__Useri__10216507" FromRole="ShoppingCar" ToRole="Member" />
           <NavigationProperty Name="Quantity" Relationship="DatabaseModel.FK__Quantity__Sid__7908F585" FromRole="ShoppingCar" ToRole="Quantity" />
         </EntityType>
@@ -922,7 +920,6 @@
           <EntitySetMapping Name="ShoppingCar">
             <EntityTypeMapping TypeName="DatabaseModel.ShoppingCar">
               <MappingFragment StoreEntitySet="ShoppingCar">
-                <ScalarProperty Name="Guid" ColumnName="Guid" />
                 <ScalarProperty Name="Pay" ColumnName="Pay" />
                 <ScalarProperty Name="Userid" ColumnName="Userid" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

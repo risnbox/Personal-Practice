@@ -66,10 +66,10 @@
     .CO_span4 {
         color: #bbb;
     }
-    #CO_span1Select {
+    .CO_span1Select {
         background-color:#ff5353;
     }
-    #CO_span2Select {
+    .CO_span2Select {
         color:#ff5353;
         border-bottom:2px solid #ff5353;
         padding-bottom:2px;
@@ -95,6 +95,7 @@
         var Q = parseInt(q, 10);
         var data = P * Q;
         $("#T" + Id).text(data);
+        Total();
 
     }
 
@@ -102,11 +103,25 @@
 
         var Id = e.data.Id;
         var x = $("#Q" + Id).text();
+        var N = $("#N" + Id).text();
+        var F = $("#F" + Id).text();
         var Q = parseInt(x, 10);
         Q++;
-        $('#Q' + Id).text(Q);
-        Count(Id);
-        $("#C" + Id).attr("disabled","true");
+        $.ajax({
+            url: "https://localhost:44353/home/QtyAdd?Name=" + N + "&Feature=" + F,
+            type: "get",
+            success: function (data) {
+                if (data == "") {
+                    $('#Q' + Id).text(Q);
+                    Count(Id);
+                    $("#C" + Id).removeAttr("disabled");
+                }
+                else {
+                    alert(data);
+                }
+            }
+        })
+
 
     }
 
@@ -114,61 +129,111 @@
 
         var Id = e.data.Id;
         var x = $("#Q" + Id).text();
-        var Q = parseInt(x,10);
-        Q--;
-        $('#Q' + Id).text(Q);
-        Count(Id);
-        if (Q <= 1) {
-            $("#C" + Id).attr("disabled", "disabled");
+        var N = $("#N" + Id).text();
+        var F = $("#F" + Id).text();
+        var Q = parseInt(x, 10);
+        $.ajax({
+            url: "https://localhost:44353/home/QtyCut?Name=" + N + "&Feature=" + F,
+            type: "get",
+            success: function (data) {
+                if (data == "") {
+                    Q--;
+                    $('#Q' + Id).text(Q);
+                    Count(Id);
+                    if (Q <= 1) {
+                        $("#C" + Id).attr("disabled", "");
+                    }
+                }
+                else {
+                    alert(data);
+                }
+            }
+        })
+
+
+    }
+
+    function Total() {
+
+        var L = $("#CO_tbody tr:last").data("id");
+        var T = 0;
+        for (var i = 0; L >= i; i++) {
+            var t = $("#T" + i).text()
+            t = parseInt(t, 10);
+            T += t;
         }
+        $("#CO_Totalprice").text("NT$" + T);
 
     }
 
     function Delete(e) {
+
         var T = confirm("確定移除該商品嗎?");
         if (T == true) {
             var Id = e.data.Id;
             var N = $("#N" + Id).text();
+            var F = $("#F" + Id).text();
             $.ajax({
-                url: "https://localhost:44353/home/DeleteCart?Name=" + N,
+                url: "https://localhost:44353/home/DeleteCart?Name=" + N + "&Feature=" + F,
                 success: function (e) {
                     if (e != "") {
-                        alert("伺服器錯誤,code:" + e);
+                        alert(e);
                     }
                     else {
                         $("#" + Id).remove();
+                        window.location.reload();
                     }
                 }
             });
         }
+
     }
 
+    function NextStep1_2() {
+
+        $("#step1").css("display", "none");
+        $("#step2").css("display", "block")
+        $("#Step1-text .CO_span1").removeClass("CO_span1Select");
+        $("#Step1-text .CO_span2").removeClass("CO_span2Select");
+        $("#Step2-text .CO_span1").addClass("CO_span1Select");
+        $("#Step2-text .CO_span2").addClass("CO_span2Select");
+
+    }
+
+
     $(function () {
+
+        $("div #step2").css("display", "none");
         var data = @Html.Raw(ViewBag.json);
         var L = 0;
+        var T = 0;
         for (var x in data) {
             L++;
         }
         for (var i = 0; L > i; i++) {
             $("#CO_tbody").append(
-                "<tr id='" + i + "'><td class'col-md-3'><a><img class='img-rounded'style='width:70px;height:70px;float:left;'src='/UpdataFiles/" + data[i].Img + "' /></a>" +
-                "<h5 class='CO_span3' id='N" + i + "'>" + data[i].Name + "</h5><span class='CO_span4'>" + data[i].Feature + "</span></td>" +
+                "<tr data-id='" + i + "' id='" + i + "'><td class'col-md-3'><a><img class='img-rounded'style='width:70px;height:70px;float:left;'src='/UpdataFiles/" + data[i].Img + "' /></a>" +
+                "<h5 class='CO_span3' id='N" + i + "'>" + data[i].Name + "</h5><span class='CO_span4'id='F"+i+"'>" + data[i].Feature + "</span></td>" +
                 "<td class='col-md-2' style='padding-left:0;text-align:left;'><button id='C" + i + "' class='btn btn-default CO-'>-</button><span id='Q" + i + "' class='CO_Qty'>" + data[i].Qty +
-                "</span><button id='A" + i + "' class='btn btn-default CO+'>+</button></td><td class='col-md-1'><span id='P" + i + "'>NT$</span>" + data[i].Price + "</td>" +
-                "<td class='col-md-1'><span id='T" + i +"'>NT$</span>" + data[i].Total + "</td><td class='col-md-1'><a id='D" + i + "' style='float:right;padding-right:10px;text-decoration:none;color:#bbb;cursor:pointer'>X</a></td>" +
+                "</span><button id='A" + i + "' class='btn btn-default CO+'>+</button></td><td class='col-md-1'>NT$<span id='P" + i + "'>" + data[i].Price + "</span></td>" +
+                "<td class='col-md-1'>NT$<span id='T" + i + "'>" + data[i].Total + "</span></td><td class='col-md-1'><a id='D" + i + "' style='float:right;padding-right:10px;text-decoration:none;color:#bbb;cursor:pointer'>X</a></td>" +
                 "</tr>"
             )
+            var t = parseInt(data[i].Total, 10);
+            T = T + t;
             $("#A" + i).on("click", { Id: i }, Add);
             $("#C" + i).on("click", { Id: i }, Cut);
             $("#D" + i).on("click", { Id: i }, Delete);
             var q = $("#Q" + i).text();
             var Q = parseInt(q);
             if (Q <= 1) {
-                $("#C" + i).attr("disabled", "disabled")
+                $("#C" + i).attr("disabled", "")
             }
-            
+
         }
-        
+        $("#CO_Totalprice").text("NT$" + T);
+        $("#Nextstep1").on("click", NextStep1_2);
+
     })
 
 </script>
@@ -177,12 +242,12 @@
     
     <ul class="CO_ul1">
 
-        <li class="CO_li1"> 
+        <li id="Step1-text" class="CO_li1"> 
 
             <div class="CO_div2">
 
-                <span id="CO_span1Select" class="CO_span1">1</span>
-                <span id="CO_span2Select" class="CO_span2">確認購物車</span>
+                <span class="CO_span1 CO_span1Select">1</span>
+                <span class="CO_span2 CO_span2Select">確認購物車</span>
             
             </div>
             
@@ -195,7 +260,7 @@
 
         </li>
 
-        <li class="CO_li1">
+        <li id="Step2-text" class="CO_li1">
 
             <span class="CO_span1">2</span>
             <span class="CO_span2">資料填寫</span>
@@ -208,7 +273,7 @@
 
         </li>
 
-        <li class="CO_li1">
+        <li id="Step3-text" class="CO_li1">
 
             <span class="CO_span1">3</span>
             <span class="CO_span2">confirm</span>
@@ -219,7 +284,7 @@
 
 </div>
 
-<div class="container">
+<div id="step1" class="container">
 
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
@@ -237,8 +302,60 @@
 
                 <tbody id="CO_tbody">
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><h4>Total</h4></td>
+                        <td><h4 class="text-right" id="CO_Totalprice"></h4></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><input id="Nextstep1" class="btn btn-default" type="button" value="下一步" /></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
+    </div>
+
+</div>
+
+<div id="step2" style="display:none" class="container">
+
+    <div class="table table-striped">
+
+        <form class="well form-horizontal">
+
+            <div class="form-group">
+
+                <label class="col-md-4 control-label">收件人姓名</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                        <input class="form-control" required type="text" />
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="col-md-4 control-label">選取取貨門市</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-plane"></span></span>
+                        @Html.DropDownList("選取門市", ViewBag.storelist as SelectList, new { @class = "form-control", @id = "StoreSelect", required = "required" })
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+
     </div>
 
 </div>

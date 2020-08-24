@@ -10,7 +10,8 @@ using System.IO;
 using System.Xml;
 using System.Text;
 using Newtonsoft.Json;
-
+using System.Data.Entity.Infrastructure.DependencyResolution;
+using System.Web.Services.Description;
 
 namespace Asp.net_Exercise.Controllers
 {
@@ -102,7 +103,7 @@ namespace Asp.net_Exercise.Controllers
                     Session["MemberEmail"] = data.Email;
                     if (DB.ShoppingCar.Where(m => m.Userid == data.Id).FirstOrDefault() == null)
                     {
-                        var cart = new ShoppingCar() { Userid = data.Id, Pay = "false", Guid = Guid.NewGuid().ToString() };
+                        var cart = new ShoppingCar() { Userid = data.Id, Pay = "false"};
                         DB.ShoppingCar.Add(cart);
                         DB.SaveChanges();
                     }
@@ -131,8 +132,7 @@ namespace Asp.net_Exercise.Controllers
         public ActionResult SignOut()
         {
             //將Session清空辨別會員狀態
-            Session["Member"] = null;
-            Session["MemberName"] = null;
+            Session.RemoveAll();
             return RedirectToAction("Index");
         }
         public ActionResult MemberCenter()
@@ -310,6 +310,7 @@ namespace Asp.net_Exercise.Controllers
                 //修改資料庫內資料已測試過重複變數一樣能作用,前者data是索引作用後者才是複寫索引到的data
                 DB.Entry(data).CurrentValues.SetValues(data);
                 DB.SaveChanges();
+                Session.Remove("Veriflcationcode");
                 return RedirectToAction("Index");
             }
             if (data.ErrorCount >= 3)
@@ -617,6 +618,13 @@ namespace Asp.net_Exercise.Controllers
         {
             return View();
         }
+        public string Test()
+        {
+            var data = DB.Product.ToList();
+            var json = JsonConvert.SerializeObject(data);
+            json = json.Replace(" ", "");
+            return json;
+        }
         public string GetProd(string TYPE)
         {
             var data = (from Img in DB.Img
@@ -662,44 +670,48 @@ namespace Asp.net_Exercise.Controllers
         }
         public int AddCart(int pid, string color, string size)
         {
-            var d = Convert.ToInt32(Session["Member"].ToString());
             if (Session["Cart"] == null)
             {
                 return 1;
             }
+            var d = Convert.ToInt32(Session["Member"].ToString());
             if (DB.Member.Where(m => m.Id ==  d && m.Enable == 0).FirstOrDefault() != null)
             {
                 return 2;
             }
-            var c = Convert.ToInt32(Session["Cart"].ToString());
-            var data = (from Cart in DB.ShoppingCar
-                        where Cart.Id == c
-                        join C in DB.Color on color equals C.Name
-                        join S in DB.Size on size equals S.Name
-                        select new
-                        {
-                            Cart = Cart,
-                            C = C.Id,
-                            S = S.Id
-                        }).FirstOrDefault();
-            var pf = DB.ProdFeature.Where(m => m.Pid == pid && m.Cid == data.C && m.Sid == data.S).FirstOrDefault();
-            if (pf == null)
-            {
-                pf = new ProdFeature() { Pid = pid, Cid = data.C, Sid = data.S };
-                DB.ProdFeature.Add(pf);
-            }
-            var q = DB.Quantity.Where(m => m.PFid == pf.Id && m.Cid == c).FirstOrDefault();
-            if (q != null)
-            {
-                q.Qty++;
-            }
             else
             {
-                q = new Quantity() { PFid = pf.Id, Cid = c, Qty = 1 };
-                DB.Quantity.Add(q);
+                var c = Convert.ToInt32(Session["Cart"].ToString());
+                var data = (from Cart in DB.ShoppingCar
+                            where Cart.Id == c
+                            join C in DB.Color on color equals C.Name
+                            join S in DB.Size on size equals S.Name
+                            select new
+                            {
+                                Cart = Cart,
+                                C = C.Id,
+                                S = S.Id
+                            }).FirstOrDefault();
+                var pf = DB.ProdFeature.Where(m => m.Pid == pid && m.Cid == data.C && m.Sid == data.S).FirstOrDefault();
+                if (pf == null)
+                {
+                    pf = new ProdFeature() { Pid = pid, Cid = data.C, Sid = data.S };
+                    DB.ProdFeature.Add(pf);
+                }
+                var q = DB.Quantity.Where(m => m.PFid == pf.Id && m.Cid == c).FirstOrDefault();
+                if (q != null)
+                {
+                    q.Qty++;
+                }
+                else
+                {
+                    q = new Quantity() { PFid = pf.Id, Cid = c, Qty = 1 };
+                    DB.Quantity.Add(q);
+                }
+                DB.SaveChanges();
+                return 0;
             }
-            DB.SaveChanges();
-            return 0;
+            
         }
         public ActionResult CarPartial()
         {
@@ -729,7 +741,7 @@ namespace Asp.net_Exercise.Controllers
             {
                 return RedirectToAction("EmailValidationView");
             }
-            if (DB.Member_Store.Where(m => m.Member_Id == d).FirstOrDefault() != null)
+            if (DB.Member_Store.Where(m => m.Member_Id == d).FirstOrDefault() == null)
             {
                 TempData["CartError"] = "請先至會員會員中心選擇711門市";
                 return RedirectToAction("Location");
@@ -755,23 +767,68 @@ namespace Asp.net_Exercise.Controllers
                         ).ToList();
             var Json = JsonConvert.SerializeObject(data);
             ViewBag.json = Json.Replace(" ", "");
+            //------------------------------------------
+            var s = DB.Member_Store.Where(m => m.Member_Id == d).ToList();
+            var S = new List<string>();
+            foreach(var x in s)
+            {
+                S.Add(x.Store.StoreName+"("+x.Store.StoreAddress+")");
+            }
+            var l = new SelectList(S);
+            ViewBag.storelist = l;
             return View();
         }
-        public string DeleteCart(string Name)
+        public Quantity SearchQuantity(string Name, string Feature)
+        {
+                var d = Convert.ToInt32(Session["Member"].ToString());
+                var F = Feature.Split('-');
+                var color = F[0];
+                var size = F[1];
+                var S = DB.ShoppingCar.Where(m => m.Userid == d).FirstOrDefault();
+                var data = DB.Quantity.Where(m => m.Cid == S.Id && m.ProdFeature.Color.Name == color && m.ProdFeature.Size.Name == size && m.ProdFeature.Product.Name == Name).FirstOrDefault();
+                return data;            
+        }
+        
+        public string DeleteCart(string Name, string Feature)
         {
             try
             {
-                var d = Convert.ToInt32(Session["Member"].ToString());
-                var s = DB.ShoppingCar.Where(m => m.Userid == d).FirstOrDefault();
-                var data = DB.Quantity.Where(m => m.Cid == s.Id).ToList();
-                var prod = data.Where(m => m.ProdFeature.Product.Name == Name).FirstOrDefault();
-                DB.Quantity.Remove(prod);
+                var data = SearchQuantity(Name, Feature);
+                DB.Quantity.Remove(data);
                 DB.SaveChanges();
                 return "";
             }
             catch(Exception e)
             {
-                return e.ToString();
+                return "伺服器錯誤 code:" + e.ToString();
+            }
+        }
+        public string QtyAdd(string Name, string Feature)
+        {
+            try
+            {
+                var data = SearchQuantity(Name, Feature);
+                data.Qty++;
+                DB.SaveChanges();
+                return "";
+            }
+            catch(Exception e)
+            {
+                return "伺服器錯誤 code:" + e.ToString();
+            }
+        }
+        public string QtyCut(string Name, string Feature)
+        {
+            try
+            {
+                var data = SearchQuantity(Name, Feature);
+                data.Qty--;
+                DB.SaveChanges();
+                return "";
+            }
+            catch (Exception e)
+            {
+                return "伺服器錯誤 code:" + e.ToString();
             }
         }
     }    

@@ -44,6 +44,7 @@
     $(function () {
 
         var data = JSON.parse('@Html.Raw(ViewBag.json)')
+        console.log(data);
         var L = 0;
         for (var x in data) {
             L++;
