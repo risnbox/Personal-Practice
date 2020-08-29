@@ -40,11 +40,11 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" MaxLength="50" />
-          <Property Name="Email" Type="nvarchar" MaxLength="50" />
-          <Property Name="Phone" Type="nvarchar" MaxLength="50" />
-          <Property Name="Password" Type="nvarchar" MaxLength="50" />
-          <Property Name="Gender" Type="nvarchar" MaxLength="50" />
+          <Property Name="Name" Type="nvarchar" MaxLength="20" />
+          <Property Name="Email" Type="varchar" MaxLength="40" />
+          <Property Name="Phone" Type="nchar" MaxLength="10" />
+          <Property Name="Password" Type="varchar" MaxLength="40" />
+          <Property Name="Gender" Type="varchar" MaxLength="10" />
           <Property Name="Enable" Type="int" />
           <Property Name="ErrorCount" Type="int" />
         </EntityType>
@@ -55,6 +55,27 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Member_Id" Type="int" />
           <Property Name="Store_Id" Type="int" />
+        </EntityType>
+        <EntityType Name="Order">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nchar" MaxLength="20" />
+          <Property Name="Email" Type="char" MaxLength="40" />
+          <Property Name="Phone" Type="char" MaxLength="10" Nullable="false" />
+          <Property Name="Store_Id" Type="int" Nullable="false" />
+          <Property Name="User_Id" Type="int" Nullable="false" />
+          <Property Name="Guid" Type="char" MaxLength="36" />
+          <Property Name="Time" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OrderDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Quantity_Id" Type="int" Nullable="false" />
+          <Property Name="Order_Id" Type="int" />
         </EntityType>
         <EntityType Name="Prod_Class_Type">
           <Key>
@@ -70,8 +91,8 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Pid" Type="int" />
-          <Property Name="Mid" Type="int" />
+          <Property Name="Pid" Type="int" Nullable="false" />
+          <Property Name="Mid" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="ProdFeature">
           <Key>
@@ -106,7 +127,6 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Userid" Type="int" />
-          <Property Name="Pay" Type="char" MaxLength="5" />
         </EntityType>
         <EntityType Name="Size">
           <Key>
@@ -179,6 +199,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__Order__Store_Id__1881A0DE">
+          <End Role="Store" Type="Self.Store" Multiplicity="1" />
+          <End Role="Order" Type="Self.Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="StoreId" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="Store_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Order__User_Id__1975C517">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Order" Type="Self.Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="User_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__Prod_Class___Cid__5224328E">
           <End Role="Class" Type="Self.Class" Multiplicity="0..1" />
           <End Role="Prod_Class_Type" Type="Self.Prod_Class_Type" Multiplicity="*" />
@@ -215,8 +259,8 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Prod_Img__Mid__0A688BB1">
-          <End Role="Img" Type="Self.Img" Multiplicity="0..1" />
+        <Association Name="FK__Prod_Img__Mid__12C8C788">
+          <End Role="Img" Type="Self.Img" Multiplicity="1" />
           <End Role="Prod_Img" Type="Self.Prod_Img" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Img">
@@ -227,8 +271,8 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Prod_Img__Pid__0B5CAFEA">
-          <End Role="Product" Type="Self.Product" Multiplicity="0..1" />
+        <Association Name="FK__Prod_Img__Pid__13BCEBC1">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
           <End Role="Prod_Img" Type="Self.Prod_Img" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Product">
@@ -318,6 +362,8 @@
           <EntitySet Name="Keep" EntityType="Self.Keep" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Member" EntityType="Self.Member" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Member_Store" EntityType="Self.Member_Store" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Order" EntityType="Self.Order" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderDetail" EntityType="Self.OrderDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Prod_Class_Type" EntityType="Self.Prod_Class_Type" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Prod_Img" EntityType="Self.Prod_Img" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProdFeature" EntityType="Self.ProdFeature" Schema="dbo" store:Type="Tables" />
@@ -343,6 +389,14 @@
             <End Role="Store" EntitySet="Store" />
             <End Role="Member_Store" EntitySet="Member_Store" />
           </AssociationSet>
+          <AssociationSet Name="FK__Order__Store_Id__1881A0DE" Association="Self.FK__Order__Store_Id__1881A0DE">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="Order" EntitySet="Order" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Order__User_Id__1975C517" Association="Self.FK__Order__User_Id__1975C517">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Order" EntitySet="Order" />
+          </AssociationSet>
           <AssociationSet Name="FK__Prod_Class___Cid__5224328E" Association="Self.FK__Prod_Class___Cid__5224328E">
             <End Role="Class" EntitySet="Class" />
             <End Role="Prod_Class_Type" EntitySet="Prod_Class_Type" />
@@ -355,11 +409,11 @@
             <End Role="Type" EntitySet="Type" />
             <End Role="Prod_Class_Type" EntitySet="Prod_Class_Type" />
           </AssociationSet>
-          <AssociationSet Name="FK__Prod_Img__Mid__0A688BB1" Association="Self.FK__Prod_Img__Mid__0A688BB1">
+          <AssociationSet Name="FK__Prod_Img__Mid__12C8C788" Association="Self.FK__Prod_Img__Mid__12C8C788">
             <End Role="Img" EntitySet="Img" />
             <End Role="Prod_Img" EntitySet="Prod_Img" />
           </AssociationSet>
-          <AssociationSet Name="FK__Prod_Img__Pid__0B5CAFEA" Association="Self.FK__Prod_Img__Pid__0B5CAFEA">
+          <AssociationSet Name="FK__Prod_Img__Pid__13BCEBC1" Association="Self.FK__Prod_Img__Pid__13BCEBC1">
             <End Role="Product" EntitySet="Product" />
             <End Role="Prod_Img" EntitySet="Prod_Img" />
           </AssociationSet>
@@ -399,6 +453,8 @@
           <EntitySet Name="Keep" EntityType="DatabaseModel.Keep" />
           <EntitySet Name="Member" EntityType="DatabaseModel.Member" />
           <EntitySet Name="Member_Store" EntityType="DatabaseModel.Member_Store" />
+          <EntitySet Name="Order" EntityType="DatabaseModel.Order" />
+          <EntitySet Name="OrderDetail" EntityType="DatabaseModel.OrderDetail" />
           <EntitySet Name="Prod_Class_Type" EntityType="DatabaseModel.Prod_Class_Type" />
           <EntitySet Name="Prod_Img" EntityType="DatabaseModel.Prod_Img" />
           <EntitySet Name="ProdFeature" EntityType="DatabaseModel.ProdFeature" />
@@ -416,7 +472,7 @@
             <End Role="Color" EntitySet="Color" />
             <End Role="ProdFeature" EntitySet="ProdFeature" />
           </AssociationSet>
-          <AssociationSet Name="FK__Prod_Img__Mid__0A688BB1" Association="DatabaseModel.FK__Prod_Img__Mid__0A688BB1">
+          <AssociationSet Name="FK__Prod_Img__Mid__12C8C788" Association="DatabaseModel.FK__Prod_Img__Mid__12C8C788">
             <End Role="Img" EntitySet="Img" />
             <End Role="Prod_Img" EntitySet="Prod_Img" />
           </AssociationSet>
@@ -432,6 +488,10 @@
             <End Role="Member" EntitySet="Member" />
             <End Role="Member_Store" EntitySet="Member_Store" />
           </AssociationSet>
+          <AssociationSet Name="FK__Order__User_Id__1975C517" Association="DatabaseModel.FK__Order__User_Id__1975C517">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Order" EntitySet="Order" />
+          </AssociationSet>
           <AssociationSet Name="FK__ShoppingC__Useri__10216507" Association="DatabaseModel.FK__ShoppingC__Useri__10216507">
             <End Role="Member" EntitySet="Member" />
             <End Role="ShoppingCar" EntitySet="ShoppingCar" />
@@ -439,6 +499,10 @@
           <AssociationSet Name="FK__Member_St__Store__160F4887" Association="DatabaseModel.FK__Member_St__Store__160F4887">
             <End Role="Store" EntitySet="Store" />
             <End Role="Member_Store" EntitySet="Member_Store" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Order__Store_Id__1881A0DE" Association="DatabaseModel.FK__Order__Store_Id__1881A0DE">
+            <End Role="Store" EntitySet="Store" />
+            <End Role="Order" EntitySet="Order" />
           </AssociationSet>
           <AssociationSet Name="FK__Prod_Class___Pid__51300E55" Association="DatabaseModel.FK__Prod_Class___Pid__51300E55">
             <End Role="Product" EntitySet="Product" />
@@ -448,7 +512,7 @@
             <End Role="Type" EntitySet="Type" />
             <End Role="Prod_Class_Type" EntitySet="Prod_Class_Type" />
           </AssociationSet>
-          <AssociationSet Name="FK__Prod_Img__Pid__0B5CAFEA" Association="DatabaseModel.FK__Prod_Img__Pid__0B5CAFEA">
+          <AssociationSet Name="FK__Prod_Img__Pid__13BCEBC1" Association="DatabaseModel.FK__Prod_Img__Pid__13BCEBC1">
             <End Role="Product" EntitySet="Product" />
             <End Role="Prod_Img" EntitySet="Prod_Img" />
           </AssociationSet>
@@ -492,7 +556,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Type" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <Property Name="FileName" Type="String" MaxLength="200" FixedLength="true" Unicode="false" />
-          <NavigationProperty Name="Prod_Img" Relationship="DatabaseModel.FK__Prod_Img__Mid__0A688BB1" FromRole="Img" ToRole="Prod_Img" />
+          <NavigationProperty Name="Prod_Img" Relationship="DatabaseModel.FK__Prod_Img__Mid__12C8C788" FromRole="Img" ToRole="Prod_Img" />
         </EntityType>
         <EntityType Name="Keep">
           <Key>
@@ -509,15 +573,16 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Gender" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="Phone" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="Gender" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="Enable" Type="Int32" />
           <Property Name="ErrorCount" Type="Int32" />
           <NavigationProperty Name="Keep" Relationship="DatabaseModel.FK__Keep__Userid__18B6AB08" FromRole="Member" ToRole="Keep" />
           <NavigationProperty Name="Member_Store" Relationship="DatabaseModel.FK__Member_St__Membe__02FC7413" FromRole="Member" ToRole="Member_Store" />
+          <NavigationProperty Name="Order" Relationship="DatabaseModel.FK__Order__User_Id__1975C517" FromRole="Member" ToRole="Order" />
           <NavigationProperty Name="ShoppingCar" Relationship="DatabaseModel.FK__ShoppingC__Useri__10216507" FromRole="Member" ToRole="ShoppingCar" />
         </EntityType>
         <EntityType Name="Member_Store">
@@ -529,6 +594,29 @@
           <Property Name="Store_Id" Type="Int32" />
           <NavigationProperty Name="Member" Relationship="DatabaseModel.FK__Member_St__Membe__02FC7413" FromRole="Member_Store" ToRole="Member" />
           <NavigationProperty Name="Store" Relationship="DatabaseModel.FK__Member_St__Store__160F4887" FromRole="Member_Store" ToRole="Store" />
+        </EntityType>
+        <EntityType Name="Order">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="40" FixedLength="true" Unicode="false" />
+          <Property Name="Phone" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="Store_Id" Type="Int32" Nullable="false" />
+          <Property Name="User_Id" Type="Int32" Nullable="false" />
+          <Property Name="Guid" Type="String" MaxLength="36" FixedLength="true" Unicode="false" />
+          <Property Name="Time" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Member" Relationship="DatabaseModel.FK__Order__User_Id__1975C517" FromRole="Order" ToRole="Member" />
+          <NavigationProperty Name="Store" Relationship="DatabaseModel.FK__Order__Store_Id__1881A0DE" FromRole="Order" ToRole="Store" />
+        </EntityType>
+        <EntityType Name="OrderDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Quantity_Id" Type="Int32" Nullable="false" />
+          <Property Name="Order_Id" Type="Int32" />
         </EntityType>
         <EntityType Name="Prod_Class_Type">
           <Key>
@@ -547,10 +635,10 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Pid" Type="Int32" />
-          <Property Name="Mid" Type="Int32" />
-          <NavigationProperty Name="Img" Relationship="DatabaseModel.FK__Prod_Img__Mid__0A688BB1" FromRole="Prod_Img" ToRole="Img" />
-          <NavigationProperty Name="Product" Relationship="DatabaseModel.FK__Prod_Img__Pid__0B5CAFEA" FromRole="Prod_Img" ToRole="Product" />
+          <Property Name="Pid" Type="Int32" Nullable="false" />
+          <Property Name="Mid" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Img" Relationship="DatabaseModel.FK__Prod_Img__Mid__12C8C788" FromRole="Prod_Img" ToRole="Img" />
+          <NavigationProperty Name="Product" Relationship="DatabaseModel.FK__Prod_Img__Pid__13BCEBC1" FromRole="Prod_Img" ToRole="Product" />
         </EntityType>
         <EntityType Name="ProdFeature">
           <Key>
@@ -574,7 +662,7 @@
           <Property Name="Price" Type="Int32" />
           <NavigationProperty Name="Keep" Relationship="DatabaseModel.FK__Keep__Prodid__19AACF41" FromRole="Product" ToRole="Keep" />
           <NavigationProperty Name="Prod_Class_Type" Relationship="DatabaseModel.FK__Prod_Class___Pid__51300E55" FromRole="Product" ToRole="Prod_Class_Type" />
-          <NavigationProperty Name="Prod_Img" Relationship="DatabaseModel.FK__Prod_Img__Pid__0B5CAFEA" FromRole="Product" ToRole="Prod_Img" />
+          <NavigationProperty Name="Prod_Img" Relationship="DatabaseModel.FK__Prod_Img__Pid__13BCEBC1" FromRole="Product" ToRole="Prod_Img" />
           <NavigationProperty Name="ProdFeature" Relationship="DatabaseModel.FK__ProdFeature__Pid__36470DEF" FromRole="Product" ToRole="ProdFeature" />
         </EntityType>
         <EntityType Name="Quantity">
@@ -595,7 +683,6 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Userid" Type="Int32" />
-          <Property Name="Pay" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
           <NavigationProperty Name="Member" Relationship="DatabaseModel.FK__ShoppingC__Useri__10216507" FromRole="ShoppingCar" ToRole="Member" />
           <NavigationProperty Name="Quantity" Relationship="DatabaseModel.FK__Quantity__Sid__7908F585" FromRole="ShoppingCar" ToRole="Quantity" />
         </EntityType>
@@ -616,6 +703,7 @@
           <Property Name="StoreAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="StoreTelNo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Member_Store" Relationship="DatabaseModel.FK__Member_St__Store__160F4887" FromRole="Store" ToRole="Member_Store" />
+          <NavigationProperty Name="Order" Relationship="DatabaseModel.FK__Order__Store_Id__1881A0DE" FromRole="Store" ToRole="Order" />
         </EntityType>
         <EntityType Name="Type">
           <Key>
@@ -649,8 +737,8 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Prod_Img__Mid__0A688BB1">
-          <End Type="DatabaseModel.Img" Role="Img" Multiplicity="0..1" />
+        <Association Name="FK__Prod_Img__Mid__12C8C788">
+          <End Type="DatabaseModel.Img" Role="Img" Multiplicity="1" />
           <End Type="DatabaseModel.Prod_Img" Role="Prod_Img" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Img">
@@ -697,6 +785,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__Order__User_Id__1975C517">
+          <End Type="DatabaseModel.Member" Role="Member" Multiplicity="1" />
+          <End Type="DatabaseModel.Order" Role="Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="User_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__ShoppingC__Useri__10216507">
           <End Type="DatabaseModel.Member" Role="Member" Multiplicity="0..1" />
           <End Type="DatabaseModel.ShoppingCar" Role="ShoppingCar" Multiplicity="*" />
@@ -717,6 +817,18 @@
               <PropertyRef Name="StoreId" />
             </Principal>
             <Dependent Role="Member_Store">
+              <PropertyRef Name="Store_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Order__Store_Id__1881A0DE">
+          <End Type="DatabaseModel.Store" Role="Store" Multiplicity="1" />
+          <End Type="DatabaseModel.Order" Role="Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="StoreId" />
+            </Principal>
+            <Dependent Role="Order">
               <PropertyRef Name="Store_Id" />
             </Dependent>
           </ReferentialConstraint>
@@ -745,8 +857,8 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Prod_Img__Pid__0B5CAFEA">
-          <End Type="DatabaseModel.Product" Role="Product" Multiplicity="0..1" />
+        <Association Name="FK__Prod_Img__Pid__13BCEBC1">
+          <End Type="DatabaseModel.Product" Role="Product" Multiplicity="1" />
           <End Type="DatabaseModel.Prod_Img" Role="Prod_Img" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Product">
@@ -868,6 +980,29 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Order">
+            <EntityTypeMapping TypeName="DatabaseModel.Order">
+              <MappingFragment StoreEntitySet="Order">
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="Guid" ColumnName="Guid" />
+                <ScalarProperty Name="User_Id" ColumnName="User_Id" />
+                <ScalarProperty Name="Store_Id" ColumnName="Store_Id" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrderDetail">
+            <EntityTypeMapping TypeName="DatabaseModel.OrderDetail">
+              <MappingFragment StoreEntitySet="OrderDetail">
+                <ScalarProperty Name="Order_Id" ColumnName="Order_Id" />
+                <ScalarProperty Name="Quantity_Id" ColumnName="Quantity_Id" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Prod_Class_Type">
             <EntityTypeMapping TypeName="DatabaseModel.Prod_Class_Type">
               <MappingFragment StoreEntitySet="Prod_Class_Type">
@@ -920,7 +1055,6 @@
           <EntitySetMapping Name="ShoppingCar">
             <EntityTypeMapping TypeName="DatabaseModel.ShoppingCar">
               <MappingFragment StoreEntitySet="ShoppingCar">
-                <ScalarProperty Name="Pay" ColumnName="Pay" />
                 <ScalarProperty Name="Userid" ColumnName="Userid" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

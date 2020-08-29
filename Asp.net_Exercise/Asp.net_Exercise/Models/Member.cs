@@ -19,6 +19,7 @@ namespace Asp.net_Exercise.Models
         {
             this.Keep = new HashSet<Keep>();
             this.Member_Store = new HashSet<Member_Store>();
+            this.Order = new HashSet<Order>();
             this.ShoppingCar = new HashSet<ShoppingCar>();
         }
     
@@ -35,6 +36,8 @@ namespace Asp.net_Exercise.Models
         public virtual ICollection<Keep> Keep { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Member_Store> Member_Store { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Order> Order { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShoppingCar> ShoppingCar { get; set; }
     }

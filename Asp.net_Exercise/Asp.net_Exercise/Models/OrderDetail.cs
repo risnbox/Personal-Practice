@@ -12,19 +12,10 @@ namespace Asp.net_Exercise.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ShoppingCar
+    public partial class OrderDetail
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public ShoppingCar()
-        {
-            this.Quantity = new HashSet<Quantity>();
-        }
-    
         public int Id { get; set; }
-        public Nullable<int> Userid { get; set; }
-    
-        public virtual Member Member { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Quantity> Quantity { get; set; }
+        public int Quantity_Id { get; set; }
+        public Nullable<int> Order_Id { get; set; }
     }
 }

@@ -14,31 +14,47 @@ namespace Asp.net_Exercise.Models
     [MetadataType(typeof(MemberValidation))]
     public partial class Member
     {
+        public class MemberValidation
+        {
+            public int Id { get; set; }
+            [DisplayName("姓名")]
+            [Required(ErrorMessage = "姓名為必填")]
+            public string Name { get; set; }
+            [DisplayName("信箱")]
+            [Required(ErrorMessage = "信箱為必填")]
+            [EmailAddress]
+            public string Email { get; set; }
+            [DisplayName("手機")]
+            [Required(ErrorMessage = "手機為必填")]
+            //關於正規表達式相關內容至Google書籤內有相關可用外掛!
+            [RegularExpression(@"^\s*09{1}[0-9]{8}\s*$", ErrorMessage = "手機格式錯誤")]
+            public string Phone { get; set; }
+            [DisplayName("密碼")]
+            [Required(ErrorMessage = "密碼為必填")]
+            //關於正規表達式相關內容至Google書籤內有相關可用外掛!
+            [RegularExpression(@"^\s*(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,20}\s*$", ErrorMessage = "密碼必須包含大小寫字母及數字各1,長度為6~20位數")]
+            public string Password { get; set; }
+            [DisplayName("姓別")]
+            public string Gender { get; set; }
+        }
+    }
 
-    }
-    public partial class MemberValidation
+    [MetadataType(typeof(OrderValidation))]
+    public partial class Order
     {
-        public int Id { get; set; }
-        [DisplayName("姓名")]
-        [Required(ErrorMessage = "姓名為必填")]
-        public string Name { get; set; }
-        [DisplayName("信箱")]
-        [Required(ErrorMessage = "信箱為必填")]
-        [EmailAddress]
-        public string Email { get; set; }
-        [DisplayName("手機")]
-        [Required(ErrorMessage = "手機為必填")]
-        //關於正規表達式相關內容至Google書籤內有相關可用外掛!
-        [RegularExpression(@"^\s*09{1}[0-9]{8}\s*$", ErrorMessage = "手機格式錯誤")]
-        public string Phone { get; set; }
-        [DisplayName("密碼")]
-        [Required(ErrorMessage = "密碼為必填")]
-        //關於正規表達式相關內容至Google書籤內有相關可用外掛!
-        [RegularExpression(@"^\s*(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,20}\s*$", ErrorMessage = "密碼必須包含大小寫字母及數字各1,長度為6~20位數")]
-        public string Password { get; set; }
-        [DisplayName("姓別")]
-        public string Gender { get; set; }
+        public class OrderValidation
+        {
+
+            [Required(ErrorMessage = "收件人為必填")]
+            public string Name { get; set; }
+            [Required(ErrorMessage = "信箱為必填")]
+            public string Email { get; set; }
+            [Required(ErrorMessage = "手機為必填")]
+            [RegularExpression(@"^\s*09{1}[0-9]{8}\s*$", ErrorMessage = "手機格式錯誤")]
+            public int Phone { get; set; }
+        }
     }
+
     //使用enum列舉型別來建立下拉式選單需要的項目
     public enum GenderSelect
     {

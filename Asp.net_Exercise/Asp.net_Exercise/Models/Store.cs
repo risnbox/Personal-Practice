@@ -18,6 +18,7 @@ namespace Asp.net_Exercise.Models
         public Store()
         {
             this.Member_Store = new HashSet<Member_Store>();
+            this.Order = new HashSet<Order>();
         }
     
         public string StoreName { get; set; }
@@ -27,5 +28,7 @@ namespace Asp.net_Exercise.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Member_Store> Member_Store { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Order> Order { get; set; }
     }
 }

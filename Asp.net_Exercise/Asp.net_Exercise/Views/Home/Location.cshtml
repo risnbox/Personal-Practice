@@ -132,16 +132,13 @@
                 data: { Name: name, Address: Address, ID: Id, TelNo: TelNo },
                 success: function (data) {
                     if (data == 0) {
-                        console.log("0");
                         location.href = 'MemberCenter';
                     }
                     if (data == 1) {
-                        console.log("1");
                         alert("已選擇過該門市");
                         location.href = 'Location';
                     }
                     if (data == 2) {
-                        console.log("2");
                         alert("資料庫異常");
                         location.href = 'Location';
                     }

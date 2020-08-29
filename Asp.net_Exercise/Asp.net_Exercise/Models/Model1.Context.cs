@@ -31,6 +31,8 @@ namespace Asp.net_Exercise.Models
         public virtual DbSet<Keep> Keep { get; set; }
         public virtual DbSet<Member> Member { get; set; }
         public virtual DbSet<Member_Store> Member_Store { get; set; }
+        public virtual DbSet<Order> Order { get; set; }
+        public virtual DbSet<OrderDetail> OrderDetail { get; set; }
         public virtual DbSet<Prod_Class_Type> Prod_Class_Type { get; set; }
         public virtual DbSet<Prod_Img> Prod_Img { get; set; }
         public virtual DbSet<ProdFeature> ProdFeature { get; set; }

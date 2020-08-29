@@ -72,9 +72,6 @@ namespace Asp.net_Exercise.Controllers
             }
             else
             {
-
-            }
-            {
                 return View();
             }
         }
@@ -103,7 +100,7 @@ namespace Asp.net_Exercise.Controllers
                     Session["MemberEmail"] = data.Email;
                     if (DB.ShoppingCar.Where(m => m.Userid == data.Id).FirstOrDefault() == null)
                     {
-                        var cart = new ShoppingCar() { Userid = data.Id, Pay = "false"};
+                        var cart = new ShoppingCar() { Userid = data.Id};
                         DB.ShoppingCar.Add(cart);
                         DB.SaveChanges();
                     }
@@ -773,7 +770,7 @@ namespace Asp.net_Exercise.Controllers
             var S = new List<string>();
             foreach(var x in s)
             {
-                S.Add(x.Store.StoreName+"("+x.Store.StoreAddress+")");
+                S.Add(x.Store.StoreName+"-"+x.Store.StoreAddress);
             }
             var l = new SelectList(S);
             ViewBag.storelist = l;
@@ -833,6 +830,55 @@ namespace Asp.net_Exercise.Controllers
             catch (Exception e)
             {
                 return "伺服器錯誤 code:" + e.ToString();
+            }
+        }
+        [HttpPost]
+        public string Submitorder(string Name, string Email, string Phone, string Store)
+        {
+            if (ModelState.IsValid)
+            {
+                var d = Convert.ToInt32(Session["Member"].ToString());
+                var s = Convert.ToInt32(Session["cart"].ToString());
+                var t = Store.Split('-');
+                var store = t[0];
+                var sd = DB.Store.Where(m => m.StoreName == store).FirstOrDefault();
+                try
+                {
+                    Order order = new Order()
+                    {
+                        Name = Name,
+                        Email = Email,
+                        Phone = Phone,
+                        Store_Id = sd.StoreId,
+                        User_Id = d,
+                        Guid = Guid.NewGuid().ToString(),
+                        Time = DateTime.Now
+                    };
+                    DB.Order.Add(order);
+                    var data = DB.Quantity.Where(m => m.Cid == s).ToList();
+                    OrderDetail orderdetail = new OrderDetail();
+                    foreach (var i in data)
+                    {
+                        orderdetail = new OrderDetail()
+                        {
+                            Quantity_Id = i.Id,
+                            Order_Id = order.Id
+                        };
+                        //DB.OrderDetail.Add(orderdetail);
+                    }
+                    //DB.ShoppingCar.Remove(DB.ShoppingCar.Find(s));
+                    DB.SaveChanges();
+                return "";
+                }
+                catch (Exception e)
+                {
+                    
+                    return "資料庫更新失敗 code:" + e;
+                }
+            }
+            else
+            {
+                return "資料輸入有誤";
             }
         }
     }    
