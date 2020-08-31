@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using System.Security.Cryptography.X509Certificates;
+using Newtonsoft.Json;
 
 namespace Asp.net_Exercise.Models
 {
@@ -52,6 +54,10 @@ namespace Asp.net_Exercise.Models
             [Required(ErrorMessage = "手機為必填")]
             [RegularExpression(@"^\s*09{1}[0-9]{8}\s*$", ErrorMessage = "手機格式錯誤")]
             public int Phone { get; set; }
+            [JsonIgnore]
+            public virtual Member Member { get; set; }
+            [JsonIgnore]
+            public virtual Store Store { get; set; }
         }
     }
 

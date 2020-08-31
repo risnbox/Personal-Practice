@@ -64,7 +64,7 @@ namespace Asp.net_Exercise.Controllers
                     var code = Randomcode();
                     Session["Veriflcationcode"] = code;
                     //使用System.Net.Mail來寄出驗證碼
-                    EmailValidation(Postback.Email, "您的驗證碼是:" + code + "<br />Time:" + DateTime.Now);
+                    EmailValidation("帳號驗證", Postback.Email, "您的驗證碼是:" + code + "<br />Time:" + DateTime.Now);
                     //寫入TempData傳入SignInView來Alert提示使用者
                     TempData["SignUpSuccess"] = "註冊成功,已寄出認證信,請收信後登入輸入驗證碼";
                     return RedirectToAction("SignIn");
@@ -233,7 +233,7 @@ namespace Asp.net_Exercise.Controllers
             try
             {
                 var randomcode = Randomcode();
-                EmailValidation(Session["MemberEmail"] as string, "您的驗證碼是:" + randomcode + "<br />Time:" + DateTime.Now);
+                EmailValidation("帳號驗證", Session["MemberEmail"] as string, "您的驗證碼是:" + randomcode + "<br />Time:" + DateTime.Now);
                 Session["Veriflcationcode"] = randomcode;
                 return "成功";
             }
@@ -242,7 +242,7 @@ namespace Asp.net_Exercise.Controllers
                 return "寄出失敗 code:" + e ;
             }
         }
-        public void EmailValidation(string Email, string Body)
+        public void EmailValidation(string Title, string Email, string Body)
         {
             try
             {
@@ -251,7 +251,7 @@ namespace Asp.net_Exercise.Controllers
                 Mail.To.Add(Email);//收件人
                 //參數屬性是寄件人名字及地址但地址似乎會被Gmail覆蓋,此處我的寄件人地址是User但實際收件顯示的依然是Host
                 Mail.From = new MailAddress(Email , "Lativ", Encoding.UTF8);
-                Mail.Subject = "帳號驗證";//標題
+                Mail.Subject = Title;//標題
                 Mail.SubjectEncoding = Encoding.UTF8;
                 Mail.Body = Body;//內容,如定義為Html信件則可加入Html語法(CSS及Javescript未試過)
                 Mail.BodyEncoding = Encoding.UTF8;
@@ -315,7 +315,7 @@ namespace Asp.net_Exercise.Controllers
                 var code = Randomcode();//呼叫產生亂數方法寫入code
                 Session["Veriflcationcode"] = code;//由於重寄驗證碼所以Session內容須重置
                 ViewBag.ValidationErrorMessage = "驗證碼輸入錯誤次數超過3次,已重新寄出驗證信";
-                EmailValidation(data.Email, Session["Veriflcationcode"] as string);
+                EmailValidation("帳號驗證", data.Email, Session["Veriflcationcode"] as string);
                 data.ErrorCount = 0;
                 DB.Entry(data).CurrentValues.SetValues(data);
                 DB.SaveChanges();
@@ -833,28 +833,23 @@ namespace Asp.net_Exercise.Controllers
             }
         }
         [HttpPost]
-        public string Submitorder(string Name, string Email, string Phone, string Store)
+        public string Submitorder(Order order, string Sname)//其實應該直接用Submit處理表單,只是原本想說購物車會有第三步驟才用ajax
         {
             if (ModelState.IsValid)
             {
                 var d = Convert.ToInt32(Session["Member"].ToString());
                 var s = Convert.ToInt32(Session["cart"].ToString());
-                var t = Store.Split('-');
-                var store = t[0];
-                var sd = DB.Store.Where(m => m.StoreName == store).FirstOrDefault();
+                var t = Sname.Split('-');
+                var S = t[0];
+                var sd = DB.Store.Where(m => m.StoreName == S).FirstOrDefault();
                 try
                 {
-                    Order order = new Order()
-                    {
-                        Name = Name,
-                        Email = Email,
-                        Phone = Phone,
-                        Store_Id = sd.StoreId,
-                        User_Id = d,
-                        Guid = Guid.NewGuid().ToString(),
-                        Time = DateTime.Now
-                    };
+                    order.Store_Id = sd.StoreId;
+                    order.User_Id = d;
+                    order.Guid = Guid.NewGuid().ToString();
+                    order.Time = DateTime.Now;
                     DB.Order.Add(order);
+                    DB.SaveChanges();
                     var data = DB.Quantity.Where(m => m.Cid == s).ToList();
                     OrderDetail orderdetail = new OrderDetail();
                     foreach (var i in data)
@@ -864,21 +859,62 @@ namespace Asp.net_Exercise.Controllers
                             Quantity_Id = i.Id,
                             Order_Id = order.Id
                         };
-                        //DB.OrderDetail.Add(orderdetail);
+                        DB.OrderDetail.Add(orderdetail);
                     }
-                    //DB.ShoppingCar.Remove(DB.ShoppingCar.Find(s));
+                    DB.ShoppingCar.Remove(DB.ShoppingCar.Find(s));
+                    ShoppingCar cart = new ShoppingCar() { Userid = d};
+                    DB.ShoppingCar.Add(cart);
                     DB.SaveChanges();
+                    Session["Cart"] = cart.Id;
                 return "";
                 }
                 catch (Exception e)
                 {
-                    
                     return "資料庫更新失敗 code:" + e;
                 }
             }
             else
             {
-                return "資料輸入有誤";
+                var e = ModelState.Where(m => m.Value.Errors.Any()).Select(m => new { key = m.Key, message = m.Value.Errors.Select(x=>x.ErrorMessage).First() }).ToList();
+                var j = JsonConvert.SerializeObject(e);
+                return j.Replace(" ", "");
+            }
+        }
+        public ActionResult OrderVIew()
+        {
+            var d = Convert.ToInt32(Session["Member"].ToString());
+            var order = DB.Order.Where(m => m.User_Id == d).Select(m=>new { name=m.Name, email=m.Email, phone=m.Phone, guid=m.Guid, store=m.Store.StoreName, time=m.Time, oid=m.Id }).ToList();
+            var j = JsonConvert.SerializeObject(order);
+            ViewBag.order = j.Replace(" ", "");
+            return View("OrderView");
+        }
+        public string GetOrderDetail(int oid)
+        {
+            try
+            {
+                var data = (from order in DB.Order
+                            where order.Id == oid
+                            join OD in DB.OrderDetail on order.Id equals OD.Order_Id
+                            join Qty in DB.Quantity on OD.Quantity_Id equals Qty.Id
+                            join PF in DB.ProdFeature on Qty.PFid equals PF.Id
+                            join PI in DB.Prod_Img on PF.Pid equals PI.Pid
+                            join img in DB.Img on new { A = PI.Mid, B = "previewed" } equals new { A = img.Id, B = img.Type }
+                            select new
+                            {
+                                name = PF.Product.Name,
+                                price = PF.Product.Price,
+                                qty = Qty.Qty,
+                                img = img.FileName,
+                                total = PF.Product.Price * Qty.Qty,
+                                feature = PF.Size.Name + "-" + PF.Color.Name
+                            }
+                            ).ToList();
+                var j  = JsonConvert.SerializeObject(data);
+                return j.Replace(" ", "");//查明為何透過ViewBag傳出的json能直接引用 但是return string json無法必須透過JSON.parse 邏輯而言本質應該相同
+            }
+            catch (Exception e)
+            {
+                return e.ToString();
             }
         }
     }    

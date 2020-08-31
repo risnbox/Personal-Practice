@@ -48,6 +48,7 @@
 <div class="container">
     <div class="row" style="padding-top:30px">
         <div class="U list-group list-group-horizontal">
+            <a href="@Url.Action("OrderVIew")" class="L list-group-item"><span>我的訂單</span></a>
             <a href="KeepView" class="L list-group-item"><span>我的收藏</span></a>
             <a class="L list-group-item" href="@Url.Action("Location")">設定取貨門市</a>
             <a class="L list-group-item active">修改會員資料</a>
@@ -55,8 +56,9 @@
     </div>
 </div>
 <hr />
-@using (Html.BeginForm())
-{
+
+<form action="/home/membercenter" method="post" style="width:60%;margin:auto;">
+
     <div class=" form-horizontal">
         <h4 class="text-danger">@ViewBag.EditErrorMessage</h4>
 
@@ -115,7 +117,6 @@
         </div>
 
 
-
         <input type="submit" class="col-md-offset-2 btn btn-default" />
     </div>
-}
+</form>

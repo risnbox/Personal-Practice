@@ -119,7 +119,6 @@
           <Property Name="PFid" Type="int" />
           <Property Name="Cid" Type="int" />
           <Property Name="Qty" Type="int" />
-          <Property Name="Total" Type="int" />
         </EntityType>
         <EntityType Name="ShoppingCar">
           <Key>
@@ -673,7 +672,6 @@
           <Property Name="PFid" Type="Int32" />
           <Property Name="Cid" Type="Int32" />
           <Property Name="Qty" Type="Int32" />
-          <Property Name="Total" Type="Int32" />
           <NavigationProperty Name="ProdFeature" Relationship="DatabaseModel.FK__Quantity__PFid__6BAEFA67" FromRole="Quantity" ToRole="ProdFeature" />
           <NavigationProperty Name="ShoppingCar" Relationship="DatabaseModel.FK__Quantity__Sid__7908F585" FromRole="Quantity" ToRole="ShoppingCar" />
         </EntityType>
@@ -1044,7 +1042,6 @@
           <EntitySetMapping Name="Quantity">
             <EntityTypeMapping TypeName="DatabaseModel.Quantity">
               <MappingFragment StoreEntitySet="Quantity">
-                <ScalarProperty Name="Total" ColumnName="Total" />
                 <ScalarProperty Name="Qty" ColumnName="Qty" />
                 <ScalarProperty Name="Cid" ColumnName="Cid" />
                 <ScalarProperty Name="PFid" ColumnName="PFid" />

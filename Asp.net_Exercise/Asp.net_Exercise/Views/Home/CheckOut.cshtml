@@ -96,6 +96,9 @@
     .CO_Qty {
         margin-right: 10px;
     }
+    .error{
+        margin:7px;
+    }
 </style>
 
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
@@ -213,33 +216,35 @@
         $("#Step2-text .CO_span2").addClass("CO_span2Select");
 
     }
-
+    //其實應該直接用Submit處理表單,只是原本想說購物車會有第三步驟才用ajax但後來因時間問題決定不做金流
     function Submitorder() {
 
         var c = confirm("確定提交訂單嗎?");
-        var form = $("form").validate
-        var n = $("#name").val();
-        var e = $("#email").val();
-        var p = $("#phone").val();
         var s = $("#store").val();
-        console.log(n, e, p, s);
         if (c) {
+            var Formdata = $('form').serialize();
             $.ajax({
-                url: "https://localhost:44353/home/Submitorder",
+                url: "https://localhost:44353/home/submitorder",
                 type: "post",
-                data: { Name: n, Email: e, Phone: p, Store: s },
-                success: function (data) {
-                    if (data == "") {
-                        alert("訂單提交完成，即將返回首頁")
-                        location.href = 'Index';
+                data: Formdata+"&Sname="+s,
+                success: function (e) {
+                    if (e != "") {
+                        e = JSON.parse(e);
+                        var L = 0;
+                        for (var x in e) {
+                            L++;
+                        }
+                        for (var i = 0; L > i; i++) {
+                            $("#" + e[i].key).text(e[i].message);
+                        }
                     }
                     else {
-                        alert(data);
+                        alert("訂單提交成功,點擊確定回到首頁");
+                        location.href = "Index";
                     }
                 }
             })
         }
-
     }
 
     $(function () {
@@ -380,7 +385,7 @@
                     <div class="input-group">
                         <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
                         @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @id = "name", @Value = ViewBag.Name })
-                        @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                        <label class="text-danger error" id="Name"></label>
                     </div>
                 </div>
 
@@ -405,7 +410,7 @@
                     <div class="input-group">
                         <span class="input-group-addon"><span class="glyphicon glyphicon-phone"></span></span>
                         @Html.TextBoxFor(m => m.Phone, new { @class = "form-control", @id = "phone", @Value = ViewBag.Phone })
-                        @Html.ValidationMessageFor(m => m.Phone, "", new { @class = "text-danger" })
+                        <label class="text-danger error" id="Phone"></label>
                     </div>
                 </div>
 
@@ -418,7 +423,7 @@
                     <div class="input-group">
                         <span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
                         @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @id = "email", @Value = ViewBag.Email })
-                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                        <label class="text-danger error" id="Email"></label>
                     </div>
                 </div>
 

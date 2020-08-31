@@ -1,0 +1,121 @@
+﻿
+@{
+    ViewBag.Title = "OrderVIew";
+}
+<style>
+
+    .list-group-horizontal .list-group-item {
+        display: inline-block;
+    }
+
+    .list-group-horizontal .list-group-item {
+        margin-bottom: 0;
+        margin-left: 1px;
+        margin-right: 0;
+    }
+
+        .list-group-horizontal .list-group-item:first-child {
+            border-top-right-radius: 0;
+            border-bottom-left-radius: 4px;
+        }
+
+        .list-group-horizontal .list-group-item:last-child {
+            border-top-right-radius: 4px;
+        }
+
+    .L {
+        background-color: inherit;
+        padding: 10px 50px 10px 50px;
+        border-style: none;
+        border-left-style: solid;
+        border-right-style: solid;
+    }
+
+    .U {
+        background-color: #f5f5f5;
+        padding-top: 10px;
+        padding-left: 10px;
+    }
+
+</style>
+
+<script>
+
+    function Detail(e) {
+        var Id = e.data.Id;
+        var oid = $("#" + Id).data("oid");
+        $.ajax({
+            url: "https://localhost:44353/home/GetOrderDetail?oid=" + oid,
+            type: "get",
+            success: function (json) {
+                var L = 0;
+                $("#detail").append(
+                    "<tr><td>"+
+                )
+            }
+        })
+
+    }
+
+    $(function () {
+        var json = @Html.Raw(ViewBag.order);
+        var L = json.length;
+        for (var i = 0; L > i; i++) {
+            $("#list tbody").append(
+                "<tr><td>" + json[i].name + "</td>" +
+                "<td>" + json[i].phone + "</td>" +
+                "<td>" + json[i].email + "</td>" +
+                "<td>" + json[i].store + "</td>" +
+                "<td>" + json[i].guid + "</td>" +
+                "<td>" + json[i].time + "</td>" +
+                "<td><input type='button' class='btn btn-default' data-oid='" + json[i].oid + "' id='" + i + "' value='詳細' /><tr/>"
+            );
+            $("#" + i).on("click", { Id: i }, Detail);
+        }
+    })
+</script>
+
+
+<div class="container">
+    <div class="row" style="padding-top:30px">
+        <div class="U list-group list-group-horizontal">
+            <a href="@Url.Action("OrderVIew")" class="L list-group-item active"><span>我的訂單</span></a>
+            <a href="KeepView" class="L list-group-item"><span>我的收藏</span></a>
+            <a class="L list-group-item" href="@Url.Action("Location")">設定取貨門市</a>
+            <a class="L list-group-item">修改會員資料</a>
+        </div>
+    </div>
+</div>
+
+<table id="list" class="table">
+    <thead>
+        <tr>
+            <th>收件人</th>
+            <th>手機</th>
+            <th>信箱</th>
+            <th>門市名稱</th>
+            <th>訂單編號</th>
+            <th>時間</th>
+            <th>詳細</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<hr />
+
+<table id="detail" class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Name</th>
+            <th>Size-Color</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+    </tbody>
+</table>

@@ -95,19 +95,19 @@
                 url: "https://localhost:44353/Home/AddCart?pid=" + data[0].prod.Id + "&color=" + color + "&size=" + size,
                 success: function (data) {
                     if (data == 1) {
-                        alert('請先登入')
+                        alert('請先登入');
                     }
                     if (data == 2) {
                         alert('帳號尚未驗證');
                         location.href('EmailValidationView');
                     }
-                    else {
+                    if (data == 0) {
                         alert('成功新增');
                         window.location.reload();
                     }
                 },
                 error: function () {
-                    alert('伺服器錯誤')
+                    alert('伺服器錯誤');
                 }
             })
         }
