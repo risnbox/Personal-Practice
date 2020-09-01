@@ -615,13 +615,6 @@ namespace Asp.net_Exercise.Controllers
         {
             return View();
         }
-        public string Test()
-        {
-            var data = DB.Product.ToList();
-            var json = JsonConvert.SerializeObject(data);
-            json = json.Replace(" ", "");
-            return json;
-        }
         public string GetProd(string TYPE)
         {
             var data = (from Img in DB.Img
@@ -910,7 +903,7 @@ namespace Asp.net_Exercise.Controllers
                             }
                             ).ToList();
                 var j  = JsonConvert.SerializeObject(data);
-                return j.Replace(" ", "");//查明為何透過ViewBag傳出的json能直接引用 但是return string json無法必須透過JSON.parse 邏輯而言本質應該相同
+                return j.Replace(" ", "");//透過viewbag可透過html.Raw解析成Javascript_Object,若直接回傳字串型態的json資料則需透過JSON.parse解析
             }
             catch (Exception e)
             {

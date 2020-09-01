@@ -74,17 +74,20 @@
 
 <script>
     function DelKeep(Pid) {
-        console.log(Pid);
-        $.ajax({
-            url:"https://localhost:44353/Home/DelKeep?Pid=" + Pid,
-            success: function (data) {
-                console.log(Pid);
-            }
-        })
+        var c = confirm("確定移除該收藏嗎?");
+        if (c) {
+            $.ajax({
+                url: "https://localhost:44353/Home/DelKeep?Pid=" + Pid,
+                success: function (data) {
+
+                    $("#Father li").remove();
+                }
+            })
+        }
     }
     $(function () {
-        data = JSON.parse('@Html.Raw(ViewBag.json)')
-        var L = 0;
+        var data = @Html.Raw(ViewBag.json);
+        var L = data.length;
         for (var q in data) {
             L++;
         }

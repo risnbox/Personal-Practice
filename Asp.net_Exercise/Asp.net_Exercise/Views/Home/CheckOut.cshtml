@@ -67,11 +67,7 @@
         font-size: 16px;
     }
 
-    .CO_span3 {
-        vertical-align: top;
-    }
-
-    .CO_span4 {
+    .CO_span4 { 
         color: #bbb;
     }
 
@@ -259,7 +255,7 @@
         for (var i = 0; L > i; i++) {
             $("#CO_tbody").append(
                 "<tr data-id='" + i + "' id='" + i + "'><td class'col-md-3'><a><img class='img-rounded'style='width:70px;height:70px;float:left;'src='/UpdataFiles/" + data[i].Img + "' /></a>" +
-                "<h5 class='CO_span3' id='N" + i + "'>" + data[i].Name + "</h5><span class='CO_span4'id='F"+i+"'>" + data[i].Feature + "</span></td>" +
+                "<h5 id='N" + i + "'>" + data[i].Name + "</h5><span class='CO_span4'id='F"+i+"'>" + data[i].Feature + "</span></td>" +
                 "<td class='col-md-2' style='padding-left:0;text-align:left;'><button id='C" + i + "' class='btn btn-default CO-'>-</button><span id='Q" + i + "' class='CO_Qty'>" + data[i].Qty +
                 "</span><button id='A" + i + "' class='btn btn-default CO+'>+</button></td><td class='col-md-1'>NT$<span id='P" + i + "'>" + data[i].Price + "</span></td>" +
                 "<td class='col-md-1'>NT$<span id='T" + i + "'>" + data[i].Total + "</span></td><td class='col-md-1'><a id='D" + i + "' style='float:right;padding-right:10px;text-decoration:none;color:#bbb;cursor:pointer'>X</a></td>" +
@@ -342,7 +338,7 @@
                     <tr>
                         <th>Product</th>
                         <th>Quqntity</th>
-                        <th>Price</th>
+                        <th>Unit Price</th>
                         <th>Total</th>
                         <th>&nbsp;</th>
                     </tr>
@@ -355,7 +351,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td><h4>Total</h4></td>
+                        <td><h4>Cart Total</h4></td>
                         <td><h4 class="text-right" id="CO_Totalprice"></h4></td>
                     </tr>
                     <tr>

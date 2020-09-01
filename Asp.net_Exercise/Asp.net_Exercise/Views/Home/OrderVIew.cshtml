@@ -36,7 +36,22 @@
         padding-top: 10px;
         padding-left: 10px;
     }
-
+    .prod_img {
+        width: 70px;
+        border-radius: 10px;
+        float:left;
+    }
+    .feature{
+        color:#bbb;
+    }
+    #detail{
+        font-size:18px;
+    }
+    #detail th,#detail td{
+        text-align:center;
+    }
+    
+    
 </style>
 
 <script>
@@ -48,10 +63,20 @@
             url: "https://localhost:44353/home/GetOrderDetail?oid=" + oid,
             type: "get",
             success: function (json) {
-                var L = 0;
-                $("#detail").append(
-                    "<tr><td>"+
-                )
+                $("#detail tbody tr").remove();
+                json = JSON.parse(json);
+                var L = json.length;
+                var T = 0;
+                for (var i = 0; L > i; i++) {
+                    $("#detail").append(
+                        "<tr><td class='col-md-3' style='text-align:left'>" +
+                        "<img class='img-rounded prod_img' src='/UpdataFiles/" + json[i].img + "' />" +
+                        "<h5 class='prod_name'>" + json[i].name + "</h5><span class='feature'>" + json[i].feature + "</span></td>" +
+                        "<td>" + json[i].qty + "</td><td>NT$" + json[i].price + "</td><td>NT$" + json[i].total + "</td></tr>"
+                    )
+                    T += json[i].total;
+                }
+                $("#Order_Total").text("NT$" + T);
             }
         })
 
@@ -104,18 +129,24 @@
 
 <hr />
 
-<table id="detail" class="table">
+<table id="detail" class="table" width="80%">
     <thead>
         <tr>
-            <th>Product</th>
-            <th>Name</th>
-            <th>Size-Color</th>
+            <th style="text-align:left">Product</th>
             <th>Quantity</th>
-            <th>Price</th>
+            <th>Unit Price</th>
             <th>Total</th>
         </tr>
     </thead>
     <tbody>
-        
+
     </tbody>
+    <tfoot>
+        <tr>
+            <td></td>
+            <td></td>
+            <td><h4>Order Total</h4></td>
+            <td><h4 id="Order_Total"></h4></td>
+        </tr>
+    </tfoot>
 </table>
