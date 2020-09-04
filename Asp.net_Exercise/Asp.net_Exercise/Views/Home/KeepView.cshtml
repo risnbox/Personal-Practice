@@ -1,0 +1,119 @@
+﻿
+@{
+    ViewBag.Title = "Lativ-收藏";
+}
+<style>
+    .list-group-horizontal .list-group-item {
+        display: inline-block;
+    }
+
+    .list-group-horizontal .list-group-item {
+        margin-bottom: 0;
+        margin-left: 1px;
+        margin-right: 0;
+    }
+
+        .list-group-horizontal .list-group-item:first-child {
+            border-top-right-radius: 0;
+            border-bottom-left-radius: 4px;
+        }
+
+        .list-group-horizontal .list-group-item:last-child {
+            border-top-right-radius: 4px;
+        }
+
+    .L {
+        background-color: inherit;
+        padding: 10px 50px 10px 50px;
+        border-style: none;
+        border-left-style: solid;
+        border-right-style: solid;
+    }
+
+    .U {
+        background-color: #f5f5f5;
+        padding-top: 10px;
+        padding-left: 10px;
+    }
+
+    .prod {
+        width: 182px;
+        height: 230px;
+        margin: 0 10px 40px 0;
+        padding-top: 18px;
+        text-align: center;
+        border: 1px solid #e0e0e0;
+        position: relative;
+        list-style: none;
+    }
+
+    .delbtn {
+        position: absolute;
+        width: 25px;
+        top: 0;
+        left: 0;
+        cursor: pointer;
+    }
+
+    .img {
+        height: 140px;
+        width: 140px;
+    }
+
+    .name {
+        margin: 10px 0;
+        height: 16px;
+        padding: 0 10px;
+    }
+
+    .price {
+        color: #969696;
+        margin: 13px 0;
+    }
+</style>
+
+<script>
+    function DelKeep(Pid) {
+        var c = confirm("確定移除該收藏嗎?");
+        if (c) {
+            $.ajax({
+                url: "https://asptest.nctu.me:45678/Home/DelKeep?Pid=" + Pid,
+                success: function (data) {
+
+                    $("#Father li").remove();
+                }
+            })
+        }
+    }
+    $(function () {
+        var data = @Html.Raw(ViewBag.json);
+        var L = data.length;
+        for (var i = 0; L > i; i++) {
+            $('#Father').append(
+            "<li class='prod' id='" + data[i].prod.Id + "'>" +
+            "<img src='/Img/btn_del.png' class='delbtn' onclick='DelKeep(" + data[i].prod.Id + ")' id='" + data[i].prod.Id + "'/>" +
+            "<a href='ProdDetails?Pid=" + data[i].prod.Id + "'><img src='/UpdataFiles/" + data[i].img.FileName + "' class='img' /></a>" +
+            "<p class='name'>" + data[i].prod.Name + "</p>" +
+            "<p class='price'>NT$" + data[i].prod.Price + "</p>" +
+            "</li>"
+        )
+        }
+        
+    })
+</script>
+
+<div class="container">
+    <div class="row" style="padding-top:30px">
+        <div class="U list-group list-group-horizontal">
+            <a href="@Url.Action("OrderVIew")" class="L list-group-item"><span>我的訂單</span></a>
+            <a class="L list-group-item active"><span>我的收藏</span></a>
+            <a class="L list-group-item" href="@Url.Action("Location")">設定取貨門市</a>
+            <a class="L list-group-item" href="@Url.Action("MemberCenter")">修改會員資料</a>
+        </div>
+    </div>
+</div>
+<hr />
+
+<ul id="Father" style="margin:0;">
+</ul>
+

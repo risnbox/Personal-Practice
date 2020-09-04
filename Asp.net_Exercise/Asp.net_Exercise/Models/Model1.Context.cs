@@ -25,6 +25,22 @@ namespace Asp.net_Exercise.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Class> Class { get; set; }
+        public virtual DbSet<Color> Color { get; set; }
+        public virtual DbSet<Img> Img { get; set; }
+        public virtual DbSet<Keep> Keep { get; set; }
         public virtual DbSet<Member> Member { get; set; }
+        public virtual DbSet<Member_Store> Member_Store { get; set; }
+        public virtual DbSet<Order> Order { get; set; }
+        public virtual DbSet<OrderDetail> OrderDetail { get; set; }
+        public virtual DbSet<Prod_Class_Type> Prod_Class_Type { get; set; }
+        public virtual DbSet<Prod_Img> Prod_Img { get; set; }
+        public virtual DbSet<ProdFeature> ProdFeature { get; set; }
+        public virtual DbSet<Product> Product { get; set; }
+        public virtual DbSet<Quantity> Quantity { get; set; }
+        public virtual DbSet<ShoppingCar> ShoppingCar { get; set; }
+        public virtual DbSet<Size> Size { get; set; }
+        public virtual DbSet<Store> Store { get; set; }
+        public virtual DbSet<Type> Type { get; set; }
     }
 }

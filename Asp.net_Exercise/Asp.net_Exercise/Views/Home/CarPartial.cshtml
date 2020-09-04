@@ -1,0 +1,90 @@
+﻿
+<style>
+    .Car{
+        position:relative;
+        width:20px;
+        height:20px;
+        
+    }
+    table{
+        width: 448px;
+        height: 98px;
+        border: 1px;
+    }
+    .title{
+        padding:10px;
+        text-align:center;
+        border-bottom:1px solid #e6e6e6;
+        font-weight:bold;
+    }
+    .btn_cart{
+        background: no-repeat #5d3b24;
+        color: #fff;
+        padding: 5px 0 5px 1px;
+        display: inline-block;
+        font-size: 15px;
+        width: 90px;
+        height: auto;
+        text-align: center;
+        border-radius: 5px;
+        cursor:pointer;
+    }
+    .Checkout{
+        margin:10px 0 20px 5px;
+        width:420px;    
+        text-align:right;
+        display:inline-block;
+    }
+    #Tb td{
+        text-align:center;
+    }
+</style>
+
+<script>
+    $(function () {
+
+        var data = JSON.parse('@Html.Raw(ViewBag.json)')
+        var L = data.length;
+        for (var i = 0; L > i; i++) {
+            $('#Tb').append(
+                "<tr><td><a href='/Home/proddetails?pid=" + data[i].pid + "'>" + data[i].name + "</a></td>" +
+                "<td>" + data[i].color + "</td>" +
+                "<td>" + data[i].size + "</td>" +
+                "<td>" + data[i].quantity + "</td></tr>"
+            )
+        }
+        $('#quantity').append(L);
+        if (L == 0) {
+            $(".btn_cart").css('visibility','hidden');
+        }
+        else {
+            $(".btn_cart").css('visibility','visible');
+        }
+    })
+</script>
+
+<li class="dropdown">
+    <a href="#" style="margin-top:10px" class="dropdown-toggle" data-toggle="dropdown">
+        <img src="~/Img/car.jpg" class="Car" />
+        共有<span id="quantity"></span>項商品
+        <b class="caret"></b>
+    </a>
+    <ul class="dropdown-menu">
+        <li>
+            <table >
+                <thead>
+                    <tr style='width: 90%;margin: 0 5%;'>
+                        <th class='title'>商品名稱</th>
+                        <th class='title'>顏色</th>
+                        <th class='title'>尺寸</th>
+                        <th class='title'>數量</th>
+                    </tr>
+                </thead>
+                <tbody id="Tb">
+
+                </tbody>    
+            </table>
+            <span class='Checkout'><a href="@Url.Action("CheckOut")" class='btn_cart'>結帳</a></span>
+        </li>
+    </ul>
+</li>

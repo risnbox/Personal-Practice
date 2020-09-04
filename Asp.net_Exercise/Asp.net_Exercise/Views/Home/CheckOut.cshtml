@@ -1,0 +1,433 @@
+﻿@model Asp.net_Exercise.Models.Order
+@{
+    ViewBag.Title = "Lativ-結帳";
+}
+
+<style>
+
+    .CO_div1 {
+        width: 640px;
+        margin: 0 auto 50px auto;
+        outline: 0;
+        padding: 30px 0 30px;
+    }
+
+    .CO_div2 {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        font-size: 100%;
+    }
+
+    .CO_ul1 {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .CO_li1 {
+        text-align: center;
+        width: 29.166%;
+        float: left;
+        height: 40px;
+        line-height: 40px;
+        list-style: none;
+    }
+
+    .CO_li2 {
+        width: 4.166%;
+        text-align: center;
+        float: left;
+        line-height: 40px;
+        list-style: none;
+    }
+
+    .CO_img1 {
+        width: 10px;
+    }
+
+    .CO_span1 {
+        background-color: #bababa;
+        color: #fff;
+        display: inline-block;
+        border-radius: 100px;
+        line-height: 1;
+        text-align: center;
+        width: 27px;
+        height: 26px;
+        padding: 5px;
+    }
+
+    .CO_span2 {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        outline: 0;
+        color: #bababa;
+        font-size: 16px;
+    }
+
+    .CO_span4 { 
+        color: #bbb;
+    }
+
+    .CO_span1Select {
+        background-color: #ff5353;
+    }
+
+    .CO_span2Select {
+        color: #ff5353;
+        border-bottom: 2px solid #ff5353;
+        padding-bottom: 2px;
+    }
+
+    td {
+        background-color: #ffffff;
+    }
+
+    .CO- {
+        margin-right: 10px;
+    }
+
+    .CO_Qty {
+        margin-right: 10px;
+    }
+    .error{
+        margin:7px;
+    }
+</style>
+
+<script>
+
+    function Count(Id) {
+
+        var p = $("#P" + Id).text();
+        var P = parseInt(p, 10);
+        var q = $("#Q" + Id).text();
+        var Q = parseInt(q, 10);
+        var data = P * Q;
+        $("#T" + Id).text(data);
+        Total();
+
+    }
+
+    function Add(e) {
+
+        var Id = e.data.Id;
+        var x = $("#Q" + Id).text();
+        var N = $("#N" + Id).text();
+        var F = $("#F" + Id).text();
+        var Q = parseInt(x, 10);
+        Q++;
+        $.ajax({
+            url: "https://asptest.nctu.me:45678/home/QtyAdd?Name=" + N + "&Feature=" + F,
+            type: "get",
+            success: function (data) {
+                if (data == "") {
+                    $('#Q' + Id).text(Q);
+                    Count(Id);
+                    $("#C" + Id).removeAttr("disabled");
+                }
+                else {
+                    alert(data);
+                }
+            }
+        })
+
+
+    }
+
+    function Cut(e) {
+
+        var Id = e.data.Id;
+        var x = $("#Q" + Id).text();
+        var N = $("#N" + Id).text();
+        var F = $("#F" + Id).text();
+        var Q = parseInt(x, 10);
+        $.ajax({
+            url: "https://asptest.nctu.me:45678/home/QtyCut?Name=" + N + "&Feature=" + F,
+            type: "get",
+            success: function (data) {
+                if (data == "") {
+                    Q--;
+                    $('#Q' + Id).text(Q);
+                    Count(Id);
+                    if (Q <= 1) {
+                        $("#C" + Id).attr("disabled", "");
+                    }
+                }
+                else {
+                    alert(data);
+                }
+            }
+        })
+
+
+    }
+
+    function Total() {
+
+        var L = $("#CO_tbody tr:last").data("id");
+        var T = 0;
+        for (var i = 0; L >= i; i++) {
+            var t = $("#T" + i).text()
+            t = parseInt(t, 10);
+            T += t;
+        }
+        $("#CO_Totalprice").text("NT$" + T);
+
+    }
+
+    function Delete(e) {
+
+        var T = confirm("確定移除該商品嗎?");
+        if (T == true) {
+            var Id = e.data.Id;
+            var N = $("#N" + Id).text();
+            var F = $("#F" + Id).text();
+            $.ajax({
+                url: "https://asptest.nctu.me:45678/home/DeleteCart?Name=" + N + "&Feature=" + F,
+                success: function (e) {
+                    if (e != "") {
+                        alert(e);
+                    }
+                    else {
+                        $("#" + Id).remove();
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+
+    }
+
+    function NextStep1_2() {
+
+        $("#step1").css("display", "none");
+        $("#step2").css("display", "block")
+        $("#Step1-text .CO_span1").removeClass("CO_span1Select");
+        $("#Step1-text .CO_span2").removeClass("CO_span2Select");
+        $("#Step2-text .CO_span1").addClass("CO_span1Select");
+        $("#Step2-text .CO_span2").addClass("CO_span2Select");
+
+    }
+    //其實應該直接用Submit處理表單,只是原本想說購物車會有第三步驟才用ajax但後來因時間問題決定不做金流
+    function Submitorder() {
+
+        var c = confirm("確定提交訂單嗎?");
+        var s = $("#store").val();
+        if (c) {
+            var Formdata = $('form').serialize();
+            $.ajax({
+                url: "https://asptest.nctu.me:45678/home/submitorder",
+                type: "post",
+                data: Formdata+"&Sname="+s,
+                success: function (e) {
+                    if (e != "") {
+                        e = JSON.parse(e);
+                        var L = 0;
+                        for (var x in e) {
+                            L++;
+                        }
+                        for (var i = 0; L > i; i++) {
+                            $("#" + e[i].key).text(e[i].message);
+                        }
+                    }
+                    else {
+                        alert("訂單提交成功,點擊確定回到首頁");
+                        location.href = "Index";
+                    }
+                }
+            })
+        }
+    }
+
+    $(function () {
+
+        $("div #step2").css("display", "none");
+        var data = @Html.Raw(ViewBag.json);
+        var L = data.length;
+        var T = 0;
+        for (var i = 0; L > i; i++) {
+            $("#CO_tbody").append(
+                "<tr data-id='" + i + "' id='" + i + "'><td class'col-md-3'><a><img class='img-rounded'style='width:70px;height:70px;float:left;'src='/UpdataFiles/" + data[i].Img + "' /></a>" +
+                "<h5 id='N" + i + "'>" + data[i].Name + "</h5><span class='CO_span4'id='F"+i+"'>" + data[i].Feature + "</span></td>" +
+                "<td class='col-md-2' style='padding-left:0;text-align:left;'><button id='C" + i + "' class='btn btn-default CO-'>-</button><span id='Q" + i + "' class='CO_Qty'>" + data[i].Qty +
+                "</span><button id='A" + i + "' class='btn btn-default CO+'>+</button></td><td class='col-md-1'>NT$<span id='P" + i + "'>" + data[i].Price + "</span></td>" +
+                "<td class='col-md-1'>NT$<span id='T" + i + "'>" + data[i].Total + "</span></td><td class='col-md-1'><a id='D" + i + "' style='float:right;padding-right:10px;text-decoration:none;color:#bbb;cursor:pointer'>X</a></td>" +
+                "</tr>"
+            )
+            var t = parseInt(data[i].Total, 10);
+            T = T + t;
+            $("#A" + i).on("click", { Id: i }, Add);
+            $("#C" + i).on("click", { Id: i }, Cut);
+            $("#D" + i).on("click", { Id: i }, Delete);
+            var q = $("#Q" + i).text();
+            var Q = parseInt(q);
+            if (Q <= 1) {
+                $("#C" + i).attr("disabled", "")
+            }
+
+        }
+        $("#CO_Totalprice").text("NT$" + T);
+        $("#Nextstep1").on("click", NextStep1_2);
+        $("#Submitorder").on("click", Submitorder);
+
+    })
+
+</script>
+@Html.AntiForgeryToken()
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+<div class="CO_div1">
+
+    <ul class="CO_ul1">
+
+        <li id="Step1-text" class="CO_li1">
+
+            <div class="CO_div2">
+
+                <span class="CO_span1 CO_span1Select">1</span>
+                <span class="CO_span2 CO_span2Select">確認購物車</span>
+
+            </div>
+
+
+        </li>
+
+        <li class="CO_li2">
+
+            <img src="~/Img/箭頭.jpg" class="CO_img1" />
+
+        </li>
+
+        <li id="Step2-text" class="CO_li1">
+
+            <span class="CO_span1">2</span>
+            <span class="CO_span2">資料填寫</span>
+
+        </li>
+
+        <li class="CO_li2">
+
+            <img src="~/Img/箭頭.jpg" class="CO_img1" />
+
+        </li>
+
+        <li id="Step3-text" class="CO_li1">
+
+            <span class="CO_span1">3</span>
+            <span class="CO_span2">提交訂單</span>
+
+        </li>
+
+    </ul>
+
+</div>
+
+<div id="step1" class="container">
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <table class="table table-hover">
+
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quqntity</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+
+                <tbody id="CO_tbody">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><h4>Cart Total</h4></td>
+                        <td><h4 class="text-right" id="CO_Totalprice"></h4></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><input id="Nextstep1" class="btn btn-default" type="button" value="下一步" /></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<div id="step2" style="display:none" class="container">
+
+    <div class="table table-striped">
+
+        <form class="well form-horizontal">
+
+            <div class="form-group">
+
+                <label class="col-md-4 control-label">收件人姓名</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @id = "name", @Value = ViewBag.Name })
+                        <label class="text-danger error" id="Name"></label>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="col-md-4 control-label">選取取貨門市</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-plane"></span></span>
+                        @Html.DropDownList("選取門市", ViewBag.storelist as SelectList, new { @class = "form-control", @id = "store" })
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="col-md-4 control-label">收件人手機</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-phone"></span></span>
+                        @Html.TextBoxFor(m => m.Phone, new { @class = "form-control", @id = "phone", @Value = ViewBag.Phone })
+                        <label class="text-danger error" id="Phone"></label>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="col-md-4 control-label">收件人信箱</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @id = "email", @Value = ViewBag.Email })
+                        <label class="text-danger error" id="Email"></label>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <input type="button" id="Submitorder" class="btn btn-default col-md-offset-7" value="送出訂單" />
+
+            </div>
+        </form>
+
+    </div>
+
+</div>

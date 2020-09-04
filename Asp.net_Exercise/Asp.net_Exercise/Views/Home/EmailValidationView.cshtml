@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "Lativ-帳號驗證";
+}
+
+@if (Session["EnableMessage"]!= null) {
+    <script>
+            alert("@Session["EnableMessage"]")
+        $(function () {
+            function RepeatEmail() {
+                $.ajax({
+                    url: "https://asptest.nctu.me:45678/home/repeatemailvalidation",
+                    type: "get",
+                    success: function (data) {
+                        alert(data);
+                    }
+                })
+            }
+            $("#repeat").on("click", RepeatEmail);
+        })
+    </script>
+}
+
+<h3 class="col-md-offset-2">Email認證頁面</h3>
+<h4 class="col-md-offset-2 text-danger">@TempData["MailValidation"]</h4>
+<h4 class="col-md-offset-2 text-danger">@ViewBag.ValidationErrorMessage</h4>
+
+@using (Html.BeginForm())
+{
+    
+    <div class="form-horizontal">
+        
+        <label class="control-label col-md-2">驗證碼</label>
+        <input type="text" class="form-control col-md-10" name="Veriflcationcode" required />
+        <input type="button" id="repeat" class="btn btn-default" value="重新寄出"/>
+        <input type="submit" class="btn btn-default" value="送出" />
+    </div>
+
+}
+
