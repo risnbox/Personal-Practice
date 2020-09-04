@@ -2,7 +2,7 @@
 
 
 @{
-    ViewBag.Title = "Location";
+    ViewBag.Title = "Lativ-選擇門市";
 }
 <style>
     .list-group-horizontal .list-group-item 
@@ -71,7 +71,7 @@
             $("#TownSelect").empty();
             var city = $("#CitySelect").find("option:selected").text();
             $.ajax({
-                url:"https://localhost:44353/Home/Gettown?city=" + city,
+                url:"https://asptest.nctu.me:45678/Home/Gettown?city=" + city,
                 type: "get",
                 success: function (data) {
                     data = JSON.parse(data);
@@ -93,14 +93,11 @@
         //取得711資料的Function
         function Getdata(city, town) {
             $.ajax({
-                url:"https://localhost:44353/Home/Get711?city=" + escape(city) + "&town=" + escape(town),
+                url:"https://asptest.nctu.me:45678/Home/Get711?city=" + escape(city) + "&town=" + escape(town),
                 type: "get",
                 success: function (data) {
                     data = JSON.parse(data);
-                    var L = 0;
-                    for (var i in data.iMapSDKOutput.GeoPosition) {//確認資料長度
-                        L++;
-                    }
+                    var L = data.iMapSDKOutput.GeoPosition.length;   
                     for (var i = 0; L > i; i++) {//將資料新增到Table
                         $("#Ltable").append(
                             "<tr id='S'><td id='N" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].POIName + "</td>" +
@@ -110,7 +107,6 @@
                             "<td><a href='https://www.google.com.tw/maps/place/" + data.iMapSDKOutput.GeoPosition[i].Address + " 'target='_blank' class='btn btn-info'>地圖</td>" +
                             "<td><input class='btn btn-default' type='button' value='選擇' id='Selectbtn" + i + "'/></td></tr>"
                         )
-                        console.log($("#Selectbtn" + i));
                         $("#Selectbtn" + i).on('click', {Id:i} ,SelectStore)//傳值到Function
                         
                     }
@@ -126,7 +122,7 @@
             var Id = $('#I' + i).text();
             var TelNo = $('#T' + i).text();
             $.ajax({
-                url: "https://localhost:44353/Home/SelectStore",
+                url: "https://asptest.nctu.me:45678/Home/SelectStore",
                 type: 'POST',
                 dataType: 'text',
                 data: { Name: name, Address: Address, ID: Id, TelNo: TelNo },
@@ -150,15 +146,12 @@
 
         function viewstore() {
             $.ajax({
-                url:"https://localhost:44353/Home/ViewStore",
+                url:"https://asptest.nctu.me:45678/Home/ViewStore",
                 type: "GET",
                 success: function (data) {
                     data = JSON.parse(data);
                     $("table #S").remove();
-                    var L = 0;
-                    for (var i in data) {
-                        L++;//確認JSON共幾筆資料
-                    }
+                    var L = data.length;
                     if (L == 0) {
                         alert("您還未曾選取門市");
                     }
@@ -183,12 +176,10 @@
             var Cf = confirm("確定要移除該門市嗎?");
             if (Cf == true) {
                 $.ajax({
-                    url: "https://localhost:44353/Home/DeleteStore?store=" + e.data.Sid,
+                    url: "https://asptest.nctu.me:45678/Home/DeleteStore?store=" + e.data.Sid,
                     type: "Get",
                     success: function () {
-
                         alert("刪除成功");
-
                         viewstore();
                     }
                 });

@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "ProdDetails";
+    ViewBag.Title = "Lativ-產品頁面";
 }
 
 <style>
@@ -92,7 +92,7 @@
         //Javascript邏輯判斷機制與一般語言不同詳:https://ithelp.ithome.com.tw/articles/10191343
         if (color != null && size != null) {
             $.ajax({
-                url: "https://localhost:44353/Home/AddCart?pid=" + data[0].prod.Id + "&color=" + color + "&size=" + size,
+                url: "https://asptest.nctu.me:45678/Home/AddCart?pid=" + data[0].prod.Id + "&color=" + color + "&size=" + size,
                 success: function (data) {
                     if (data == 1) {
                         alert('請先登入');
@@ -126,7 +126,7 @@
             <text>
             if ($('#keep').hasClass('keepon')) {
                 $.ajax({
-                url:"https://localhost:44353/Home/DelKeep?Pid=" + data[0].prod.Id,
+                url:"https://asptest.nctu.me:45678/Home/DelKeep?Pid=" + data[0].prod.Id,
                     success: function (data) {
                         $('#keep').removeClass('keepon');
                         $('#keep').addClass('keep');
@@ -135,7 +135,7 @@
             }
             else {
                 $.ajax({
-                url:"https://localhost:44353/Home/Keep?Pid=" + data[0].prod.Id,
+                url:"https://asptest.nctu.me:45678/Home/Keep?Pid=" + data[0].prod.Id,
                     success: function (data) {
                         $('#keep').removeClass('keep')
                         $('#keep').addClass('keepon');
@@ -147,7 +147,6 @@
     }
     $(function () {
         data = JSON.parse('@Html.Raw(ViewBag.json)');
-        console.log(data);
         if (data[0].keep != null) {
             $('#keep').removeClass('keep')
             $('#keep').addClass('keepon');

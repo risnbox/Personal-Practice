@@ -615,6 +615,14 @@ namespace Asp.net_Exercise.Controllers
         {
             return View();
         }
+        public ActionResult Man()
+        {
+            return View();
+        }
+        public ActionResult Kids()
+        {
+            return View();
+        }
         public string GetProd(string TYPE)
         {
             var data = (from Img in DB.Img
@@ -625,11 +633,17 @@ namespace Asp.net_Exercise.Controllers
                         {
                             img = Img,
                             prod = PM.Product
-
                         }).ToList();
             var json = JsonConvert.SerializeObject(data);
             json = json.Replace(" ", "");
             return json;
+        }
+        public int Test(string type)
+        {
+            var PCT = DB.Prod_Class_Type.Where(m => m.Type.TypeName == type).FirstOrDefault();
+            var PM = DB.Prod_Img.Where(m => m.Pid == PCT.Pid).FirstOrDefault();
+            var img = DB.Img.Where(m => m.Id == PM.Mid).FirstOrDefault();
+            return PCT.Id + PM.Id + img.Id;
         }
         public ActionResult ProdDetails(int Pid)
         {

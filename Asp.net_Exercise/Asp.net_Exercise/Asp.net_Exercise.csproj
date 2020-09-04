@@ -127,6 +127,8 @@
     <Content Include="Content\Site.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Img\50576_1010X400_200819_TW.jpg" />
+    <Content Include="Img\50944_1010X400_200831_TW.jpg" />
     <Content Include="Img\car.jpg" />
     <Content Include="Img\40172_3P588_1180X557_200525_TW2.jpg" />
     <Content Include="Img\4616901_48.jpg" />
@@ -296,6 +298,8 @@
     <Content Include="Views\Home\CarPartial.cshtml" />
     <Content Include="Views\Home\CheckOut.cshtml" />
     <Content Include="Views\Home\OrderVIew.cshtml" />
+    <Content Include="Views\Home\Man.cshtml" />
+    <Content Include="Views\Home\Kids.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

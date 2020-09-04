@@ -1,12 +1,12 @@
 ﻿
 @{
-    ViewBag.Title = "Women";
+    ViewBag.Title = "WOMEN";
 }
 
 <style>
     #Pimg{
         width:220px;
-        height:284px
+        height:330px
     }
     #Ptext{
         text-align:center;
@@ -26,20 +26,16 @@
 <script>
 
     function GotoView(id) {
-        window.open("https://localhost:44353/Home/ProdDetails?Pid=" + id,"_blank");
+        window.open("https://asptest.nctu.me:45678/Home/ProdDetails?Pid=" + id,"_blank");
         }
     $(function () {
 
         $.ajax({
-            url:"https://localhost:44353/Home/GetProd?TYPE=women",
+            url:"https://asptest.nctu.me:45678/Home/GetProd?TYPE=women",
             type: "GET",
             success: function (data) {
-                var L = 0;
                 data = JSON.parse(data)
-                console.log(data)
-                for (var x in data) {
-                    L++;
-                }
+                var L = data.length;
                 for (var i = 0; L > i; i++) {
                     $("#Father").append("<div id='Prod'><a id='P" + i + "' href='javascript:void(0);' onclick='GotoView(" + data[i].prod.Id + ")'>" +
                         "<img id='Pimg' src='/UpdataFiles/" + data[i].img.FileName +"' / ></a><p id='Ptext'>" + data[i].prod.Name +

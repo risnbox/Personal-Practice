@@ -97,7 +97,7 @@ namespace Asp.net_Exercise.Models
     {
         請選擇=0,
         women=1,
-        men=2,
+        man=2,
         kids=3
     }
     public enum ClassSelect

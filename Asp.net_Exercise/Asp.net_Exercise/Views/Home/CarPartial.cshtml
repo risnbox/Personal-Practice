@@ -44,10 +44,7 @@
     $(function () {
 
         var data = JSON.parse('@Html.Raw(ViewBag.json)')
-        var L = 0;
-        for (var x in data) {
-            L++;
-        }
+        var L = data.length;
         for (var i = 0; L > i; i++) {
             $('#Tb').append(
                 "<tr><td><a href='/Home/proddetails?pid=" + data[i].pid + "'>" + data[i].name + "</a></td>" +
