@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Lativ-帳號驗證";
+    ViewBag.Title = "帳號驗證";
 }
 
 @if (Session["EnableMessage"]!= null) {
@@ -9,7 +9,7 @@
         $(function () {
             function RepeatEmail() {
                 $.ajax({
-                    url: "https://asptest.nctu.me:45678/home/repeatemailvalidation",
+                    url: "/home/repeatemailvalidation",
                     type: "get",
                     success: function (data) {
                         alert(data);

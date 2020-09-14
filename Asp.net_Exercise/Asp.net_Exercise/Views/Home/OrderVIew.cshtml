@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Lativ-我的訂單";
+    ViewBag.Title = "我的訂單";
 }
 <style>
 
@@ -60,7 +60,7 @@
         var Id = e.data.Id;
         var oid = $("#" + Id).data("oid");
         $.ajax({
-            url: "https://asptest.nctu.me:45678/home/GetOrderDetail?oid=" + oid,
+            url: "/home/GetOrderDetail?oid=" + oid,
             type: "get",
             success: function (json) {
                 $("#detail tbody tr").remove();

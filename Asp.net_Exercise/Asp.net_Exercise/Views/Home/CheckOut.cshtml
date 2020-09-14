@@ -1,6 +1,6 @@
 ﻿@model Asp.net_Exercise.Models.Order
 @{
-    ViewBag.Title = "Lativ-結帳";
+    ViewBag.Title = "結帳";
 }
 
 <style>
@@ -120,7 +120,7 @@
         var Q = parseInt(x, 10);
         Q++;
         $.ajax({
-            url: "https://asptest.nctu.me:45678/home/QtyAdd?Name=" + N + "&Feature=" + F,
+            url: "/home/QtyAdd?Name=" + N + "&Feature=" + F,
             type: "get",
             success: function (data) {
                 if (data == "") {
@@ -145,7 +145,7 @@
         var F = $("#F" + Id).text();
         var Q = parseInt(x, 10);
         $.ajax({
-            url: "https://asptest.nctu.me:45678/home/QtyCut?Name=" + N + "&Feature=" + F,
+            url: "/home/QtyCut?Name=" + N + "&Feature=" + F,
             type: "get",
             success: function (data) {
                 if (data == "") {
@@ -186,7 +186,7 @@
             var N = $("#N" + Id).text();
             var F = $("#F" + Id).text();
             $.ajax({
-                url: "https://asptest.nctu.me:45678/home/DeleteCart?Name=" + N + "&Feature=" + F,
+                url: "/home/DeleteCart?Name=" + N + "&Feature=" + F,
                 success: function (e) {
                     if (e != "") {
                         alert(e);
@@ -219,7 +219,7 @@
         if (c) {
             var Formdata = $('form').serialize();
             $.ajax({
-                url: "https://asptest.nctu.me:45678/home/submitorder",
+                url: "/home/submitorder",
                 type: "post",
                 data: Formdata+"&Sname="+s,
                 success: function (e) {

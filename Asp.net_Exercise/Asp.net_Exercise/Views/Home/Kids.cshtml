@@ -1,12 +1,12 @@
 ﻿
 @{
-    ViewBag.Title = "Lativ-KIDS";
+    ViewBag.Title = "KIDS";
 }
 
 <style>
     #Pimg {
         width: 220px;
-        height: 330px
+        height: 284px
     }
 
     #Ptext {
@@ -28,12 +28,12 @@
 <script>
 
     function GotoView(id) {
-        window.open("https://asptest.nctu.me:45678/Home/ProdDetails?Pid=" + id,"_blank");
+        window.open("/Home/ProdDetails?Pid=" + id,"_blank");
         }
     $(function () {
 
         $.ajax({
-            url:"https://asptest.nctu.me:45678/Home/GetProd?TYPE=kids",
+            url:"/Home/GetProd?TYPE=kids",
             type: "GET",
             success: function (data) {
                 data = JSON.parse(data);

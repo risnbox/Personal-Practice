@@ -10,8 +10,7 @@ using System.IO;
 using System.Xml;
 using System.Text;
 using Newtonsoft.Json;
-using System.Data.Entity.Infrastructure.DependencyResolution;
-using System.Web.Services.Description;
+
 
 namespace Asp.net_Exercise.Controllers
 {
@@ -125,6 +124,12 @@ namespace Asp.net_Exercise.Controllers
                 ViewBag.SignInErrormessage = "查無此帳號";
                 return View();
             }
+        }
+        public ActionResult GoogleSignln(string id_token)
+        {
+
+            Console.WriteLine(id_token);
+            return View("index");
         }
         public ActionResult SignOut()
         {
@@ -638,13 +643,7 @@ namespace Asp.net_Exercise.Controllers
             json = json.Replace(" ", "");
             return json;
         }
-        public int Test(string type)
-        {
-            var PCT = DB.Prod_Class_Type.Where(m => m.Type.TypeName == type).FirstOrDefault();
-            var PM = DB.Prod_Img.Where(m => m.Pid == PCT.Pid).FirstOrDefault();
-            var img = DB.Img.Where(m => m.Id == PM.Mid).FirstOrDefault();
-            return PCT.Id + PM.Id + img.Id;
-        }
+
         public ActionResult ProdDetails(int Pid)
         {
             string keep = null;

@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Lativ-收藏";
+    ViewBag.Title = "收藏";
 }
 <style>
     .list-group-horizontal .list-group-item {
@@ -77,7 +77,7 @@
         var c = confirm("確定移除該收藏嗎?");
         if (c) {
             $.ajax({
-                url: "https://asptest.nctu.me:45678/Home/DelKeep?Pid=" + Pid,
+                url: "/Home/DelKeep?Pid=" + Pid,
                 success: function (data) {
 
                     $("#Father li").remove();

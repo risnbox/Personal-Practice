@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Lativ-登入";
+    ViewBag.Title = "登入";
 }
 <!--註冊成功後顯示彈出式訊息提示進入登入頁面-->
 @if (TempData["SignUpSuccess"] != null)
@@ -9,7 +9,34 @@
         alert("@TempData["SignUpSuccess"]");
     </script>
 }
+<script src="https://apis.google.com/js/platform.js?onload=GoogleSignin" async defer></script>
 
+<script>
+
+    $(function () {
+        $("#google").on('click', signln);
+    })
+
+    function GoogleSingln() {
+        gapi.load('ath2', function () {
+            gapi.auth2.init({
+                clent_id: "937775825111-s9rg8l6pj2cfkuga9bu7prjroqd8dv6f.apps.googleusercontent.com"
+            });
+        });
+    }
+
+    function GoogleLogin() {
+        let auth2 = gapi.auth2.getAythInstance();
+        auth2.signln().then(function (GoogleUser) {
+            console.log(Y);
+            let user_id = GoogleUser.getId();
+            let AuthResponse = GoogleUser.getAuthResponse(false);
+            let id_token = AuthResponse.id_token;
+        })
+    }
+
+    
+</script>
 
 @using (Html.BeginForm())
 {
@@ -33,6 +60,7 @@
             </div>
         </div>
 
+        <input type="button" id="google" value="google登入" class="btn btn-default" />
         <input type="submit" value="登入" class="col-md-offset-2 btn btn-default" />
     </div>
 }
