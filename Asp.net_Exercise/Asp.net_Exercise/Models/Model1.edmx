@@ -47,6 +47,7 @@
           <Property Name="Gender" Type="varchar" MaxLength="10" />
           <Property Name="Enable" Type="int" />
           <Property Name="ErrorCount" Type="int" />
+          <Property Name="GoogleId" Type="char" MaxLength="21" />
         </EntityType>
         <EntityType Name="Member_Store">
           <Key>
@@ -579,6 +580,7 @@
           <Property Name="Gender" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="Enable" Type="Int32" />
           <Property Name="ErrorCount" Type="Int32" />
+          <Property Name="GoogleId" Type="String" MaxLength="21" FixedLength="true" Unicode="false" />
           <NavigationProperty Name="Keep" Relationship="DatabaseModel.FK__Keep__Userid__18B6AB08" FromRole="Member" ToRole="Keep" />
           <NavigationProperty Name="Member_Store" Relationship="DatabaseModel.FK__Member_St__Membe__02FC7413" FromRole="Member" ToRole="Member_Store" />
           <NavigationProperty Name="Order" Relationship="DatabaseModel.FK__Order__User_Id__1975C517" FromRole="Member" ToRole="Order" />
@@ -958,6 +960,7 @@
           <EntitySetMapping Name="Member">
             <EntityTypeMapping TypeName="DatabaseModel.Member">
               <MappingFragment StoreEntitySet="Member">
+                <ScalarProperty Name="GoogleId" ColumnName="GoogleId" />
                 <ScalarProperty Name="ErrorCount" ColumnName="ErrorCount" />
                 <ScalarProperty Name="Enable" ColumnName="Enable" />
                 <ScalarProperty Name="Gender" ColumnName="Gender" />
