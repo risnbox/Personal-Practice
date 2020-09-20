@@ -133,8 +133,8 @@ function Submitorder() {
                     }
                 }
                 else {
-                    alert("訂單提交成功,點擊確定回到首頁");
-                    location.href = "/home/Index";
+                    alert("訂單提交成功,點擊確定到訂單頁面");
+                    location.href = "/members/orderview";
                 }
             }
         })
