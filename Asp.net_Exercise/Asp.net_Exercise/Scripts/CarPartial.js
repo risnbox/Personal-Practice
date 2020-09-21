@@ -12,6 +12,9 @@
     $('#quantity').append(L);
     if (L == 0) {
         $(".btn_cart").css('visibility', 'hidden');
+        $('#Tb').append(
+            "<tr><td colspan='4'><h4>購物車內尚無商品</h4></td></tr>"
+        )
     }
     else {
         $(".btn_cart").css('visibility', 'visible');
