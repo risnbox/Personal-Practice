@@ -5,7 +5,7 @@
 <script src="~/Scripts/ProdDetails.js" defer></script>
 
 <script>
-    var member = @Session["Member"];
+    var member = "@Session["Member"]";
     var data = JSON.parse('@Html.Raw(ViewBag.json)');
 </script>
 
