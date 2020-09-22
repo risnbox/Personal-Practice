@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Lativ";
+    ViewBag.Title = "首頁";
 }
 @if (TempData["ValidationErrorMessage"] != null)
 {
@@ -8,14 +8,13 @@
         alert("@TempData["ValidationErrorMessage"]")
     </script>
 }
+<link href="~/Content/ProdTable.css" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/Index.js" defer></script>
 
 <script>
-
-    $(function () {
-        $("#Carousel").carousel({ interval: 3000 });
-    });
-
+    var data = '@Html.Raw(ViewBag.json)';
 </script>
+
 
 <div id="Carousel" class="carousel slide" style="width:1180px;height:557px">
 
@@ -50,6 +49,9 @@
         <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
         <span class="sr-only">Previous</span>
     </a>
+
+</div>
+<div id="Father">
 
 </div>
 

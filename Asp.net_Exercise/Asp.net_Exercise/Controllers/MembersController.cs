@@ -296,7 +296,7 @@ namespace Asp.net_Exercise.Controllers
                 MailMessage Mail = new MailMessage();
                 Mail.To.Add(Email);//收件人
                 //參數屬性是寄件人名字及地址但地址似乎會被Gmail覆蓋,此處我的寄件人地址是User但實際收件顯示的依然是Host
-                Mail.From = new MailAddress(Email, "Lativ", Encoding.UTF8);
+                Mail.From = new MailAddress(Email, "作品測試", Encoding.UTF8);
                 Mail.Subject = Title;//標題
                 Mail.SubjectEncoding = Encoding.UTF8;
                 Mail.Body = Body;//內容,如定義為Html信件則可加入Html語法(CSS及Javescript未試過)

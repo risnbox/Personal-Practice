@@ -15,7 +15,29 @@ namespace Asp.net_Exercise.Controllers
         DatabaseEntities DB = new DatabaseEntities();
         public ActionResult Index()
         {
-            
+            var count = DB.Product.Count();
+            var products = DB.Product.ToList();
+            var random = new Random();
+            List<obj.prod_img> pm = new List<obj.prod_img>();
+            var I = new List<int>();
+            for (var  i = 0; 4 > i; i++)
+            {
+                obj.prod_img test = new obj.prod_img();
+                var R = random.Next(count);
+                foreach(var x in I)
+                {
+                    while (R == x)
+                    {
+                        R = random.Next(count);
+                    }
+                }
+                var P = products[R];
+                test.Addd(P, DB.Prod_Img.Where(m => m.Pid == P.Id && m.Img.Type == "previewed").Select(m => m.Img).FirstOrDefault());
+                pm.Add(test);
+                I.Add(R);
+            }
+            var data = JsonConvert.SerializeObject(pm).Replace(" ","");
+            ViewBag.json = data;
             return View();
         }
         public ActionResult Women()

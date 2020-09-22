@@ -170,6 +170,7 @@
     <Content Include="Content\leaflet.css" />
     <Content Include="Content\Orderview.css" />
     <Content Include="Content\ProdDetails.css" />
+    <Content Include="Content\ProdTable.css" />
     <Content Include="Content\Signin.css" />
     <Content Include="Content\Site.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -221,6 +222,7 @@
     <Content Include="Scripts\CarPartial.js" />
     <Content Include="Scripts\CheckOut.js" />
     <Content Include="Scripts\GoogleSignin.js" />
+    <Content Include="Scripts\Index.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
@@ -233,6 +235,7 @@
     <Content Include="Scripts\ObjTree.js" />
     <Content Include="Scripts\Orderview.js" />
     <Content Include="Scripts\ProdDetails.js" />
+    <Content Include="Scripts\ProdTable.js" />
     <Content Include="UpdataFiles\4611501_500.jpg" />
     <Content Include="UpdataFiles\46115_D_01.jpg" />
     <Content Include="UpdataFiles\46115_D_03.jpg" />
@@ -296,6 +299,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model1.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\obj.cs" />
     <Compile Include="Models\Order.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
