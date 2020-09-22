@@ -15,32 +15,3 @@ select,
 textarea {
     max-width: 280px;
 }
-#navtext {
-    width: 100px;
-    margin-bottom: 5px;
-    text-align: center;
-    border-bottom-style: none;
-    border-top-style: none;
-    border-left-style: none;
-    border-right-style: solid;
-    border-width: 1px;
-    border-color: #dedede;
-    color: #808080;
-}
-
-.LayU {
-    float: left;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.LayA {
-    line-height: 20px;
-    display: block;
-    padding: 15px;
-}
-
-.LayL {
-    float: left;
-}
