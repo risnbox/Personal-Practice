@@ -132,7 +132,7 @@ namespace Asp.net_Exercise.Controllers
                 var url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + id_token;
                 using (var Client = new HttpClient())
                 {
-                    Client.Timeout = TimeSpan.FromSeconds(30);
+                    //Client.Timeout = TimeSpan.FromSeconds(30)//除非流量用量大不然沒必要
                     var Response = await Client.GetAsync(url);
                     result = await Response.Content.ReadAsStringAsync();
                 }

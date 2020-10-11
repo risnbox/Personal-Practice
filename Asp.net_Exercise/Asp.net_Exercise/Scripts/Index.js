@@ -8,7 +8,7 @@
             "<img id='Pimg' src='/UpdataFiles/" + data[i].img.FileName + "' / ></a><p id='Ptext'>" + data[i].prod.Name +
             "</p><p id='Ptext'>NT$" + data[i].prod.Price + "</p></div>"
         )
-    }
+    };
 });
 function GotoView(id) {
     window.open("/Home/ProdDetails?Pid=" + id, "_blank");

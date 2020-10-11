@@ -5,12 +5,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Asp.net_Exercise.Controllers
 {
     public class CartController : Controller
     {
         DatabaseEntities DB = new DatabaseEntities();
+        
         public ActionResult CarPartial()
         {
             var c = Convert.ToInt32(Session["Cart"].ToString());
@@ -134,7 +138,7 @@ namespace Asp.net_Exercise.Controllers
             }
         }
         [HttpPost]
-        public string Submitorder(Order order, string Sname)//其實應該直接用Submit處理表單,只是原本想說購物車會有第三步驟才用ajax
+        public string AddOrder(Order order, string Sname)
         {
             if (ModelState.IsValid)
             {
@@ -179,6 +183,59 @@ namespace Asp.net_Exercise.Controllers
                 var e = ModelState.Where(m => m.Value.Errors.Any()).Select(m => new { key = m.Key, message = m.Value.Errors.Select(x => x.ErrorMessage).First() }).ToList();
                 var j = JsonConvert.SerializeObject(e);
                 return j.Replace(" ", "");
+            }
+        }
+        public string CreatePaydata()
+        {
+            var c = Convert.ToInt32(Session["Cart"].ToString());
+            var prod = (from Cart in DB.ShoppingCar
+                        where Cart.Id == c
+                        join Qty in DB.Quantity on Cart.Id equals Qty.Cid
+                        join PF in DB.ProdFeature on Qty.PFid equals PF.Id
+                        join p in DB.Product on PF.Pid equals p.Id
+                        select new
+                        {
+                            name = p.Name,
+                            qty = Qty.Qty,
+                            price = p.Price,
+                            total = p.Price * Qty.Qty
+                        }).ToList();
+            int? total = 0; var names = "";
+
+            for(var i = 0; prod.Count > i; i++)
+            {
+                total += prod[i].total;
+                if(i == prod.Count - 1)
+                {
+                    names += prod[i].name + prod[i].price + "元共" + prod[i].qty + "個";
+                }
+                else
+                {
+                    names += prod[i].name + prod[i].price + "元共" + prod[i].qty + "個#";
+                }
+            }
+            var random = new Random();
+            obj.Paydata paydata = new obj.Paydata()
+            {
+                MerchantTradeNo = "Asptest" + random.Next(0, 99999999),
+                TotalAmount = total.ToString(),
+                ItemName = names
+            };
+            paydata.CreateCheckMacValue(paydata);
+            Session["Check"] = paydata.CheckMacValue;
+            string json = JsonConvert.SerializeObject(paydata);
+            return json; 
+        }
+        [HttpPost]
+        public string ValidatePay(string checkvalue)
+        {
+            if (Session["Check"].ToString() == checkvalue)
+            {
+                return "1|OK";
+            }
+            else
+            {
+                return "error";
             }
         }
     }

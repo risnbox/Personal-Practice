@@ -108,37 +108,49 @@ function NextStep1_2() {
     $("#Step1-text .CO_span2").removeClass("CO_span2Select");
     $("#Step2-text .CO_span1").addClass("CO_span1Select");
     $("#Step2-text .CO_span2").addClass("CO_span2Select");
-
 }
-//其實應該直接用Submit處理表單
-function Submitorder() {
 
-    var c = confirm("確定提交訂單嗎?");
+function Submitorder() {
+    $.ajax({
+        url: "/cart/createpaydata",
+        success: e => {
+            return e;
+        }
+    }).then(e => {
+        let json = JSON.parse(e);
+        var form = $("#form2");
+        for (var x in json) {
+            var input = "<input type='hidden'name='" + x + "' value='" + json[x] + "'/ >";
+            form.append(input);
+        }
+        form.submit();
+
+    })
+}
+function addorder() {
     var s = $("#store").val();
-    if (c) {
-        var Formdata = $('form').serialize();
-        $.ajax({
-            url: "/cart/submitorder",
-            type: "post",
-            data: Formdata + "&Sname=" + s,
-            success: function (e) {
-                if (e != "") {
-                    e = JSON.parse(e);
-                    var L = 0;
-                    for (var x in e) {
-                        L++;
-                    }
-                    for (var i = 0; L > i; i++) {
-                        $("#" + e[i].key).text(e[i].message);
-                    }
+    var Formdata = $('#form1').serialize();
+    $.ajax({
+        url: "/cart/AddOrder",
+        type: "post",
+        data: Formdata + "&Sname=" + s,
+        success: function (e) {
+            if (e != "") {
+                e = JSON.parse(e);
+                var L = 0;
+                for (var x in e) {
+                    L++;
                 }
-                else {
-                    alert("訂單提交成功,點擊確定到訂單頁面");
-                    location.href = "/members/orderview";
+                for (var i = 0; L > i; i++) {
+                    $("#" + e[i].key).text(e[i].message);
                 }
             }
-        })
-    }
+            else {
+                alert("訂單提交成功,點擊確定到訂單頁面");
+                location.href = "/members/orderview";
+            }
+        }
+    })
 }
 
 $(function () {
@@ -148,7 +160,7 @@ $(function () {
     var T = 0;
     for (var i = 0; L > i; i++) {
         $("#CO_tbody").append(
-            "<tr data-id='" + i + "' id='" + i + "'><td class'col-md-3'><a><img class='img-rounded'style='width:70px;height:70px;float:left;'src='/UpdataFiles/" + data[i].Img + "' /></a>" +
+            "<tr data-id='" + i + "' id='" + i + "'><td class = 'col-md-3'><a><img class='img-rounded'style='width:70px;height:70px;float:left;'src='/UpdataFiles/" + data[i].Img + "' /></a>" +
             "<h5 id='N" + i + "'>" + data[i].Name + "</h5><span class='CO_span4'id='F" + i + "'>" + data[i].Feature + "</span></td>" +
             "<td class='col-md-2' style='padding-left:0;text-align:left;'><button id='C" + i + "' class='btn btn-default CO-'>-</button><span id='Q" + i + "' class='CO_Qty'>" + data[i].Qty +
             "</span><button id='A" + i + "' class='btn btn-default CO+'>+</button></td><td class='col-md-1'>NT$<span id='P" + i + "'>" + data[i].Price + "</span></td>" +

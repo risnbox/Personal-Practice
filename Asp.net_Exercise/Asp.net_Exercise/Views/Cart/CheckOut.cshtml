@@ -99,7 +99,7 @@
 
     <div class="table table-striped">
 
-        <form class="well form-horizontal">
+        <form id="form1" class="well form-horizontal">
 
             <div class="form-group">
 
@@ -151,12 +151,9 @@
                 </div>
 
             </div>
-
-            <div class="form-group">
-
-                <input type="button" id="Submitorder" class="btn btn-default col-md-offset-7" value="送出訂單" />
-
-            </div>
+        </form>
+        <form id="form2" method="post" action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5">
+            <input type="button" id="Submitorder" class="btn btn-default col-md-offset-7" value="送出訂單" />
         </form>
 
     </div>

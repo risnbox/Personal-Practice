@@ -24,7 +24,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Type" Type="nchar" MaxLength="10" />
+          <Property Name="Type" Type="varchar" MaxLength="10" />
           <Property Name="FileName" Type="char" MaxLength="200" />
         </EntityType>
         <EntityType Name="Keep">
@@ -42,7 +42,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="20" />
           <Property Name="Email" Type="varchar" MaxLength="40" />
-          <Property Name="Phone" Type="nchar" MaxLength="10" />
+          <Property Name="Phone" Type="varchar" MaxLength="10" />
           <Property Name="Password" Type="varchar" MaxLength="40" />
           <Property Name="Gender" Type="varchar" MaxLength="10" />
           <Property Name="Enable" Type="int" />
@@ -110,7 +110,7 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="20" />
-          <Property Name="Price" Type="int" />
+          <Property Name="Price" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Quantity">
           <Key>
@@ -554,7 +554,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Type" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="FileName" Type="String" MaxLength="200" FixedLength="true" Unicode="false" />
           <NavigationProperty Name="Prod_Img" Relationship="DatabaseModel.FK__Prod_Img__Mid__12C8C788" FromRole="Img" ToRole="Prod_Img" />
         </EntityType>
@@ -575,7 +575,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Email" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
-          <Property Name="Phone" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="Password" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
           <Property Name="Gender" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="Enable" Type="Int32" />
@@ -660,7 +660,7 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Price" Type="Int32" />
+          <Property Name="Price" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Keep" Relationship="DatabaseModel.FK__Keep__Prodid__19AACF41" FromRole="Product" ToRole="Keep" />
           <NavigationProperty Name="Prod_Class_Type" Relationship="DatabaseModel.FK__Prod_Class___Pid__51300E55" FromRole="Product" ToRole="Prod_Class_Type" />
           <NavigationProperty Name="Prod_Img" Relationship="DatabaseModel.FK__Prod_Img__Pid__13BCEBC1" FromRole="Product" ToRole="Prod_Img" />
