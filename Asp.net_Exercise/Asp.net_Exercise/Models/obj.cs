@@ -29,7 +29,7 @@ namespace Asp.net_Exercise.Models
             public string TotalAmount { get; set; }//11
             public string TradeDesc = "金流測試";//12
             public string ItemName { get; set; }//5
-            public string ReturnURL = "https://loacalhost:44353/cart/ValidatePay";//10
+            public string ReturnURL = "https://loacalhost:44353/cart/VerifyPay";//10
             public string ChoosePayment = "Credit";//2
             public string CheckMacValue { get; set; }//1
             public string ClientBackURL = "https://localhost:44353/member/orderview";//3

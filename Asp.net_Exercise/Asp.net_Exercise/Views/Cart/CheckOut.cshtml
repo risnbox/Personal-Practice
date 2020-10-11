@@ -149,13 +149,17 @@
                         <label class="text-danger error" id="Email"></label>
                     </div>
                 </div>
-
             </div>
         </form>
-        <form id="form2" method="post" action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5">
-            <input type="button" id="Submitorder" class="btn btn-default col-md-offset-7" value="送出訂單" />
-        </form>
-
     </div>
+    <input type="button" class="btn btn-default col-md-offset-6" id="before1" value="上一步" />
+    <input type="button" class="btn btn-default" id="Nextstep2" value="下一步" />
+</div>
+<div class="container" id="step3" style="display:none">
+
+    <form id="form2" method="post" action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5">
+        <input type="button" class="btn btn-default col-md-offset-6" id="before2" value="上一步" />
+        <input type="button" id="Submitorder" class="btn btn-default" value="送出訂單" />
+    </form>
 
 </div>

@@ -138,7 +138,25 @@ namespace Asp.net_Exercise.Controllers
             }
         }
         [HttpPost]
-        public string AddOrder(Order order, string Sname)
+        public string VerifyOrder(Order order, string Sname)
+        {
+            if (ModelState.IsValid)
+            {
+                var t = Sname.Split('-');
+                var S = t[0];
+                var sd = DB.Store.Where(m => m.StoreName == S).Select(m=>m.StoreId);
+                Session["Orderdata"] = order.Name + "," + order.Phone + "," + order.Email + "," + sd;
+                return "";
+            }
+            else
+            {
+                var e = ModelState.Where(m => m.Value.Errors.Any()).Select(m => new { key = m.Key, message = m.Value.Errors.Select(x => x.ErrorMessage).First() }).ToList();
+                var j = JsonConvert.SerializeObject(e);
+                return j.Replace(" ", "");//回傳ModelValidate錯誤訊息
+            }
+        }
+
+        /*public string AddOrder(Order order, string Sname)
         {
             if (ModelState.IsValid)
             {
@@ -151,8 +169,7 @@ namespace Asp.net_Exercise.Controllers
                 {
                     order.Store_Id = sd.StoreId;
                     order.User_Id = d;
-                    order.Guid = Guid.NewGuid().ToString();
-                    order.Time = DateTime.Now;
+
                     DB.Order.Add(order);
                     DB.SaveChanges();
                     var data = DB.Quantity.Where(m => m.Cid == s).ToList();
@@ -184,7 +201,7 @@ namespace Asp.net_Exercise.Controllers
                 var j = JsonConvert.SerializeObject(e);
                 return j.Replace(" ", "");
             }
-        }
+        }*/
         public string CreatePaydata()
         {
             var c = Convert.ToInt32(Session["Cart"].ToString());
@@ -227,15 +244,52 @@ namespace Asp.net_Exercise.Controllers
             return json; 
         }
         [HttpPost]
-        public string ValidatePay(string checkvalue)
+        public string VerifyPay(string checkvalue)
         {
             if (Session["Check"].ToString() == checkvalue)
             {
+                try
+                {
+                    var d = Convert.ToInt32(Session["Member"].ToString());
+                    var s = Convert.ToInt32(Session["cart"].ToString());
+                    var str = Session["Orderdata"].ToString().Split(',');
+                    int sd = Convert.ToInt32(str[3]);
+                    Order order = new Order()
+                    {
+                        Name = str[0],
+                        Phone = str[1],
+                        Email = str[2],
+                        Store_Id = sd
+
+                    };
+                    DB.Order.Add(order);
+                    DB.SaveChanges();
+                    var data = DB.Quantity.Where(m => m.Cid == s).ToList();
+                    OrderDetail orderdetail = new OrderDetail();
+                    foreach (var i in data)
+                    {
+                        orderdetail = new OrderDetail()
+                        {
+                            Quantity_Id = i.Id,
+                            Order_Id = order.Id
+                        };
+                        DB.OrderDetail.Add(orderdetail);
+                    }
+                    DB.ShoppingCar.Remove(DB.ShoppingCar.Find(s));
+                    ShoppingCar cart = new ShoppingCar() { Userid = d };
+                    DB.ShoppingCar.Add(cart);
+                    DB.SaveChanges();
+                    Session["Cart"] = cart.Id;
+                }
+                catch (Exception e)
+                {
+
+                }
                 return "1|OK";
             }
             else
             {
-                return "error";
+                return "checkvalue error";
             }
         }
     }

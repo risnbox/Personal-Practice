@@ -101,11 +101,67 @@ function Delete(e) {
 }
 
 function NextStep1_2() {
-
     $("#step1").css("display", "none");
     $("#step2").css("display", "block")
     $("#Step1-text .CO_span1").removeClass("CO_span1Select");
     $("#Step1-text .CO_span2").removeClass("CO_span2Select");
+    $("#Step2-text .CO_span1").addClass("CO_span1Select");
+    $("#Step2-text .CO_span2").addClass("CO_span2Select");
+}
+
+function before2_1() {
+    $("#Name").text("");
+    $("#Phone").text("");
+    $("#Email").text("");
+    $("#step2").css("display", "none");
+    $("#step1").css("display", "block")
+    $("#Step2-text .CO_span1").removeClass("CO_span1Select");
+    $("#Step2-text .CO_span2").removeClass("CO_span2Select");
+    $("#Step1-text .CO_span1").addClass("CO_span1Select");
+    $("#Step1-text .CO_span2").addClass("CO_span2Select");
+}
+
+function NextStep2_3() {
+    var s = $("#store").val();
+    var Formdata = $('#form1').serialize();
+    $.ajax({
+        url: "/cart/VerifyOrder",
+        type: "post",
+        data: Formdata + "&Sname="+s,//可直接在FormBody後增加參數 &參數名=值
+        success: function (e) {
+            if (e != "") {
+                e = JSON.parse(e);
+                var L = 0;
+                for (var x in e) {
+                    L++;
+                }
+                for (var i = 0; L > i; i++) {
+                    $("#" + e[i].key).text(e[i].message);
+                }
+            }
+        }
+    }).then(e => {
+        if (e == "") {
+            $("#Name").text("");
+            $("#Phone").text("");
+            $("#Email").text("");
+            $("#step2").css("display", "none");
+            $("#step3").css("display", "block")
+            $("#Step2-text .CO_span1").removeClass("CO_span1Select");
+            $("#Step2-text .CO_span2").removeClass("CO_span2Select");
+            $("#Step3-text .CO_span1").addClass("CO_span1Select");
+            $("#Step3-text .CO_span2").addClass("CO_span2Select");
+            
+        }
+    })
+    
+}
+
+function before3_2() {
+    $("#step3").css("display", "none");
+    $("#step2").css("display", "block")
+    $("#Step3-text .CO_span1").removeClass("CO_span1Select");
+    $("#Step3-text .CO_span2").removeClass("CO_span2Select");
     $("#Step2-text .CO_span1").addClass("CO_span1Select");
     $("#Step2-text .CO_span2").addClass("CO_span2Select");
 }
@@ -127,35 +183,10 @@ function Submitorder() {
 
     })
 }
-function addorder() {
-    var s = $("#store").val();
-    var Formdata = $('#form1').serialize();
-    $.ajax({
-        url: "/cart/AddOrder",
-        type: "post",
-        data: Formdata + "&Sname=" + s,
-        success: function (e) {
-            if (e != "") {
-                e = JSON.parse(e);
-                var L = 0;
-                for (var x in e) {
-                    L++;
-                }
-                for (var i = 0; L > i; i++) {
-                    $("#" + e[i].key).text(e[i].message);
-                }
-            }
-            else {
-                alert("訂單提交成功,點擊確定到訂單頁面");
-                location.href = "/members/orderview";
-            }
-        }
-    })
-}
+
 
 $(function () {
 
-    $("div #step2").css("display", "none");
     var L = data.length;
     var T = 0;
     for (var i = 0; L > i; i++) {
@@ -181,6 +212,9 @@ $(function () {
     }
     $("#CO_Totalprice").text("NT$" + T);
     $("#Nextstep1").on("click", NextStep1_2);
+    $("#before1").on("click", before2_1);
+    $("#Nextstep2").on('click', NextStep2_3);
+    $("#before2").on("click", before3_2);
     $("#Submitorder").on("click", Submitorder);
 
 })
