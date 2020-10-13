@@ -202,6 +202,7 @@ namespace Asp.net_Exercise.Controllers
                 return j.Replace(" ", "");
             }
         }*/
+        public string checkcode { get; set; }
         public string CreatePaydata()
         {
             var c = Convert.ToInt32(Session["Cart"].ToString());
@@ -239,14 +240,17 @@ namespace Asp.net_Exercise.Controllers
                 ItemName = names
             };
             paydata.CreateCheckMacValue(paydata);
-            Session["Check"] = paydata.CheckMacValue;
+            checkcode = paydata.CheckMacValue;
             string json = JsonConvert.SerializeObject(paydata);
             return json; 
         }
         [HttpPost]
-        public string VerifyPay(string checkvalue)
+        public string VerifyPay(string CheckMacValue)
         {
-            if (Session["Check"].ToString() == checkvalue)
+            Response.Write("1|OK");
+            return "1|OK";
+            
+            /*if (checkcode == CheckMacValue)
             {
                 try
                 {
@@ -290,7 +294,7 @@ namespace Asp.net_Exercise.Controllers
             else
             {
                 return "checkvalue error";
-            }
+            }*/
         }
     }
 }

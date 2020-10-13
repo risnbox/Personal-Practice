@@ -22,7 +22,7 @@ namespace Asp.net_Exercise.Models
         public class Paydata
         {
             //參數詳情請至綠界API文件https://www.ecpay.com.tw/Content/files/ecpay_011.pdf
-            public string MerchantID = "2000132";//6
+            public string MerchantID = "2000214";//6
             public string MerchantTradeNo { get; set; }//8
             public string MerchantTradeDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");//7
             public string PaymentType = "aio";//9
@@ -32,7 +32,7 @@ namespace Asp.net_Exercise.Models
             public string ReturnURL = "https://asptest.ml:45678/cart/VerifyPay";//10
             public string ChoosePayment = "Credit";//2
             public string CheckMacValue { get; set; }//1
-            public string ClientBackURL = "https://asptest.ml:45678/member/orderview";//3
+            public string ClientBackURL = "https://asptest.ml:45678/members/orderview";//3
             public string EncryptType = "1";//4
             public void CreateCheckMacValue(obj.Paydata Pay)
             {
