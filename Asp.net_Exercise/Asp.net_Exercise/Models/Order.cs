@@ -20,8 +20,8 @@ namespace Asp.net_Exercise.Models
         public string Phone { get; set; }
         public int Store_Id { get; set; }
         public int User_Id { get; set; }
-        public string Guid { get; set; }
-        public System.DateTime Time { get; set; }
+        public string TradeNo { get; set; }
+        public string Time { get; set; }
     
         public virtual Member Member { get; set; }
         public virtual Store Store { get; set; }

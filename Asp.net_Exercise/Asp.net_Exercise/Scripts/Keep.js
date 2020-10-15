@@ -11,7 +11,7 @@
     }
 }
 $(function () {
-    var L = data.length;
+
     for (var i = 0; L > i; i++) {
         $('#Father').append(
             "<li class='prod' id='" + data[i].prod.Id + "'>" +
@@ -22,5 +22,4 @@ $(function () {
             "</li>"
         )
     }
-
 })

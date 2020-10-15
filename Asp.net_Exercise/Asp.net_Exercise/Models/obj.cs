@@ -32,7 +32,7 @@ namespace Asp.net_Exercise.Models
             public string ReturnURL = "https://asptest.ml:45678/cart/VerifyPay";//10
             public string ChoosePayment = "Credit";//2
             public string CheckMacValue { get; set; }//1
-            public string ClientBackURL = "https://asptest.ml:45678/member/orderview";//3
+            public string ClientBackURL = "https://asptest.ml:45678/members/orderview";//3
             public string EncryptType = "1";//4
             public void CreateCheckMacValue(obj.Paydata Pay)
             {

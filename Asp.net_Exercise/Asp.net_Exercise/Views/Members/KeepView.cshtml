@@ -6,6 +6,11 @@
 <script src="~/Scripts/Keep.js" defer></script>
 <script>
     var data = @Html.Raw(ViewBag.json);
+    var L = data.length;
+    if (L == 0) {
+        alert('目前沒有任何收藏');
+        location.href = "/home/index";
+    }
 </script>
 
 <div class="container">

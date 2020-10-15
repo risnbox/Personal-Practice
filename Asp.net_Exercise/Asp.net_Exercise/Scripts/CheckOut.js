@@ -167,8 +167,11 @@ function before3_2() {
 }
 
 function Submitorder() {
+    var s = $("#store").val();
+    var form = $("#form1").serialize();
     $.ajax({
         url: "/cart/createpaydata",
+        data: form + "&sname=" + s,
         success: e => {
             return e;
         }
@@ -180,7 +183,8 @@ function Submitorder() {
             form.append(input);
         }
         form.submit();
-
+    }).catch(e => {
+        alert('I/O錯誤');
     })
 }
 

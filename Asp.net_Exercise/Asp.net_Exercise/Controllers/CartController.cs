@@ -142,10 +142,6 @@ namespace Asp.net_Exercise.Controllers
         {
             if (ModelState.IsValid)
             {
-                var t = Sname.Split('-');
-                var S = t[0];
-                var sd = DB.Store.Where(m => m.StoreName == S).Select(m=>m.StoreId);
-                Session["Orderdata"] = order.Name + "," + order.Phone + "," + order.Email + "," + sd;
                 return "";
             }
             else
@@ -155,55 +151,9 @@ namespace Asp.net_Exercise.Controllers
                 return j.Replace(" ", "");//回傳ModelValidate錯誤訊息
             }
         }
-
-        /*public string AddOrder(Order order, string Sname)
+        public string CreatePaydata(Order order, string sname)
         {
-            if (ModelState.IsValid)
-            {
-                var d = Convert.ToInt32(Session["Member"].ToString());
-                var s = Convert.ToInt32(Session["cart"].ToString());
-                var t = Sname.Split('-');
-                var S = t[0];
-                var sd = DB.Store.Where(m => m.StoreName == S).FirstOrDefault();
-                try
-                {
-                    order.Store_Id = sd.StoreId;
-                    order.User_Id = d;
-
-                    DB.Order.Add(order);
-                    DB.SaveChanges();
-                    var data = DB.Quantity.Where(m => m.Cid == s).ToList();
-                    OrderDetail orderdetail = new OrderDetail();
-                    foreach (var i in data)
-                    {
-                        orderdetail = new OrderDetail()
-                        {
-                            Quantity_Id = i.Id,
-                            Order_Id = order.Id
-                        };
-                        DB.OrderDetail.Add(orderdetail);
-                    }
-                    DB.ShoppingCar.Remove(DB.ShoppingCar.Find(s));
-                    ShoppingCar cart = new ShoppingCar() { Userid = d };
-                    DB.ShoppingCar.Add(cart);
-                    DB.SaveChanges();
-                    Session["Cart"] = cart.Id;
-                    return "";
-                }
-                catch (Exception e)
-                {
-                    return "資料庫更新失敗 code:" + e;
-                }
-            }
-            else
-            {
-                var e = ModelState.Where(m => m.Value.Errors.Any()).Select(m => new { key = m.Key, message = m.Value.Errors.Select(x => x.ErrorMessage).First() }).ToList();
-                var j = JsonConvert.SerializeObject(e);
-                return j.Replace(" ", "");
-            }
-        }*/
-        public string CreatePaydata()
-        {
+            var d = Convert.ToInt32(Session["Member"].ToString());
             var c = Convert.ToInt32(Session["Cart"].ToString());
             var prod = (from Cart in DB.ShoppingCar
                         where Cart.Id == c
@@ -241,56 +191,41 @@ namespace Asp.net_Exercise.Controllers
             paydata.CreateCheckMacValue(paydata);
             Session["Check"] = paydata.CheckMacValue;
             string json = JsonConvert.SerializeObject(paydata);
-            return json; 
-        }
-        [HttpPost]
-        public string VerifyPay(string checkvalue)
-        {
-            if (Session["Check"].ToString() == checkvalue)
+            //---------------------------------------------------------------------------
+            var t = sname.Split('-');
+            var S = t[0];
+            var sd = DB.Store.Where(m => m.StoreName == S).FirstOrDefault();
+            try
             {
-                try
+                order.User_Id = d;
+                order.Time = paydata.MerchantTradeDate;
+                order.TradeNo = paydata.MerchantTradeNo;
+                order.Store_Id = sd.StoreId;
+                DB.Order.Add(order);
+                DB.SaveChanges();
+                var data = DB.Quantity.Where(m => m.Cid == c).ToList();
+                OrderDetail orderdetail = new OrderDetail();
+                foreach (var i in data)
                 {
-                    var d = Convert.ToInt32(Session["Member"].ToString());
-                    var s = Convert.ToInt32(Session["cart"].ToString());
-                    var str = Session["Orderdata"].ToString().Split(',');
-                    int sd = Convert.ToInt32(str[3]);
-                    Order order = new Order()
+                    orderdetail = new OrderDetail()
                     {
-                        Name = str[0],
-                        Phone = str[1],
-                        Email = str[2],
-                        Store_Id = sd
-
+                        Quantity_Id = i.Id,
+                        Order_Id = order.Id
                     };
-                    DB.Order.Add(order);
-                    DB.SaveChanges();
-                    var data = DB.Quantity.Where(m => m.Cid == s).ToList();
-                    OrderDetail orderdetail = new OrderDetail();
-                    foreach (var i in data)
-                    {
-                        orderdetail = new OrderDetail()
-                        {
-                            Quantity_Id = i.Id,
-                            Order_Id = order.Id
-                        };
-                        DB.OrderDetail.Add(orderdetail);
-                    }
-                    DB.ShoppingCar.Remove(DB.ShoppingCar.Find(s));
-                    ShoppingCar cart = new ShoppingCar() { Userid = d };
-                    DB.ShoppingCar.Add(cart);
-                    DB.SaveChanges();
-                    Session["Cart"] = cart.Id;
+                    DB.OrderDetail.Add(orderdetail);
                 }
-                catch (Exception e)
-                {
-
-                }
-                return "1|OK";
+                DB.ShoppingCar.Remove(DB.ShoppingCar.Find(c));
+                ShoppingCar cart = new ShoppingCar() { Userid = d };
+                DB.ShoppingCar.Add(cart);
+                DB.SaveChanges();
+                Session["Cart"] = cart.Id;
+                return json;
             }
-            else
+            catch (Exception e)
             {
-                return "checkvalue error";
+                return e.Message;
             }
         }
+
     }
 }

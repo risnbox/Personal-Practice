@@ -156,9 +156,14 @@
     <input type="button" class="btn btn-default" id="Nextstep2" value="下一步" />
 </div>
 <div class="container" id="step3" style="display:none">
-
-    <form id="form2" method="post" action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5">
-        <input type="button" class="btn btn-default col-md-offset-6" id="before2" value="上一步" />
+    <div style="margin: 0 auto" class="container">
+        <div style="width:60%;margin:0 auto">
+            送出訂單後將進入綠界付款頁面，由於是用自家網路(社區網路)架主機，因此協調網路廠商只能幫忙開放五位數的port，但綠界資安政策回傳只接受443port，所以雖然驗證及參數都符合綠界API規範但因port的問題無法進行完整的金流操作，如要看訂單成功否須至<a target="_blank" href="https://vendor-stage.ecpay.com.tw/User/LogOn_Step1">綠界後台測試平台</a>，測試卡號: 4311-9522-2222-2222,期限則超過當天日期即可,安全碼: 222,手機採用簡訊驗證(綠界官方)如輸入亂數則無法驗證成功。
+        </div>
+    </div>
+    <hr/>
+    <form id="form2" method="post" action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5" target="_blank">
+        <input type="button" class="btn btn-default col-md-offset-5" id="before2" value="上一步" />
         <input type="button" id="Submitorder" class="btn btn-default" value="送出訂單" />
     </form>
 

@@ -25,14 +25,14 @@
 }
 
 $(function () {
-    var L = json.length;
+
     for (var i = 0; L > i; i++) {
         $("#list tbody").append(
             "<tr><td>" + json[i].name + "</td>" +
             "<td>" + json[i].phone + "</td>" +
             "<td>" + json[i].email + "</td>" +
             "<td>" + json[i].store + "</td>" +
-            "<td>" + json[i].guid + "</td>" +
+            "<td>" + json[i].tradeNo + "</td>" +
             "<td>" + json[i].time + "</td>" +
             "<td><input type='button' class='btn btn-default' data-oid='" + json[i].oid + "' id='" + i + "' value='詳細' /><tr/>"
         );

@@ -7,6 +7,11 @@
 <script src="~/Scripts/Orderview.js" defer></script>
 <script>
     var json = @Html.Raw(ViewBag.order);
+    var L = json.length;
+    if (L == 0) {
+        alert('目前沒有任何訂單紀錄');
+        location.href = "/home/index";
+    }
 </script>
 
 

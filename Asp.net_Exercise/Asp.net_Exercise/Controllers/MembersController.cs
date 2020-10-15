@@ -415,10 +415,10 @@ namespace Asp.net_Exercise.Controllers
         public ActionResult OrderVIew()
         {
             var d = Convert.ToInt32(Session["Member"].ToString());
-            var order = DB.Order.Where(m => m.User_Id == d).Select(m => new { name = m.Name, email = m.Email, phone = m.Phone, guid = m.Guid, store = m.Store.StoreName, time = m.Time, oid = m.Id }).ToList();
+            var order = DB.Order.Where(m => m.User_Id == d).Select(m => new { name = m.Name, email = m.Email, phone = m.Phone, tradeNo = m.TradeNo, store = m.Store.StoreName, time = m.Time, oid = m.Id }).ToList();
             var j = JsonConvert.SerializeObject(order);
             ViewBag.order = j.Replace(" ", "");
-            return View("OrderView");
+            return View();
         }
         public string GetOrderDetail(int oid)
         {
