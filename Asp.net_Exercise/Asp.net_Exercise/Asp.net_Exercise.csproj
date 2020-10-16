@@ -167,7 +167,6 @@
     <Content Include="Content\images\marker-shadow.png" />
     <Content Include="Content\Keep.css" />
     <Content Include="Content\LayOut_nav.css" />
-    <Content Include="Content\leaflet.css" />
     <Content Include="Content\Orderview.css" />
     <Content Include="Content\ProdDetails.css" />
     <Content Include="Content\ProdTable.css" />

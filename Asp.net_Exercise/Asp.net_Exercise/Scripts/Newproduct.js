@@ -6,7 +6,7 @@
         var T = $('#SType').find("option:selected").text();
         var C = $('#SClass').find("option:selected").text();
         $.ajax({
-            url: "/porduct/SearchProd?Stype=" + T + "&Sclass=" + C,
+            url: "/product/SearchProd?Stype=" + T + "&Sclass=" + C,
             type: "GET",
             success: function (data) {
                 data = JSON.parse(data);
