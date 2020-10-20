@@ -62,7 +62,7 @@ function Keep() {
 }
 $(function () {
     if (data[0].keep != null) {
-        $('#keep').removeClass('keep')
+        $('#keep').removeClass('keep');
         $('#keep').addClass('keepon');
     }
     $("#Img").append(

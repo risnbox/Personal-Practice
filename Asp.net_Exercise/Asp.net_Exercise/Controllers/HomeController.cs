@@ -11,33 +11,35 @@ namespace Asp.net_Exercise.Controllers
 {
     public class HomeController : Controller
     {
-        // GET: Home
-        DatabaseEntities DB = new DatabaseEntities();
+        DatabaseEntities DB = new DatabaseEntities();//建立公用DB物件
         public ActionResult Index()
         {
-            var count = DB.Product.Count();
+            var count = DB.Product.Count();//得到商品數量
             var products = DB.Product.ToList();
             var random = new Random();
-            List<obj.prod_img> pm = new List<obj.prod_img>();
-            var I = new List<int>();
-            for (var  i = 0; 4 > i; i++)
+            List<obj.prod_img> pm = new List<obj.prod_img>();//建立List<prod_img>，用以存放隨機後得到的data
+            var I = new List<int>();//用來存取隨機數確保不重複
+            for (var  i = 0; 4 > i; i++)//只顯示四筆商品
             {
-                obj.prod_img test = new obj.prod_img();
-                var R = random.Next(count);
-                foreach(var x in I)
+                obj.prod_img data = new obj.prod_img();//用以存放prod及img
+                var R = random.Next(count);//從商品數量內得到隨機數
+                foreach(var x in I)//確保不會得到重複值
                 {
                     while (R == x)
                     {
                         R = random.Next(count);
                     }
                 }
+                //透過 R 取得商品資料(商品及預覽圖)
                 var P = products[R];
-                test.Addd(P, DB.Prod_Img.Where(m => m.Pid == P.Id && m.Img.Type == "previewed").Select(m => m.Img).FirstOrDefault());
-                pm.Add(test);
+                data.prod = P;
+                data.img = DB.Prod_Img.Where(m => m.Pid == P.Id && m.Img.Type == "previewed").Select(m => m.Img).FirstOrDefault();
+                pm.Add(data);
                 I.Add(R);
             }
-            var data = JsonConvert.SerializeObject(pm).Replace(" ","");
-            ViewBag.json = data;
+            //將資料序列後傳回前端
+            var json = JsonConvert.SerializeObject(pm).Replace(" ","");
+            ViewBag.json = json;
             return View();
         }
         public ActionResult Women()
@@ -54,41 +56,44 @@ namespace Asp.net_Exercise.Controllers
         }
         public string GetProd(string TYPE)
         {
-            var data = (from Img in DB.Img
-                        join PCT in DB.Prod_Class_Type on TYPE equals PCT.Type.TypeName
+            //取得該類型所有商品資訊及預覽圖
+            var data = (from PCT in DB.Prod_Class_Type where PCT.Type.TypeName == TYPE
                         join PM in DB.Prod_Img on PCT.Pid equals PM.Pid
-                        where Img.Id == PM.Mid && Img.Type == "previewed"
+                        join Img in DB.Img on new { A = PM.Mid, B = "previewed" } equals new { A = Img.Id, B = Img.Type }
                         select new
                         {
                             img = Img,
                             prod = PM.Product
                         }).ToList();
+            //將資料序列後傳回前端
             var json = JsonConvert.SerializeObject(data);
             json = json.Replace(" ", "");
             return json;
         }
         public ActionResult ProdDetails(int Pid)
         {
+            //確認是否登入以及是否已新增過該商品
             string keep = null;
             if (Session["Member"] != null)
             {
                 var U = Convert.ToInt32(Session["Member"].ToString());
                 if (DB.Keep.Where(m => m.Userid == U && m.Prodid == Pid).FirstOrDefault() != null)
                 {
-                    keep = "true";
+                    keep = "true";//此字串用以讓前端辨識初始顯示狀態
                 }
             }
-            var data = (from img in DB.Img
+            //取得商品資料,圖片,是否新增過
+            var data = (from PM in DB.Prod_Img where PM.Pid==Pid
                         join prod in DB.Product on Pid equals prod.Id
-                        join PM in DB.Prod_Img on Pid equals PM.Pid
-                        where img.Id == PM.Mid
+                        join Img in DB.Img on PM.Mid equals Img.Id
                         select new
                         {
                             prod = prod,
-                            img = img,
+                            img = Img,
                             keep = keep
                         }
                       ).ToList();
+            //將資料序列後傳回前端
             string json = JsonConvert.SerializeObject(data);
             var V = json.Replace(" ","");
             ViewBag.json = V;
