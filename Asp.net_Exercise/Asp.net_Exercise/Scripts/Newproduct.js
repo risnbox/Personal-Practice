@@ -6,12 +6,10 @@
         var T = $('#SType').find("option:selected").text();
         var C = $('#SClass').find("option:selected").text();
         $.ajax({
-            url: "/product/SearchProd?Stype=" + T + "&Sclass=" + C,
+            url: "/api/prodapir/SearchProd?Stype=" + T + "&Sclass=" + C,
             type: "GET",
             success: function (data) {
-                data = JSON.parse(data);
-                var L = data.length;
-                for (var i = 0; L > i; i++) {
+                for (var i = 0; data.length > i; i++) {
                     $("table").append(
                         "<tr id='S" + i + "' class='S'><td id='N" + i + "'>" + data[i].Prod.Name + "</td>" +
                         "<td id='P" + i + "'>" + data[i].Prod.Price + "</td>" +
@@ -29,7 +27,7 @@
         var Name = e.data.name;
         if (confirm("確定刪除嗎?")) {
             $.ajax({
-                url: "/product/DelProd?name=" + Name,
+                url: "/api/prodapir/DelProd?name=" + Name,
                 type: "Get",
                 success: function (data) {
                     if (data == 0) {

@@ -90,6 +90,7 @@ namespace Asp.net_Exercise.Controllers
                     Session["Member"] = data.Id;
                     Session["MemberName"] = data.Name;
                     Session["MemberEmail"] = data.Email;
+                    //檢查該帳號是否已有購物車id，無則新增
                     if (DB.ShoppingCar.Where(m => m.Userid == data.Id).FirstOrDefault() == null)
                     {
                         var cart = new ShoppingCar() { Userid = data.Id };
@@ -123,55 +124,7 @@ namespace Asp.net_Exercise.Controllers
                 return View();
             }
         }
-        [HttpPost]
-        public async Task<string> GooglesignUp(string gender, string phone, string id_token)
-        {
-            try
-            {
-                var result = "";
-                var url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + id_token;
-                using (var Client = new HttpClient())
-                {
-                    //Client.Timeout = TimeSpan.FromSeconds(30)//除非流量用量大不然沒必要
-                    var Response = await Client.GetAsync(url);
-                    result = await Response.Content.ReadAsStringAsync();
-                }
-                var json = JsonConvert.DeserializeAnonymousType(result, new { email = "", sub = "", name = "" });
-                var member = new Member()
-                {
-                    Email = json.email,
-                    Name = json.name,
-                    Phone = phone,
-                    Gender = gender,
-                    GoogleId = json.sub,
-                    Enable = 1
-                };
-                var d = DB.Member.Where(m => m.GoogleId == member.GoogleId && m.Email == member.Email).FirstOrDefault();
-                if (d == null)
-                {
-                    d = member;
-                    DB.Member.Add(member);
-                    DB.SaveChanges();
-                }
-                Session["Member"] = d.Id;
-                Session["MemberName"] = d.Name;
-                Session["MemberEmail"] = d.Email;
-                if (DB.ShoppingCar.Where(m => m.Userid == d.Id).FirstOrDefault() == null)
-                {
-                    var cart = new ShoppingCar() { Userid = d.Id };
-                    DB.ShoppingCar.Add(cart);
-                    DB.SaveChanges();
-                }
-                var C = DB.ShoppingCar.Where(m => m.Userid == d.Id).FirstOrDefault();
-                Session["Cart"] = C.Id;
-                if (d.Phone == "") { return "A"; }
-                return "";
-            }
-            catch (Exception e)
-            {
-                return e.Message;
-            }
-        }
+        
         public ActionResult SignOut()
         {
             //將Session清空辨別會員狀態
@@ -181,7 +134,6 @@ namespace Asp.net_Exercise.Controllers
         public ActionResult MemberCenter()
         {
             //若Session為空或該會員是未啟用狀態則導回登入頁面,避免未登入或是未啟用帳戶透過網址進入
-
             if (Session["Member"] == null)
             {
                 TempData["SignUpSuccess"] = "您尚未登入";
@@ -189,6 +141,7 @@ namespace Asp.net_Exercise.Controllers
             }
             var d = Convert.ToInt32(Session["Member"].ToString());
             var D = DB.Member.Where(m => m.Id == d).FirstOrDefault();
+            //確認驗證狀態
             if (DB.Member.Where(m => m.Id == D.Id && m.Enable == 0).FirstOrDefault() != null)
             {
                 TempData["SignUpSuccess"] = "您尚未啟用";
@@ -205,7 +158,6 @@ namespace Asp.net_Exercise.Controllers
                     str.Add(x.StoreName);
                 }
             }
-
             ViewBag.Store = string.Join(",", str);
             D.Password = null;
             return View(D);
@@ -217,12 +169,12 @@ namespace Asp.net_Exercise.Controllers
             var D = DB.Member.Where(m => m.Id == d).FirstOrDefault();
             if (ModelState.IsValid)
             {
-
+                //檢查密碼是否正確=>信箱、手機是否有重複
                 if (DB.Member.Where(m => D.Password == postback.Password).FirstOrDefault() != null)
                 {
-                    if (DB.Member.Where(m => m.Id == D.Id && m.Email == postback.Email).FirstOrDefault() != null)
+                    if (DB.Member.Where(m => m.Id == D.Id && m.Email == postback.Email).FirstOrDefault() != null)//信箱無更動 判斷手機
                     {
-                        if (DB.Member.Where(m => D.Phone == postback.Phone).FirstOrDefault() != null)
+                        if (DB.Member.Where(m => D.Phone == postback.Phone).FirstOrDefault() != null)//手機無更動則通過驗證
                         {
                             //postback並無Id,Enable,ErrorCount的資料,必須先指定在寫入DB
                             postback.Id = D.Id;
@@ -233,12 +185,12 @@ namespace Asp.net_Exercise.Controllers
                             ViewBag.EditErrorMessage = "修改成功";
                             return View();
                         }
-
-                        if (DB.Member.Where(m => m.Phone == postback.Phone).FirstOrDefault() != null)
+                        if (DB.Member.Where(m => m.Phone == postback.Phone).FirstOrDefault() != null)//信箱無更動手機重複
                         {
                             ViewBag.EditErrorMessage = "該手機已被使用";
                             return View();
                         }
+                        //信箱無更動手機變動無重複通過驗證
                         postback.Id = D.Id;
                         postback.Enable = D.Enable;
                         postback.ErrorCount = D.ErrorCount;
@@ -247,13 +199,13 @@ namespace Asp.net_Exercise.Controllers
                         return View();
                     }
 
-                    if (DB.Member.Where(m => m.Email == postback.Email).FirstOrDefault() != null)
+                    if (DB.Member.Where(m => m.Email == postback.Email).FirstOrDefault() != null)//信箱變動且重複
                     {
                         ViewBag.EditErrorMessage = "該信箱已被使用";
                         return View();
                     }
 
-                    if (DB.Member.Where(m => m.Id == D.Id && m.Phone == postback.Phone).FirstOrDefault() != null)
+                    if (DB.Member.Where(m => m.Id == D.Id && m.Phone == postback.Phone).FirstOrDefault() != null)//信箱,手機都變動且無重複
                     {
                         postback.Id = D.Id;
                         postback.Enable = D.Enable;
@@ -262,8 +214,7 @@ namespace Asp.net_Exercise.Controllers
                         ViewBag.EditErrorMessage = "修改成功";
                         return View();
                     }
-
-                    if (DB.Member.Where(m => m.Phone == postback.Phone).FirstOrDefault() != null)
+                    if (DB.Member.Where(m => m.Phone == postback.Phone).FirstOrDefault() != null)//信箱,手機變動且手機重複
                     {
                         ViewBag.EditErrorMessage = "該手機已被使用";
                         return View();
@@ -274,7 +225,7 @@ namespace Asp.net_Exercise.Controllers
             }
             return View();
         }
-        public string RepeatEmailValidation()
+        public string RepeatEmailValidation()//重新寄出驗證信
         {
             try
             {
@@ -288,7 +239,7 @@ namespace Asp.net_Exercise.Controllers
                 return "寄出失敗 code:" + e;
             }
         }
-        public void EmailValidation(string Title, string Email, string Body)
+        public void EmailValidation(string Title, string Email, string Body)//透過Gmail寄出郵件
         {
             try
             {
@@ -327,7 +278,7 @@ namespace Asp.net_Exercise.Controllers
             char[] Chr = new char[6];//字串長度
             Random rd = new Random();
 
-            for (var i = 0; i < 6; i++)//使用for迴圈執行六次來獲得六碼隨機碼
+            for (var i = 0; i < 6; i++)//使用for迴圈獲得隨機碼
             {
                 Chr[i] = allowwords[rd.Next(0, 61)];//定義亂數範圍
             }
@@ -353,12 +304,12 @@ namespace Asp.net_Exercise.Controllers
                 //修改資料庫內資料已測試過重複變數一樣能作用,前者data是索引作用後者才是複寫索引到的data
                 DB.Entry(data).CurrentValues.SetValues(data);
                 DB.SaveChanges();
-                Session.Remove("Veriflcationcode");
+                Session.Remove("Veriflcationcode");//清空驗證碼session
                 return RedirectToAction("Index","home");
             }
             if (data.ErrorCount >= 3)
             {
-                var code = Randomcode();//呼叫產生亂數方法寫入code
+                var code = Randomcode();//呼叫產生亂數方法
                 Session["Veriflcationcode"] = code;//由於重寄驗證碼所以Session內容須重置
                 ViewBag.ValidationErrorMessage = "驗證碼輸入錯誤次數超過3次,已重新寄出驗證信";
                 EmailValidation("帳號驗證", data.Email, Session["Veriflcationcode"] as string);
@@ -380,8 +331,7 @@ namespace Asp.net_Exercise.Controllers
                         where keep.Userid == d
                         join prod in DB.Product on keep.Prodid equals prod.Id
                         join PM in DB.Prod_Img on keep.Prodid equals PM.Pid
-                        join img in DB.Img on PM.Mid equals img.Id
-                        where img.Type == "previewed"
+                        join img in DB.Img on new { a = PM.Mid, b = "previewed" } equals new { a = img.Id, b = img.Type }
                         select new
                         {
                             prod = prod,
@@ -392,26 +342,6 @@ namespace Asp.net_Exercise.Controllers
             ViewBag.json = json;
             return View();
         }
-
-        public void Keep(int Pid)
-        {
-
-            var keep = new Keep() { Userid = Convert.ToInt32(Session["Member"].ToString()), Prodid = Pid };
-            if (DB.Keep.Where(m => m.Userid == keep.Userid && m.Prodid == keep.Prodid).FirstOrDefault() == null)
-            {
-                DB.Keep.Add(keep);
-                DB.SaveChanges();
-            }
-
-        }
-
-        public void DelKeep(int Pid)
-        {
-            var U = Convert.ToInt32(Session["Member"].ToString());
-            var data = DB.Keep.Where(m => m.Prodid == Pid && m.Userid == U).FirstOrDefault();
-            DB.Keep.Remove(data);
-            DB.SaveChanges();
-        }
         public ActionResult OrderVIew()
         {
             var d = Convert.ToInt32(Session["Member"].ToString());
@@ -419,35 +349,6 @@ namespace Asp.net_Exercise.Controllers
             var j = JsonConvert.SerializeObject(order);
             ViewBag.order = j.Replace(" ", "");
             return View();
-        }
-        public string GetOrderDetail(int oid)
-        {
-            try
-            {
-                var data = (from order in DB.Order
-                            where order.Id == oid
-                            join OD in DB.OrderDetail on order.Id equals OD.Order_Id
-                            join Qty in DB.Quantity on OD.Quantity_Id equals Qty.Id
-                            join PF in DB.ProdFeature on Qty.PFid equals PF.Id
-                            join PI in DB.Prod_Img on PF.Pid equals PI.Pid
-                            join img in DB.Img on new { A = PI.Mid, B = "previewed" } equals new { A = img.Id, B = img.Type }
-                            select new
-                            {
-                                name = PF.Product.Name,
-                                price = PF.Product.Price,
-                                qty = Qty.Qty,
-                                img = img.FileName,
-                                total = PF.Product.Price * Qty.Qty,
-                                feature = PF.Size.Name + "-" + PF.Color.Name
-                            }
-                            ).ToList();
-                var j = JsonConvert.SerializeObject(data);
-                return j.Replace(" ", "");//透過viewbag可透過html.Raw解析成Javascript_Object,若直接回傳字串型態的json資料則需透過JSON.parse解析
-            }
-            catch (Exception e)
-            {
-                return e.ToString();
-            }
         }
     }
 }

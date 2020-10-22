@@ -129,6 +129,7 @@ function NextStep2_3() {
         type: "post",
         data: Formdata + "&Sname="+s,//可直接在FormBody後增加參數 &參數名=值
         success: function (e) {
+            //如有錯誤訊息則印出
             if (e != "") {
                 e = JSON.parse(e);
                 var L = 0;
@@ -141,6 +142,7 @@ function NextStep2_3() {
             }
         }
     }).then(e => {
+        //如有錯誤訊息則不動作
         if (e == "") {
             $("#Name").text("");
             $("#Phone").text("");
@@ -178,11 +180,13 @@ function Submitorder() {
     }).then(e => {
         let json = JSON.parse(e);
         var form = $("#form2");
+        //將參數新增至表單供傳輸至綠界
         for (var x in json) {
             var input = "<input type='hidden'name='" + x + "' value='" + json[x] + "'/ >";
             form.append(input);
         }
         form.submit();
+        location.href="/members/orderview"
     }).catch(e => {
         alert('I/O錯誤');
     })
@@ -190,7 +194,7 @@ function Submitorder() {
 
 
 $(function () {
-
+    //印出購物清單
     var L = data.length;
     var T = 0;
     for (var i = 0; L > i; i++) {

@@ -2,9 +2,8 @@
     var c = confirm("確定移除該收藏嗎?");
     if (c) {
         $.ajax({
-            url: "/members/DelKeep?Pid=" + Pid,
+            url: "/api/membersapi/DelKeep?Pid=" + Pid,
             success: function (data) {
-
                 $("#Father li").remove();
             }
         })

@@ -15,7 +15,7 @@ namespace Asp.net_Exercise.Controllers
     {
         DatabaseEntities DB = new DatabaseEntities();
         
-        public ActionResult CarPartial()
+        public ActionResult CarPartial()//產生購物車頁面
         {
             var c = Convert.ToInt32(Session["Cart"].ToString());
             var data = (from Cart in DB.ShoppingCar
@@ -39,16 +39,17 @@ namespace Asp.net_Exercise.Controllers
         public ActionResult CheckOut()
         {
             var d = Convert.ToInt32(Session["Member"].ToString());
-            if (DB.Member.Where(m => m.Id == d && m.Enable == 0).FirstOrDefault() != null)
+            var c = Convert.ToInt32(Session["Cart"].ToString());
+            if (DB.Member.Where(m => m.Id == d && m.Enable == 0).FirstOrDefault() != null)//檢查驗證狀態
             {
                 return RedirectToAction("EmailValidationView");
             }
-            if (DB.Member_Store.Where(m => m.Member_Id == d).FirstOrDefault() == null)
+            if (DB.Member_Store.Where(m => m.Member_Id == d).FirstOrDefault() == null)//檢查是否設定取貨點
             {
                 TempData["CartError"] = "請先至會員會員中心選擇711門市";
                 return RedirectToAction("Location","store");
             }
-            var c = Convert.ToInt32(Session["Cart"].ToString());
+            //產生購物清單
             var data = (from Cart in DB.ShoppingCar
                         where Cart.Id == c
                         join Qty in DB.Quantity on c equals Qty.Cid
@@ -70,6 +71,7 @@ namespace Asp.net_Exercise.Controllers
             var Json = JsonConvert.SerializeObject(data);
             ViewBag.json = Json.Replace(" ", "");
             //------------------------------------------
+            //產生Step2預設資料
             var s = DB.Member_Store.Where(m => m.Member_Id == d).ToList();
             var M = DB.Member.Where(m => m.Id == d).FirstOrDefault();
             var S = new List<string>();
@@ -84,7 +86,7 @@ namespace Asp.net_Exercise.Controllers
             ViewBag.Email = M.Email;
             return View();
         }
-        public Quantity SearchQuantity(string Name, string Feature)
+        public Quantity SearchQuantity(string Name, string Feature)//搜尋購物車商品
         {
             var d = Convert.ToInt32(Session["Member"].ToString());
             var F = Feature.Split('-');
@@ -99,8 +101,8 @@ namespace Asp.net_Exercise.Controllers
         {
             try
             {
-                var data = SearchQuantity(Name, Feature);
-                DB.Quantity.Remove(data);
+                var data = SearchQuantity(Name, Feature);//取得該帳號下資料
+                DB.Quantity.Remove(data);//從清單刪除
                 DB.SaveChanges();
                 return "";
             }
@@ -109,7 +111,7 @@ namespace Asp.net_Exercise.Controllers
                 return "伺服器錯誤 code:" + e.ToString();
             }
         }
-        public string QtyAdd(string Name, string Feature)
+        public string QtyAdd(string Name, string Feature)//購物車商品數量增減
         {
             try
             {
@@ -123,7 +125,7 @@ namespace Asp.net_Exercise.Controllers
                 return "伺服器錯誤 code:" + e.ToString();
             }
         }
-        public string QtyCut(string Name, string Feature)
+        public string QtyCut(string Name, string Feature)//購物車商品數量增減
         {
             try
             {
@@ -138,14 +140,10 @@ namespace Asp.net_Exercise.Controllers
             }
         }
         [HttpPost]
-        public string VerifyOrder(Order order, string Sname)
+        public string VerifyOrder(Order order, string Sname)//檢查Step2資料
         {
             if (ModelState.IsValid)
             {
-                var t = Sname.Split('-');
-                var S = t[0];
-                var sd = DB.Store.Where(m => m.StoreName == S).Select(m=>m.StoreId);
-                Session["Orderdata"] = order.Name + "," + order.Phone + "," + order.Email + "," + sd;
                 return "";
             }
             else
@@ -155,57 +153,11 @@ namespace Asp.net_Exercise.Controllers
                 return j.Replace(" ", "");//回傳ModelValidate錯誤訊息
             }
         }
-
-        /*public string AddOrder(Order order, string Sname)
+        public string CreatePaydata(Order order,string Sname)
         {
-            if (ModelState.IsValid)
-            {
-                var d = Convert.ToInt32(Session["Member"].ToString());
-                var s = Convert.ToInt32(Session["cart"].ToString());
-                var t = Sname.Split('-');
-                var S = t[0];
-                var sd = DB.Store.Where(m => m.StoreName == S).FirstOrDefault();
-                try
-                {
-                    order.Store_Id = sd.StoreId;
-                    order.User_Id = d;
-
-                    DB.Order.Add(order);
-                    DB.SaveChanges();
-                    var data = DB.Quantity.Where(m => m.Cid == s).ToList();
-                    OrderDetail orderdetail = new OrderDetail();
-                    foreach (var i in data)
-                    {
-                        orderdetail = new OrderDetail()
-                        {
-                            Quantity_Id = i.Id,
-                            Order_Id = order.Id
-                        };
-                        DB.OrderDetail.Add(orderdetail);
-                    }
-                    DB.ShoppingCar.Remove(DB.ShoppingCar.Find(s));
-                    ShoppingCar cart = new ShoppingCar() { Userid = d };
-                    DB.ShoppingCar.Add(cart);
-                    DB.SaveChanges();
-                    Session["Cart"] = cart.Id;
-                    return "";
-                }
-                catch (Exception e)
-                {
-                    return "資料庫更新失敗 code:" + e;
-                }
-            }
-            else
-            {
-                var e = ModelState.Where(m => m.Value.Errors.Any()).Select(m => new { key = m.Key, message = m.Value.Errors.Select(x => x.ErrorMessage).First() }).ToList();
-                var j = JsonConvert.SerializeObject(e);
-                return j.Replace(" ", "");
-            }
-        }*/
-        public string checkcode { get; set; }
-        public string CreatePaydata()
-        {
+            var u = Convert.ToInt32(Session["Member"].ToString());
             var c = Convert.ToInt32(Session["Cart"].ToString());
+            ////建立金流訂單資所需參數
             var prod = (from Cart in DB.ShoppingCar
                         where Cart.Id == c
                         join Qty in DB.Quantity on Cart.Id equals Qty.Cid
@@ -219,7 +171,6 @@ namespace Asp.net_Exercise.Controllers
                             total = p.Price * Qty.Qty
                         }).ToList();
             int? total = 0; var names = "";
-
             for(var i = 0; prod.Count > i; i++)
             {
                 total += prod[i].total;
@@ -233,68 +184,52 @@ namespace Asp.net_Exercise.Controllers
                 }
             }
             var random = new Random();
-            obj.Paydata paydata = new obj.Paydata()
+            obj.Paydata paydata = new obj.Paydata()//產生訂單編號
             {
                 MerchantTradeNo = "Asptest" + random.Next(0, 99999999),
                 TotalAmount = total.ToString(),
                 ItemName = names
             };
-            paydata.CreateCheckMacValue(paydata);
-            checkcode = paydata.CheckMacValue;
+            paydata.CreateCheckMacValue(paydata);//產出所需參數後加密產生驗證碼
+//-------------------------------------------------------------
+            //將購物車內容清空後移至DB儲存
+            var t = Sname.Split('-');//分割前端商店字串 商店名-地址
+            var S = t[0];
+            var sd = DB.Store.Where(m => m.StoreName == S).FirstOrDefault();
+            try
+            {
+                //新增訂單資料後儲存至DB產生ID供Detail參考
+                order.Store_Id = sd.StoreId;
+                order.User_Id = u;
+                order.Time = paydata.MerchantTradeDate;
+                order.TradeNo = paydata.MerchantTradeNo;
+                DB.Order.Add(order);
+                DB.SaveChanges();
+                //將購物車內容轉成Detail資料儲存
+                var data = DB.Quantity.Where(m => m.Cid == c).ToList();
+                OrderDetail orderdetail = new OrderDetail();
+                foreach (var i in data)
+                {
+                    orderdetail = new OrderDetail()
+                    {
+                        Quantity_Id = i.Id,
+                        Order_Id = order.Id
+                    };
+                    DB.OrderDetail.Add(orderdetail);
+                }
+                //移除舊購物車，新增新的購物車編號
+                DB.ShoppingCar.Remove(DB.ShoppingCar.Find(c));
+                ShoppingCar cart = new ShoppingCar() { Userid = u };
+                DB.ShoppingCar.Add(cart);
+                DB.SaveChanges();
+                Session["Cart"] = cart.Id;
+            }
+            catch(Exception e)
+            {
+                return e.Message;
+            }
             string json = JsonConvert.SerializeObject(paydata);
             return json; 
-        }
-        [HttpPost]
-        public string VerifyPay(string CheckMacValue)
-        {
-            Response.Write("1|OK");
-            return "1|OK";
-            
-            /*if (checkcode == CheckMacValue)
-            {
-                try
-                {
-                    var d = Convert.ToInt32(Session["Member"].ToString());
-                    var s = Convert.ToInt32(Session["cart"].ToString());
-                    var str = Session["Orderdata"].ToString().Split(',');
-                    int sd = Convert.ToInt32(str[3]);
-                    Order order = new Order()
-                    {
-                        Name = str[0],
-                        Phone = str[1],
-                        Email = str[2],
-                        Store_Id = sd
-
-                    };
-                    DB.Order.Add(order);
-                    DB.SaveChanges();
-                    var data = DB.Quantity.Where(m => m.Cid == s).ToList();
-                    OrderDetail orderdetail = new OrderDetail();
-                    foreach (var i in data)
-                    {
-                        orderdetail = new OrderDetail()
-                        {
-                            Quantity_Id = i.Id,
-                            Order_Id = order.Id
-                        };
-                        DB.OrderDetail.Add(orderdetail);
-                    }
-                    DB.ShoppingCar.Remove(DB.ShoppingCar.Find(s));
-                    ShoppingCar cart = new ShoppingCar() { Userid = d };
-                    DB.ShoppingCar.Add(cart);
-                    DB.SaveChanges();
-                    Session["Cart"] = cart.Id;
-                }
-                catch (Exception e)
-                {
-
-                }
-                return "1|OK";
-            }
-            else
-            {
-                return "checkvalue error";
-            }*/
         }
     }
 }

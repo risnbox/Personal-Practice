@@ -2,14 +2,13 @@
     var Id = e.data.Id;
     var oid = $("#" + Id).data("oid");
     $.ajax({
-        url: "/members/GetOrderDetail?oid=" + oid,
+        url: "/api/membersapi/GetOrderDetail?oid=" + oid,
         type: "get",
         success: function (json) {
+            console.log(json);
             $("#detail tbody tr").remove();
-            json = JSON.parse(json);
-            var L = json.length;
             var T = 0;
-            for (var i = 0; L > i; i++) {
+            for (var i = 0; json.length > i; i++) {
                 $("#detail").append(
                     "<tr><td class='col-md-3' style='text-align:left'>" +
                     "<img class='img-rounded prod_img' src='/UpdataFiles/" + json[i].img + "' />" +

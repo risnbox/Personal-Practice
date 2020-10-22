@@ -14,7 +14,7 @@ namespace Asp.net_Exercise.Controllers
         DatabaseEntities DB = new DatabaseEntities();
         public ActionResult NewProd()
         {
-            if (Convert.ToInt32(Session["Member"].ToString()) != 12 && Session["Member"] == null)
+            if (Convert.ToInt32(Session["Member"].ToString()) != 12 && Session["Member"] == null)//驗證是否為管理員
             {
                 Session["Member"] = "";
                 return RedirectToAction("Index","home");
@@ -26,8 +26,9 @@ namespace Asp.net_Exercise.Controllers
         public bool UpdataFile(HttpPostedFileBase file, string Type)
         {
             var E = file.FileName.Split('.');//分割字串
-            string[] VD = { "jpg", "img", "png", "jpeg" };//驗證副檔名
+            string[] VD = { "jpg", "img", "png", "jpeg" };
             var bl = false;
+            //驗證副檔名
             if (E.Length > 2)
             {
                 return false;
@@ -49,7 +50,7 @@ namespace Asp.net_Exercise.Controllers
                 {
                     var PH = Path.Combine(Server.MapPath("~/UpdataFiles/"), file.FileName);//編輯儲存路徑
                     file.SaveAs(PH);//執行儲存
-                    var Img = new Img() { Type = Type, FileName = file.FileName };
+                    var Img = new Img() { Type = Type, FileName = file.FileName };//新增至DB
                     DB.Img.Add(Img);
                     return true;
                 }
@@ -58,6 +59,7 @@ namespace Asp.net_Exercise.Controllers
         [HttpPost]
         public ActionResult NewProd(string name, int price, string type, string Class, HttpPostedFileBase previewed, HttpPostedFileBase title, HttpPostedFileBase content)
         {
+            //驗證資料
             if (type == null && Class == null)
             {
                 ViewBag.error = "請選擇種類和類別";
@@ -68,22 +70,26 @@ namespace Asp.net_Exercise.Controllers
                 ViewBag.error = "新增失敗,只接受圖檔並且檔名不可包含'.'請重新操作";
                 return View();
             }
+            //新增產品及類別資訊至DB
             var E = previewed.FileName.Split('.');
             var prod = new Product() { Name = name, Price = price };
-            var cid = (int)Enum.Parse(typeof(ClassSelect), Class);
+            var cid = (int)Enum.Parse(typeof(ClassSelect), Class);//通過列舉獲得選取的資料
             int tid = (int)Enum.Parse(typeof(TypeSelect), type);
             DB.Product.Add(prod);
             var PC = new Prod_Class_Type() { Cid = cid, Product = prod, Tid = tid };
             DB.Prod_Class_Type.Add(PC);
             DB.SaveChanges();
+            //新增圖檔和產品之間的連接資料(一對多其實不必額外開Table，多對多才需要)
             var P = DB.Product.Where(m => m.Name == name).FirstOrDefault();
             var Pid = P.Id;
+            //三個圖檔用意是封面,預覽,內容
             var I = DB.Img.Where(m => m.FileName == title.FileName).FirstOrDefault();
             var Iid = I.Id;
             var M = DB.Img.Where(m => m.FileName == previewed.FileName).FirstOrDefault();
             var Mid = M.Id;
             var G = DB.Img.Where(m => m.FileName == content.FileName).FirstOrDefault();
             var Gid = G.Id;
+            //建立關聯式data
             Prod_Img[] PM = new Prod_Img[3];
             for (int i = 0; PM.Length > i; i++)
             {
@@ -99,49 +105,5 @@ namespace Asp.net_Exercise.Controllers
             ViewBag.error = "新增成功";
             return View();
         }
-        public string SearchProd(string Stype, string SClass)
-        {
-            var data = (from PCT in DB.Prod_Class_Type
-                        join C in DB.Class on PCT.Class.ClassName equals SClass
-                        join T in DB.Type on PCT.Type.TypeName equals Stype
-                        join P in DB.Product on PCT.Pid equals P.Id
-                        where PCT.Cid == C.Id && PCT.Tid == T.Id && PCT.Pid == P.Id
-                        select new
-                        {
-                            Prod = PCT.Product,
-                            Clas = PCT.Class,
-                            type = PCT.Type
-                        }
-                        ).ToList();
-
-            var json = JsonConvert.SerializeObject(data);
-            return json;
-        }
-
-        public int DelProd(string name)
-        {
-            int? data = null;
-            foreach (var i in DB.Prod_Class_Type)
-            {
-                if (i.Product.Name == name)
-                {
-                    data = i.Pid;
-                }
-            }
-            var Delete1 = DB.Product.Where(m => m.Id == data).FirstOrDefault();
-            var Delete2 = DB.Prod_Class_Type.Where(m => m.Pid == data).FirstOrDefault();
-            try
-            {
-                DB.Product.Remove(Delete1);
-                DB.Prod_Class_Type.Remove(Delete2);
-                DB.SaveChanges();
-                return 1;
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
     }
 }

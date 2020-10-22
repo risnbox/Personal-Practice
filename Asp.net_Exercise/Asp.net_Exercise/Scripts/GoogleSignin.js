@@ -2,6 +2,7 @@
     $("#signin").on('click', GoogleLogin);
 })
 
+//Google登入 參考資料: https://dotblogs.com.tw/shadow/2019/01/31/113026 https://dotblogs.com.tw/shadow/2019/10/11/030306
 function GoogleInit() {
     gapi.load('client:auth2', function () {
         gapi.client.init({
@@ -16,7 +17,6 @@ function GoogleLogin() {
     var auth2 = gapi.auth2.getAuthInstance();
     auth2.signIn().then(function (GoogleUser) {
         let user_id = GoogleUser.getId();
-        console.log(user_id);
         let AuthResponse = GoogleUser.getAuthResponse(true);
         let id_token = AuthResponse.id_token;
         gapi.client.people.people.get({
@@ -25,39 +25,29 @@ function GoogleLogin() {
         }).then(function (res) {
             let str = JSON.stringify(res.result);
             var json = JSON.parse(str);
-            console.log(json);
-            console.log(json.emailAddresses[0].value);
             var P = "";
             if (("phoneNumbers" in json)) { P = json.phoneNumbers[0].value }
             $('#alert').text('等待Google回應').show().delay(2500).fadeOut();
             $.ajax({
-                url: "/members/GooglesignUp",
+                url: "/api/membersapi/GooglesignUp",
                 type: "post",
                 data: {
                     gender: json.genders[0].value,
                     phone: P,
                     id_token: id_token
                 },
-                success: function (e) {
-                    if (e == "") {
-                        alert("登入成功,即將轉至首頁");
-                        location.href = "/home/index";
-                    }
-                    else if (e == "A") {
-                        alert("Google帳號未含手機號碼,請至會員中心填寫");
+                success: e => {
+                    alert("登入成功,即將轉至首頁");
+                    location.href = "/home/index";
+                },
+                error: e => {
+                    console.log(e);
+                    alert(e.responseJSON.Message);
+                    if (e.responseJSON.Message == "Google帳號未含手機號碼,請至會員中心填寫") {
                         location.href = "/members/membercenter";
                     }
-                    else {
-                        alert(e);
-                    }
-                },
-                error: function (e) {
-                    console.log(e);
                 }
-            })
+            });
         });
-    },
-        function (error) {
-            console.log(error);
-        })
+    })
 }
