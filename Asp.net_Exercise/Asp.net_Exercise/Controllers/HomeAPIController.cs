@@ -11,7 +11,7 @@ using System.Web.Http.Cors;
 
 namespace Asp.net_Exercise.Controllers
 {
-    [EnableCors(origins:"https://asptest.ml",headers:"*",methods:"*")]
+    [EnableCors(origins:"https://asptest.ml:45678",headers:"*",methods:"*")]
     public class HomeAPIController : ApiController
     {
         DatabaseEntities DB = new DatabaseEntities();
