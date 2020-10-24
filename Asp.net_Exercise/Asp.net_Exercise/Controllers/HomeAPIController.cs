@@ -7,9 +7,11 @@ using System.Web;
 using System.Web.Http;
 using System.Web.SessionState;
 using Asp.net_Exercise.Models;
+using System.Web.Http.Cors;
 
 namespace Asp.net_Exercise.Controllers
 {
+    [EnableCors(origins:"https://asptest.ml",headers:"*",methods:"*")]
     public class HomeAPIController : ApiController
     {
         DatabaseEntities DB = new DatabaseEntities();
