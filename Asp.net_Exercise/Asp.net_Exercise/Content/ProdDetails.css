@@ -1,0 +1,81 @@
+﻿#title {
+    font: bolder 15px/1.8 bolder;
+    color: #666;
+}
+
+#price {
+    font-size: 60px;
+    color: #EA0000;
+    font-family: 'lativAbweb','Century Gothic','Tw Cen MT Condensed';
+    font-weight: bold;
+}
+
+#currency {
+    position: relative;
+    color: #EA0000;
+    bottom: 32px;
+    font-family: Arial;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.color {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    margin-bottom: 15px;
+}
+
+.Size {
+    height: 28px;
+    line-height: 28px;
+    vertical-align: middle;
+    padding: 0 15px;
+    background-color: #EEE;
+    margin: 16px 16px 0 0;
+    text-align: center
+}
+
+#SizeExplain {
+    padding-left: 23px;
+    background: url(/Img/icon_size.png) no-repeat -2px 4px;
+    padding-top: 8px;
+    margin-left: 30px;
+}
+
+.keep {
+    padding-left: 20px;
+    background: url(/Img/star_hollow.png) no-repeat -2px 2px;
+    padding-top: 8px;
+    margin-left: 30px;
+}
+
+.keepon {
+    background: url(/img/star_hollow.png) no-repeat -2px -26px;
+    padding-left: 20px;
+    padding-top: 8px;
+    margin-left: 30px;
+}
+
+.AddCart {
+    background-color: #5d3b24;
+    padding: 5px 60px 5px 60px;
+    font-size: 16px;
+    color: #EEE;
+    border: 0;
+    border-radius: 5px;
+}
+
+.select {
+    border: 1px solid #555;
+    padding: 2px;
+}
+
+.Select {
+    border: 1px solid #555;
+}
+
+a:focus, a:hover {
+    color: #23527c;
+    text-decoration: none;
+}

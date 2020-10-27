@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewBag.Title = "登入";
+}
+<!--註冊成功後顯示彈出式訊息提示進入登入頁面-->
+@if (TempData["SignUpSuccess"] != null)
+{
+    <script>
+        alert("@TempData["SignUpSuccess"]");
+    </script>
+}
+<link href="~/Content/Signin.css" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/GoogleSignin.js" defer></script>
+<script src="https://apis.google.com/js/platform.js?onload=GoogleInit" defer></script>
+<script>
+    var Google_Client_id = "@System.Configuration.ConfigurationManager.AppSettings["GoolgeApp_Cient_Id"]";
+</script>
+
+
+@using (Html.BeginForm())
+{
+    <h3 class="col-md-offset-2">登入</h3>
+    <h4 class="col-md-offset-2 text-danger">@ViewBag.SignInErrormessage</h4>
+    <div id="alert"></div>
+    <div class="form-horizontal">
+        <hr />
+
+        <div class="form-group">
+            <label class="control-label col-md-2">帳號</label>
+            <div class="col-md-4">
+                <input type="text" name="User" class="form-control" placeholder="帳號為信箱或手機" required />
+            </div>
+            <div style="position:absolute;left:55%;width:30%">
+                註冊有實作信箱認證也提供測試帳號Test@test.com,Psw:Test01，對商品的CRUD則是Admin帳號才有權限因為是用自家主機架設，如有需要測試該功能請聯繫我(資訊在頁尾)給您密碼
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">密碼</label>
+            <div class="col-md-10">
+                <input type="password" class="form-control" name="Psw" required />
+            </div>
+        </div>
+
+        <input type="submit" value="登入" class="col-md-offset-2 btn btn-default" />
+        <img src="~/Img/Google.png" id="signin" style="width:200px;height:38px;cursor:pointer;padding:0,20px" />
+    </div>
+}

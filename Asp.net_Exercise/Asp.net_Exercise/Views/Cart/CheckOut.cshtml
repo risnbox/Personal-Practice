@@ -1,0 +1,170 @@
+﻿@model Asp.net_Exercise.Models.Order
+@{
+    ViewBag.Title = "結帳";
+}
+<link href="~/Content/CheckOut.css" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/CheckOut.js" defer></script>
+<script>
+    var data = @Html.Raw(ViewBag.json);      
+</script>
+@Html.AntiForgeryToken()
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+<div class="CO_div1">
+
+    <ul class="CO_ul1">
+
+        <li id="Step1-text" class="CO_li1">
+
+            <div class="CO_div2">
+
+                <span class="CO_span1 CO_span1Select">1</span>
+                <span class="CO_span2 CO_span2Select">確認購物車</span>
+
+            </div>
+
+
+        </li>
+
+        <li class="CO_li2">
+
+            <img src="~/Img/箭頭.jpg" class="CO_img1" />
+
+        </li>
+
+        <li id="Step2-text" class="CO_li1">
+
+            <span class="CO_span1">2</span>
+            <span class="CO_span2">資料填寫</span>
+
+        </li>
+
+        <li class="CO_li2">
+
+            <img src="~/Img/箭頭.jpg" class="CO_img1" />
+
+        </li>
+
+        <li id="Step3-text" class="CO_li1">
+
+            <span class="CO_span1">3</span>
+            <span class="CO_span2">提交訂單</span>
+
+        </li>
+
+    </ul>
+
+</div>
+
+<div id="step1" class="container">
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <table class="table table-hover">
+
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quqntity</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+
+                <tbody id="CO_tbody">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><h4>Cart Total</h4></td>
+                        <td><h4 class="text-right" id="CO_Totalprice"></h4></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><input id="Nextstep1" class="btn btn-default" type="button" value="下一步" /></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<div id="step2" style="display:none" class="container">
+
+    <div class="table table-striped">
+
+        <form id="form1" class="well form-horizontal">
+
+            <div class="form-group">
+
+                <label class="col-md-4 control-label">收件人姓名</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @id = "name", @Value = ViewBag.Name })
+                        <label class="text-danger error" id="Name"></label>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="col-md-4 control-label">選取取貨門市</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-plane"></span></span>
+                        @Html.DropDownList("選取門市", ViewBag.storelist as SelectList, new { @class = "form-control", @id = "store" })
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="col-md-4 control-label">收件人手機</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-phone"></span></span>
+                        @Html.TextBoxFor(m => m.Phone, new { @class = "form-control", @id = "phone", @Value = ViewBag.Phone })
+                        <label class="text-danger error" id="Phone"></label>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="col-md-4 control-label">收件人信箱</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @id = "email", @Value = ViewBag.Email })
+                        <label class="text-danger error" id="Email"></label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <input type="button" class="btn btn-default col-md-offset-6" id="before1" value="上一步" />
+    <input type="button" class="btn btn-default" id="Nextstep2" value="下一步" />
+</div>
+<div class="container" id="step3" style="display:none">
+    <div style="margin: 0 auto" class="container">
+        <div style="width:60%;margin:0 auto">
+            送出訂單後將進入綠界付款頁面，由於是用自家網路(社區網路)架主機，因此協調網路廠商只能幫忙開放五位數的port，但綠界資安政策回傳只接受443port，所以雖然驗證及參數都符合綠界API規範但因port的問題無法進行完整的金流操作，如要看訂單成功否須至<a target="_blank" href="https://vendor-stage.ecpay.com.tw/User/LogOn_Step1">綠界後台測試平台</a>後進入一般訂單查詢=>全方位金流訂單=>廠商訂單編號輸入Asptest，付款測試資訊卡號: 4311-9522-2222-2222,期限則超過當天日期即可,安全碼: 222,手機採用簡訊驗證(綠界官方)如輸入亂數則無法驗證成功。
+        </div>
+    </div>
+    <hr/>
+    <form id="form2" method="post" action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5" target="_blank">
+        <input type="button" class="btn btn-default col-md-offset-5" id="before2" value="上一步" />
+        <input type="button" id="Submitorder" class="btn btn-default" value="送出訂單" />
+    </form>
+
+</div>
