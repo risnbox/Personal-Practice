@@ -17,19 +17,7 @@ namespace Asp.net_Exercise
             // 應用程式啟動時執行的程式碼
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-        }
-        private bool IsWebApiRequest()
-        {
-            return HttpContext.Current.Request.AppRelativeCurrentExecutionFilePath.StartsWith("~/api");
-        }
-
-        void Application_PostAuthorizeRequest()
-        {
-            if (IsWebApiRequest())
-            {
-                HttpContext.Current.SetSessionStateBehavior(SessionStateBehavior.Required);
-            }
+            RouteConfig.RegisterRoutes(RouteTable.Routes);            
         }
     }
 }

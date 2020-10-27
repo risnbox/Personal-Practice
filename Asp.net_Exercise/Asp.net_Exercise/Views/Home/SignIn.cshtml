@@ -1,0 +1,38 @@
+﻿
+@{
+    ViewBag.Title = "Lativ-登入";
+}
+<!--註冊成功後顯示彈出式訊息提示進入登入頁面-->
+@if (TempData["SignUpSuccess"] != null)
+{
+    <script>
+        alert("@TempData["SignUpSuccess"]");
+    </script>
+}
+
+
+@using (Html.BeginForm())
+{
+    <h3 class="col-md-offset-2">登入</h3>
+    <h4 class="col-md-offset-2 text-danger">@ViewBag.SignInErrormessage</h4>
+
+    <div class="form-horizontal">
+        <hr />
+
+        <div class="form-group">
+            <label class="control-label col-md-2">帳號</label>
+            <div class="col-md-10">
+                <input type="text" name="User" class="form-control" placeholder="帳號為信箱或手機" required />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">密碼</label>
+            <div class="col-md-10">
+                <input type="password" class="form-control" name="Psw" required />
+            </div>
+        </div>
+
+        <input type="submit" value="登入" class="col-md-offset-2 btn btn-default" />
+    </div>
+}

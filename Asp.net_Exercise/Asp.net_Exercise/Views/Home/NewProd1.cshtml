@@ -1,0 +1,136 @@
+﻿@using Asp.net_Exercise.Models
+
+@{
+    ViewBag.Title = "管理商品";
+}
+
+@if (@ViewBag.error != null)
+{
+    <script>
+            alert("@ViewBag.error")
+    </script>
+}
+
+<script>
+
+    $(function () {
+
+        $("#Search").on('click', SearchProd)
+        function SearchProd() {
+            $("table .S").remove();
+            var T = $('#SType').find("option:selected").text();
+            var C = $('#SClass').find("option:selected").text();
+            $.ajax({
+                url:"https://asptest.nctu.me:45678/Home/SearchProd?Stype=" + T + "&Sclass=" + C,
+                type: "GET",
+                success: function (data) {
+                    data = JSON.parse(data);
+                    var L = data.length;
+                    for (var i = 0; L > i; i++) {
+                        $("table").append(
+                            "<tr id='S" + i + "' class='S'><td id='N" + i + "'>" + data[i].Prod.Name + "</td>" +
+                            "<td id='P" + i + "'>" + data[i].Prod.Price + "</td>" +
+                            "<td id='T" + i + "'>" + data[i].type.TypeName + "</td>" +
+                            "<td id='C" + i + "'>" + data[i].Clas.ClassName + "</td>" +
+                            "<td><input type='button' id='DelProd" + i + "' value='刪除' class='btn btn-danger' /></td><tr/>"
+                        )
+                        $("#DelProd" + i).on('click', { name: data[i].Prod.Name, Id: i }, Delete);
+                    }
+                }
+            })
+        }
+
+        function Delete(e) {
+            var Name = e.data.name;
+            if (confirm("確定刪除嗎?")) {
+                $.ajax({
+                    url:"https://asptest.nctu.me:45678/Home/DelProd?name=" + Name,
+                    type: "Get",
+                    success: function (data) {
+                        if (data == 0) {
+                            alert("刪除失敗")
+                        }
+                        alert("刪除成功")
+                        $("#S" + e.data.Id).remove();
+
+                    }
+                })
+            }
+        }
+
+    })
+
+</script>
+
+@using (Html.BeginForm("NewProd1", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <h3>新增產品</h3>
+    <h3>@ViewBag.error</h3>
+    <hr />
+
+    <div class="form-horizontal">
+
+        <div class="form-group">
+            <label class="control-label col-md-4">品名</label>
+            <input type="text" name="name" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-4">單價</label>
+            <input type="number" name="price" class="form-control " required />
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-4">種類</label>
+            @Html.DropDownList("type", new SelectList(Enum.GetNames(typeof(TypeSelect)), Enum.GetValues(typeof(TypeSelect))), new { @class = "form-control", @id = "TypeSelect", @name = "type" })
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-4">類別</label>
+            @Html.DropDownList("Class", new SelectList(Enum.GetValues(typeof(ClassSelect)), Enum.GetValues(typeof(ClassSelect))), new { @class = "form-control", @id = "ClassSelect", @name = "Class" })
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-4">預覽圖</label>
+            <input type="file" name="previewed" class="form-control " required />
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-4">封面圖</label>
+            <input type="file" name="title" class="form-control " required />
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-4">範例圖</label>
+            <input type="file" name="content" class="form-control " required />
+        </div>
+        
+        <input type="submit" class="btn btn-info col-md-offset-5" value="下一步" />
+
+    </div>
+
+}
+<hr />
+<h4>編輯產品</h4>
+<div class="form-inline">
+
+    <div class="form-group">
+        <label class="control-label col-md-3">類別</label>
+        @Html.DropDownList("Stype", new SelectList(Enum.GetNames(typeof(TypeSelect)), Enum.GetValues(typeof(TypeSelect))), new { @class = "form-control", @id = "SType", @name = "type" })
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-3">種類</label>
+        @Html.DropDownList("SClass", new SelectList(Enum.GetNames(typeof(ClassSelect)), Enum.GetValues(typeof(ClassSelect))), new { @class = "form-control", @id = "SClass", @name = "Class" })
+    </div>
+
+    <input type="button" id="Search" value="搜尋" />
+</div>
+<table class="table">
+    <tr>
+        <th>品名</th>
+        <th>單價</th>
+        <th>種類</th>
+        <th>類別</th>
+    </tr>
+</table>

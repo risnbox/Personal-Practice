@@ -24,7 +24,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Type" Type="varchar" MaxLength="10" />
+          <Property Name="Type" Type="nchar" MaxLength="10" />
           <Property Name="FileName" Type="char" MaxLength="200" />
         </EntityType>
         <EntityType Name="Keep">
@@ -42,12 +42,11 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="20" />
           <Property Name="Email" Type="varchar" MaxLength="40" />
-          <Property Name="Phone" Type="varchar" MaxLength="10" />
+          <Property Name="Phone" Type="nchar" MaxLength="10" />
           <Property Name="Password" Type="varchar" MaxLength="40" />
           <Property Name="Gender" Type="varchar" MaxLength="10" />
           <Property Name="Enable" Type="int" />
           <Property Name="ErrorCount" Type="int" />
-          <Property Name="GoogleId" Type="char" MaxLength="21" />
         </EntityType>
         <EntityType Name="Member_Store">
           <Key>
@@ -63,12 +62,12 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nchar" MaxLength="20" />
-          <Property Name="Email" Type="nchar" MaxLength="50" />
+          <Property Name="Email" Type="char" MaxLength="40" />
           <Property Name="Phone" Type="char" MaxLength="10" Nullable="false" />
           <Property Name="Store_Id" Type="int" Nullable="false" />
           <Property Name="User_Id" Type="int" Nullable="false" />
-          <Property Name="TradeNo" Type="varchar" MaxLength="50" />
-          <Property Name="Time" Type="nvarchar" MaxLength="30" />
+          <Property Name="Guid" Type="char" MaxLength="36" />
+          <Property Name="Time" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="OrderDetail">
           <Key>
@@ -110,7 +109,7 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="20" />
-          <Property Name="Price" Type="int" Nullable="false" />
+          <Property Name="Price" Type="int" />
         </EntityType>
         <EntityType Name="Quantity">
           <Key>
@@ -554,7 +553,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Type" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Type" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <Property Name="FileName" Type="String" MaxLength="200" FixedLength="true" Unicode="false" />
           <NavigationProperty Name="Prod_Img" Relationship="DatabaseModel.FK__Prod_Img__Mid__12C8C788" FromRole="Img" ToRole="Prod_Img" />
         </EntityType>
@@ -575,12 +574,11 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Email" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
-          <Property Name="Phone" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Phone" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <Property Name="Password" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
           <Property Name="Gender" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="Enable" Type="Int32" />
           <Property Name="ErrorCount" Type="Int32" />
-          <Property Name="GoogleId" Type="String" MaxLength="21" FixedLength="true" Unicode="false" />
           <NavigationProperty Name="Keep" Relationship="DatabaseModel.FK__Keep__Userid__18B6AB08" FromRole="Member" ToRole="Keep" />
           <NavigationProperty Name="Member_Store" Relationship="DatabaseModel.FK__Member_St__Membe__02FC7413" FromRole="Member" ToRole="Member_Store" />
           <NavigationProperty Name="Order" Relationship="DatabaseModel.FK__Order__User_Id__1975C517" FromRole="Member" ToRole="Order" />
@@ -602,12 +600,12 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
-          <Property Name="Email" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="40" FixedLength="true" Unicode="false" />
           <Property Name="Phone" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="Store_Id" Type="Int32" Nullable="false" />
           <Property Name="User_Id" Type="Int32" Nullable="false" />
-          <Property Name="TradeNo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Time" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Guid" Type="String" MaxLength="36" FixedLength="true" Unicode="false" />
+          <Property Name="Time" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Member" Relationship="DatabaseModel.FK__Order__User_Id__1975C517" FromRole="Order" ToRole="Member" />
           <NavigationProperty Name="Store" Relationship="DatabaseModel.FK__Order__Store_Id__1881A0DE" FromRole="Order" ToRole="Store" />
         </EntityType>
@@ -660,7 +658,7 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Price" Type="Int32" Nullable="false" />
+          <Property Name="Price" Type="Int32" />
           <NavigationProperty Name="Keep" Relationship="DatabaseModel.FK__Keep__Prodid__19AACF41" FromRole="Product" ToRole="Keep" />
           <NavigationProperty Name="Prod_Class_Type" Relationship="DatabaseModel.FK__Prod_Class___Pid__51300E55" FromRole="Product" ToRole="Prod_Class_Type" />
           <NavigationProperty Name="Prod_Img" Relationship="DatabaseModel.FK__Prod_Img__Pid__13BCEBC1" FromRole="Product" ToRole="Prod_Img" />
@@ -960,7 +958,6 @@
           <EntitySetMapping Name="Member">
             <EntityTypeMapping TypeName="DatabaseModel.Member">
               <MappingFragment StoreEntitySet="Member">
-                <ScalarProperty Name="GoogleId" ColumnName="GoogleId" />
                 <ScalarProperty Name="ErrorCount" ColumnName="ErrorCount" />
                 <ScalarProperty Name="Enable" ColumnName="Enable" />
                 <ScalarProperty Name="Gender" ColumnName="Gender" />
@@ -985,7 +982,7 @@
             <EntityTypeMapping TypeName="DatabaseModel.Order">
               <MappingFragment StoreEntitySet="Order">
                 <ScalarProperty Name="Time" ColumnName="Time" />
-                <ScalarProperty Name="TradeNo" ColumnName="TradeNo" />
+                <ScalarProperty Name="Guid" ColumnName="Guid" />
                 <ScalarProperty Name="User_Id" ColumnName="User_Id" />
                 <ScalarProperty Name="Store_Id" ColumnName="Store_Id" />
                 <ScalarProperty Name="Phone" ColumnName="Phone" />

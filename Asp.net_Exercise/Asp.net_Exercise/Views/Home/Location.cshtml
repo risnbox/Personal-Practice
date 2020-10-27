@@ -1,0 +1,234 @@
+﻿
+
+
+@{
+    ViewBag.Title = "Lativ-選擇門市";
+}
+<style>
+    .list-group-horizontal .list-group-item 
+    {
+		display: inline-block;
+	}
+	.list-group-horizontal .list-group-item 
+    {
+		margin-bottom: 0;
+		margin-left:1px;
+		margin-right: 0;
+	}
+	.list-group-horizontal .list-group-item:first-child 
+    {
+		border-top-right-radius:0;
+		border-bottom-left-radius:4px;
+	}
+	.list-group-horizontal .list-group-item:last-child 
+    {
+		border-top-right-radius:4px;
+		
+	}
+    .L{
+        background-color:inherit;
+        padding:10px 50px 10px 50px;
+        border-style:none;
+        border-left-style:solid;
+        border-right-style:solid;
+        
+    }
+    .U{
+        background-color:#f5f5f5;
+        padding-top:10px;
+        padding-left:10px;
+    }
+    #Maps {
+        width: 400px;
+        height: 300px;
+    }
+    iframe{
+        width: 400px;
+        height: 300px;
+    }
+    #city #town{
+        width:100px;
+    }
+</style>
+<script>
+    if ("@TempData["CartError"]" != "") {
+        alert("@TempData["CartError"]");
+        console.log("@TempData["CartError"]");
+    }
+
+    $(function () {
+
+        $("#CitySelect").append(
+            "<option value='0' disabled selected>-請選擇-</option>"
+        )
+
+        $("#TownSelect").append(
+            "<option value='0' disabled selected>-請先選擇縣市-</option>"
+        )
+
+        //選市後產生該市所有行政區
+        $("#CitySelect").change(function () {
+            $("#TownSelect").empty();
+            var city = $("#CitySelect").find("option:selected").text();
+            $.ajax({
+                url:"https://asptest.nctu.me:45678/Home/Gettown?city=" + city,
+                type: "get",
+                success: function (data) {
+                    data = JSON.parse(data);
+                    for (var i in data) {
+                        $("#TownSelect").append(
+                            "<option>" + data[i] + "</option>"
+                        )
+                    }
+                }
+            })
+        })
+        //透過下拉選單得到地區後取得711資料
+        $("#Openbtn").on('click', function () {
+            $('table #S').remove();//清空舊資料
+            var city = $('#CitySelect').find('option:selected').text();
+            var town = $('#TownSelect').find('option:selected').text();
+            Getdata(city, town);
+        })
+        //取得711資料的Function
+        function Getdata(city, town) {
+            $.ajax({
+                url:"https://asptest.nctu.me:45678/Home/Get711?city=" + escape(city) + "&town=" + escape(town),
+                type: "get",
+                success: function (data) {
+                    data = JSON.parse(data);
+                    var L = data.iMapSDKOutput.GeoPosition.length;   
+                    for (var i = 0; L > i; i++) {//將資料新增到Table
+                        $("#Ltable").append(
+                            "<tr id='S'><td id='N" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].POIName + "</td>" +
+                            "<td id='A" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].Address + "</td>" +
+                            "<td id='I" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].POIID + "</td>" +
+                            "<td id='T" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].Telno + "</td>" +
+                            "<td><a href='https://www.google.com.tw/maps/place/" + data.iMapSDKOutput.GeoPosition[i].Address + " 'target='_blank' class='btn btn-info'>地圖</td>" +
+                            "<td><input class='btn btn-default' type='button' value='選擇' id='Selectbtn" + i + "'/></td></tr>"
+                        )
+                        $("#Selectbtn" + i).on('click', {Id:i} ,SelectStore)//傳值到Function
+                        
+                    }
+                }
+            })
+        }
+
+        function SelectStore(e) {
+
+            var i = e.data.Id;
+            var name = $("#N" + i).text();
+            var Address = $('#A' + i).text();
+            var Id = $('#I' + i).text();
+            var TelNo = $('#T' + i).text();
+            $.ajax({
+                url: "https://asptest.nctu.me:45678/Home/SelectStore",
+                type: 'POST',
+                dataType: 'text',
+                data: { Name: name, Address: Address, ID: Id, TelNo: TelNo },
+                success: function (data) {
+                    if (data == 0) {
+                        location.href = 'MemberCenter';
+                    }
+                    if (data == 1) {
+                        alert("已選擇過該門市");
+                        location.href = 'Location';
+                    }
+                    if (data == 2) {
+                        alert("資料庫異常");
+                        location.href = 'Location';
+                    }
+                }
+            })
+            
+        }
+        $("#ViewStore").on('click',viewstore)
+
+        function viewstore() {
+            $.ajax({
+                url:"https://asptest.nctu.me:45678/Home/ViewStore",
+                type: "GET",
+                success: function (data) {
+                    data = JSON.parse(data);
+                    $("table #S").remove();
+                    var L = data.length;
+                    if (L == 0) {
+                        alert("您還未曾選取門市");
+                    }
+                    else {
+                        for (var i = 0; L > i; i++) {
+                            $("#Ltable").append(
+                                "<tr id='S'><td id='N" + i + "'>" + data[i].StoreName + "</td>" +
+                                "<td id='A" + i + "'>" + data[i].StoreAddress + "</td>" +
+                                "<td id='I" + i + "'>" + data[i].StoreId + "</td>" +
+                                "<td id='T" + i + "'>" + data[i].StoreTelNo + "</td>" +
+                                "<td><a href='https://www.google.com.tw/maps/place/" + data[i].StoreAddress + " 'target='_blank' class='btn btn-info'>地圖</td>" +
+                                "<td><input type='button' id='Sbtn" + i + "' value='刪除' class='btn btn-danger'/></tr>"
+                            )
+                            $("#Sbtn" + i).on('click', { Sid: data[i].StoreId }, DeleteStore);
+                        }
+                    }
+                }
+            })
+        }
+
+        function DeleteStore(e) {
+            var Cf = confirm("確定要移除該門市嗎?");
+            if (Cf == true) {
+                $.ajax({
+                    url: "https://asptest.nctu.me:45678/Home/DeleteStore?store=" + e.data.Sid,
+                    type: "Get",
+                    success: function () {
+                        alert("刪除成功");
+                        viewstore();
+                    }
+                });
+            }
+        }
+    })
+
+</script>
+<div class="container">
+    <div class="row" style="padding-top:30px">
+        <div class="U list-group list-group-horizontal">
+            <a href="@Url.Action("OrderVIew")" class="L list-group-item"><span>我的訂單</span></a>
+            <a href="@Url.Action("KeepView")" class="L list-group-item"><span>我的收藏</span></a>
+            <a class="L list-group-item active">設定取貨門市</a>
+            <a class="L list-group-item" href="@Url.Action("MemberCenter")">修改會員資料</a>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm())
+{
+    <hr />
+    <h3>@TempData["SelectError"]</h3>
+    <h4 class="col-md-offset-5">設定取貨地點</h4>
+    
+    <div class="form-inline">
+        <div class="form-group col-md-offset-3 col-md-9">
+            <h4>查詢及修改已選擇的門市</h4>
+            <label class="control-label">顯示已選擇的門市</label>
+            <input type="button" id="ViewStore" value="顯示門市" class="btn btn-default" />
+        </div>
+        
+
+        <div class="form-group col-md-offset-3 col-md-9">
+            <h4>新增門市</h4>
+            <label class="control-label">請先選擇縣市</label>
+            @Html.DropDownList("city", ViewBag.CitySelect as SelectList, new { @class = "form-control", @id = "CitySelect" })
+            <select class="form-control" id="TownSelect"></select>
+            <input type="button" id="Openbtn" value="查詢711" />
+        </div>
+
+        <table class="table" id="Ltable">
+            <tr>
+                <th>分店名</th>
+                <th>地址</th>
+                <th>店編號</th>
+                <th>市內電話</th>
+            </tr>
+        </table>
+    </div>
+
+}
+

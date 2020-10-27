@@ -31,7 +31,6 @@ namespace Asp.net_Exercise.Models
         public string Gender { get; set; }
         public Nullable<int> Enable { get; set; }
         public Nullable<int> ErrorCount { get; set; }
-        public string GoogleId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Keep> Keep { get; set; }
