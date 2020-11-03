@@ -89,3 +89,17 @@ td {
 .error {
     margin: 7px;
 }
+
+.step3h4{
+    margin:0 auto;
+    text-align:center;
+}
+#step3Table1{
+    margin:0 auto;
+    width:70%;
+}
+#step3Table2{
+    margin:0 auto;
+    width:70%;
+    text-align:center;
+}

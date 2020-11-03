@@ -183,6 +183,7 @@ namespace Asp.net_Exercise.Controllers
                             DB.Entry(D).CurrentValues.SetValues(postback);
                             DB.SaveChanges();
                             ViewBag.EditErrorMessage = "修改成功";
+                            Session["MemberName"] = postback.Name;
                             return View();
                         }
                         if (DB.Member.Where(m => m.Phone == postback.Phone).FirstOrDefault() != null)//信箱無更動手機重複
@@ -196,6 +197,7 @@ namespace Asp.net_Exercise.Controllers
                         postback.ErrorCount = D.ErrorCount;
                         DB.Entry(D).CurrentValues.SetValues(postback);
                         ViewBag.EditErrorMessage = "修改成功";
+                        Session["MemberName"] = postback.Name;
                         return View();
                     }
 
@@ -212,6 +214,7 @@ namespace Asp.net_Exercise.Controllers
                         postback.ErrorCount = D.ErrorCount;
                         DB.Entry(D).CurrentValues.SetValues(postback);
                         ViewBag.EditErrorMessage = "修改成功";
+                        Session["MemberName"] = postback.Name;
                         return View();
                     }
                     if (DB.Member.Where(m => m.Phone == postback.Phone).FirstOrDefault() != null)//信箱,手機變動且手機重複
@@ -327,6 +330,7 @@ namespace Asp.net_Exercise.Controllers
         public ActionResult KeepView()
         {
             var d = Convert.ToInt32(Session["Member"].ToString());
+            //取得要在View顯示的資料
             var data = (from keep in DB.Keep
                         where keep.Userid == d
                         join prod in DB.Product on keep.Prodid equals prod.Id
@@ -345,7 +349,8 @@ namespace Asp.net_Exercise.Controllers
         public ActionResult OrderVIew()
         {
             var d = Convert.ToInt32(Session["Member"].ToString());
-            var order = DB.Order.Where(m => m.User_Id == d).Select(m => new { name = m.Name, email = m.Email, phone = m.Phone, tradeNo = m.TradeNo, store = m.Store.StoreName, time = m.Time, oid = m.Id }).ToList();
+            //取得要在View顯示的資料
+            var order = DB.Order.Where(m => m.User_Id == d).Select(m => new { name = m.Name, email = m.Email, phone = m.Phone, tradeNo = m.MerchantTradeNo, store = m.Store.StoreName, time = m.TradeDate, oid = m.Id, pay = m.Pay }).ToList();
             var j = JsonConvert.SerializeObject(order);
             ViewBag.order = j.Replace(" ", "");
             return View();
