@@ -184,19 +184,14 @@ namespace Asp.net_Exercise.Controllers
                 }
             }
             var random = new Random();
-            var o = new obj();
             obj.Paydata paydata = new obj.Paydata()//產生訂單編號
             {
-                MerchantTradeNo = "Asptest" + random.Next(10000000, 99999999),
+                MerchantTradeNo = "Asptest" + random.Next(0, 99999999),
                 TotalAmount = total.ToString(),
                 ItemName = names
             };
-            while (DB.Order.Where(m => m.MerchantTradeNo == paydata.MerchantTradeNo).FirstOrDefault() != null)
-            {
-                paydata.MerchantTradeNo = "Asptest" + random.Next(10000000, 99999999);
-            }
-            paydata.CheckMacValue = o.CreateCheckMacValue(paydata);//產出所需參數後加密產生驗證碼
-            //-------------------------------------------------------------
+            paydata.CreateCheckMacValue(paydata);//產出所需參數後加密產生驗證碼
+//-------------------------------------------------------------
             //將購物車內容清空後移至DB儲存
             var t = Sname.Split('-');//分割前端商店字串 商店名-地址
             var S = t[0];
@@ -206,9 +201,8 @@ namespace Asp.net_Exercise.Controllers
                 //新增訂單資料後儲存至DB產生ID供Detail參考
                 order.Store_Id = sd.StoreId;
                 order.User_Id = u;
-                order.TradeDate = paydata.MerchantTradeDate;
-                order.MerchantTradeNo = paydata.MerchantTradeNo;
-                order.Pay = 0;
+                order.Time = paydata.MerchantTradeDate;
+                order.TradeNo = paydata.MerchantTradeNo;
                 DB.Order.Add(order);
                 DB.SaveChanges();
                 //將購物車內容轉成Detail資料儲存
@@ -228,7 +222,6 @@ namespace Asp.net_Exercise.Controllers
                 ShoppingCar cart = new ShoppingCar() { Userid = u };
                 DB.ShoppingCar.Add(cart);
                 DB.SaveChanges();
-                Session["MerchantTradeNo"] = order.MerchantTradeNo;
                 Session["Cart"] = cart.Id;
             }
             catch(Exception e)
@@ -237,24 +230,6 @@ namespace Asp.net_Exercise.Controllers
             }
             string json = JsonConvert.SerializeObject(paydata);
             return json; 
-        }
-        public ActionResult Explanation()
-        {
-            return View();
-        }
-        public ActionResult RedirectView()
-        {
-            return View();
-        }
-        [HttpPost]
-        public void VerifyPay(obj.Postback postback)
-        {
-            var o = DB.Order.Where(m => m.MerchantTradeNo == postback.MerchantTradeNo).FirstOrDefault();
-            o.TradeNo = postback.TradeNo;
-            o.PaymentDate = postback.PaymentDate;
-            o.Pay = 1;
-            DB.SaveChanges();
-            Response.Write("1|OK");
         }
     }
 }

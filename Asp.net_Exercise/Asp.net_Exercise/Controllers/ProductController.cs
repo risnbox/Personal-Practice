@@ -73,10 +73,11 @@ namespace Asp.net_Exercise.Controllers
             //新增產品及類別資訊至DB
             var E = previewed.FileName.Split('.');
             var prod = new Product() { Name = name, Price = price };
-            int tid = (int)Enum.Parse(typeof(TypeSelect), type);//通過列舉獲得選取的資料
+            var cid = (int)Enum.Parse(typeof(ClassSelect), Class);//通過列舉獲得選取的資料
+            int tid = (int)Enum.Parse(typeof(TypeSelect), type);
             DB.Product.Add(prod);
-            var PC = new Prod_Type() { Product = prod, Tid = tid };
-            DB.Prod_Type.Add(PC);
+            var PC = new Prod_Class_Type() { Cid = cid, Product = prod, Tid = tid };
+            DB.Prod_Class_Type.Add(PC);
             DB.SaveChanges();
             //新增圖檔和產品之間的連接資料(一對多其實不必額外開Table，多對多才需要)
             var P = DB.Product.Where(m => m.Name == name).FirstOrDefault();

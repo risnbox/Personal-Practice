@@ -63,8 +63,8 @@
     <Reference Include="Google.Apis.PlatformServices, Version=1.49.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.1.49.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
     </Reference>
-    <Reference Include="Json.Net, Version=1.0.23.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Json.Net.1.0.23\lib\netstandard2.0\Json.Net.dll</HintPath>
+    <Reference Include="Json.Net, Version=1.0.22.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Json.Net.1.0.22\lib\netstandard2.0\Json.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.3\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -166,6 +166,11 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\CartPartial.css" />
     <Content Include="Content\CheckOut.css" />
+    <Content Include="Content\images\layers-2x.png" />
+    <Content Include="Content\images\layers.png" />
+    <Content Include="Content\images\marker-icon-2x.png" />
+    <Content Include="Content\images\marker-icon.png" />
+    <Content Include="Content\images\marker-shadow.png" />
     <Content Include="Content\Keep.css" />
     <Content Include="Content\LayOut_nav.css" />
     <Content Include="Content\Orderview.css" />
@@ -206,7 +211,6 @@
       <DependentUpon>Model1.edmx</DependentUpon>
       <LastGenOutput>Model1.cs</LastGenOutput>
     </Content>
-    <Content Include="Scripts\Backstage_Vue.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <EntityDeploy Include="Models\Model1.edmx">
@@ -221,11 +225,9 @@
     </Content>
     <Content Include="Models\Taiwantown.json" />
     <Content Include="libman.json" />
-    <None Include="Properties\PublishProfiles\AspnetExercise - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\CarPartial.js" />
     <Content Include="Scripts\CheckOut.js" />
-    <Content Include="Scripts\Redirect.js" />
     <Content Include="Scripts\GoogleSignin.js" />
     <Content Include="Scripts\Index.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
@@ -241,7 +243,6 @@
     <Content Include="Scripts\Orderview.js" />
     <Content Include="Scripts\ProdDetails.js" />
     <Content Include="Scripts\ProdTable.js" />
-    <Content Include="Scripts\vue.js" />
     <Content Include="UpdataFiles\4611501_500.jpg" />
     <Content Include="UpdataFiles\46115_D_01.jpg" />
     <Content Include="UpdataFiles\46115_D_03.jpg" />
@@ -257,36 +258,11 @@
     <Content Include="UpdataFiles\4631801_500.jpg" />
     <Content Include="UpdataFiles\46318_D_01.jpg" />
     <Content Include="UpdataFiles\46318_D_02.jpg" />
-    <Content Include="UpdataFiles\5024101_500.jpg" />
-    <Content Include="UpdataFiles\5024101_D_01.jpg" />
-    <Content Include="UpdataFiles\50241_M_11_n.jpg" />
-    <Content Include="UpdataFiles\5053701_500_T.jpg" />
-    <Content Include="UpdataFiles\5053703_A_01_C.jpg" />
-    <Content Include="UpdataFiles\50537_M_11_n_P.jpg" />
-    <Content Include="UpdataFiles\5060601_500_T.jpg" />
-    <Content Include="UpdataFiles\5060602_A_01_C.jpg" />
-    <Content Include="UpdataFiles\50606_M_01_0_n_P.jpg" />
-    <Content Include="UpdataFiles\5061101_500.jpg" />
-    <Content Include="UpdataFiles\5061101_A_01.jpg" />
-    <Content Include="UpdataFiles\50611_M_01_n.jpg" />
-    <Content Include="UpdataFiles\5073801_500.jpg" />
-    <Content Include="UpdataFiles\5073802_D_01.jpg" />
-    <Content Include="UpdataFiles\50738_M_11_n.jpg" />
-    <Content Include="UpdataFiles\5076501_500.jpg" />
-    <Content Include="UpdataFiles\5076502_D_01.jpg" />
-    <Content Include="UpdataFiles\50765_M_11_n.jpg" />
-    <Content Include="UpdataFiles\5098201_500.jpg" />
-    <Content Include="UpdataFiles\5098202_D_01.jpg" />
-    <Content Include="UpdataFiles\50982_M_11_n.jpg" />
-    <Content Include="UpdataFiles\5101901_500.jpg" />
-    <Content Include="UpdataFiles\5101903_D_01.jpg" />
-    <Content Include="UpdataFiles\51019_M_11_n.jpg" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\BackstageController.cs" />
     <Compile Include="Controllers\CartAPIController.cs" />
     <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\HomeAPIController.cs" />
@@ -298,6 +274,9 @@
     <Compile Include="Controllers\StoreController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Class.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Color.cs">
       <DependentUpon>Model1.tt</DependentUpon>
@@ -344,10 +323,10 @@
     <Compile Include="Models\Product.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Prod_Img.cs">
+    <Compile Include="Models\Prod_Class_Type.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Prod_Type.cs">
+    <Compile Include="Models\Prod_Img.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Quantity.cs">
@@ -397,9 +376,6 @@
     <Content Include="Views\Members\OrderVIew.cshtml" />
     <Content Include="Views\Home\Man.cshtml" />
     <Content Include="Views\Home\Kids.cshtml" />
-    <Content Include="Views\Cart\Explanation.cshtml" />
-    <Content Include="Views\Cart\RedirectView.cshtml" />
-    <Content Include="Views\Backstage\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

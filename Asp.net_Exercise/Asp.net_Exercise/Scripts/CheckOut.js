@@ -122,7 +122,7 @@ function before2_1() {
 }
 
 function NextStep2_3() {
-    var n = $("#name").val(), p = $("#phone").val(), s = $("#store").val(), E = $("#email").val();
+    var s = $("#store").val();
     var Formdata = $('#form1').serialize();
     $.ajax({
         url: "/cart/VerifyOrder",
@@ -153,16 +153,13 @@ function NextStep2_3() {
             $("#Step2-text .CO_span2").removeClass("CO_span2Select");
             $("#Step3-text .CO_span1").addClass("CO_span1Select");
             $("#Step3-text .CO_span2").addClass("CO_span2Select");
-            $("#step3Table2").append(
-                "<tr><td>" + n + "</td><td>" + p + "</td><td>" + s + "</td><td>" + E + "</td></tr>"
-            );
+            
         }
     })
     
 }
 
 function before3_2() {
-    $("#step3Table2 tbody").remove();
     $("#step3").css("display", "none");
     $("#step2").css("display", "block")
     $("#Step3-text .CO_span1").removeClass("CO_span1Select");
@@ -179,9 +176,6 @@ function Submitorder() {
         data: form + "&sname=" + s,
         success: e => {
             return e;
-        },
-        error: e => {
-            return e;
         }
     }).then(e => {
         let json = JSON.parse(e);
@@ -191,11 +185,10 @@ function Submitorder() {
             var input = "<input type='hidden'name='" + x + "' value='" + json[x] + "'/ >";
             form.append(input);
         }
-        alert("送出後會有說明測試參數，請按照提供的參數填寫，請勿輸入正確卡號!!");
         form.submit();
-        location.href = "/cart/Explanation";
+        location.href="/members/orderview"
     }).catch(e => {
-        alert(e);
+        alert('I/O錯誤');
     })
 }
 
@@ -213,14 +206,6 @@ $(function () {
             "<td class='col-md-1'>NT$<span id='T" + i + "'>" + data[i].Total + "</span></td><td class='col-md-1'><a id='D" + i + "' style='float:right;padding-right:10px;text-decoration:none;color:#bbb;cursor:pointer'>X</a></td>" +
             "</tr>"
         )
-        $("#step3Table1").append(
-            "<tr><td class = 'col-md-3'><img class='img-rounded'style='width:70px;height:70px;float:left;'src='/UpdataFiles/" + data[i].Img + "' />" +
-            "<h5 id='N" + i + "'>" + data[i].Name + "</h5><span class='CO_span4'id='F" + i + "'>" + data[i].Feature + "</span></td>" +
-            "<td class='col-md-2' style='padding-left:30px;text-align:left;'><span style='pading-left:30px' class='CO_Qty'> " + data[i].Qty +
-            "</span></td>" +
-            "<td class='col-md-1'>NT$<span>" + data[i].Total + "</span></td>" +
-            "</tr>"
-        )
         var t = parseInt(data[i].Total, 10);
         T = T + t;
         $("#A" + i).on("click", { Id: i }, Add);
@@ -234,7 +219,6 @@ $(function () {
 
     }
     $("#CO_Totalprice").text("NT$" + T);
-    $("#CO_Totalprice2").text("NT$" + T);
     $("#Nextstep1").on("click", NextStep1_2);
     $("#before1").on("click", before2_1);
     $("#Nextstep2").on('click', NextStep2_3);

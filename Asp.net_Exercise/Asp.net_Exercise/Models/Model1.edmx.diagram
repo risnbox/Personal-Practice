@@ -5,22 +5,24 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="1a8d83c86a794690b7c219bc0288e97e" Name="Diagram1" ZoomLevel="75">
-        <EntityTypeShape EntityType="DatabaseModel.Color" Width="1.5" PointX="3.75" PointY="0.75" />
-        <EntityTypeShape EntityType="DatabaseModel.Img" Width="1.5" PointX="0.75" PointY="3.75" />
-        <EntityTypeShape EntityType="DatabaseModel.Keep" Width="1.5" PointX="3" PointY="6.75" />
-        <EntityTypeShape EntityType="DatabaseModel.Member" Width="1.5" PointX="0.75" PointY="10" />
-        <EntityTypeShape EntityType="DatabaseModel.Member_Store" Width="1.5" PointX="11" PointY="11.125" />
-        <EntityTypeShape EntityType="DatabaseModel.Order" Width="1.5" PointX="8" PointY="10.5" />
-        <EntityTypeShape EntityType="DatabaseModel.OrderDetail" Width="1.5" PointX="8.75" PointY="1.875" />
-        <EntityTypeShape EntityType="DatabaseModel.Prod_Img" Width="1.5" PointX="3" PointY="3.75" />
-        <EntityTypeShape EntityType="DatabaseModel.Prod_Type" Width="1.5" PointX="3" PointY="9.75" />
-        <EntityTypeShape EntityType="DatabaseModel.ProdFeature" Width="1.5" PointX="6" PointY="6.5" />
-        <EntityTypeShape EntityType="DatabaseModel.Product" Width="1.5" PointX="0.75" PointY="6.375" />
-        <EntityTypeShape EntityType="DatabaseModel.Quantity" Width="1.5" PointX="8.25" PointY="6.625" />
-        <EntityTypeShape EntityType="DatabaseModel.ShoppingCar" Width="1.5" PointX="6" PointY="3.75" />
-        <EntityTypeShape EntityType="DatabaseModel.Size" Width="1.5" PointX="3.75" PointY="13" />
-        <EntityTypeShape EntityType="DatabaseModel.Store" Width="1.5" PointX="5.75" PointY="12.25" />
-        <EntityTypeShape EntityType="DatabaseModel.Type" Width="1.5" PointX="0.75" PointY="14.875" />
+        <EntityTypeShape EntityType="DatabaseModel.Class" Width="1.5" PointX="0.75" PointY="2.75" />
+        <EntityTypeShape EntityType="DatabaseModel.Color" Width="1.5" PointX="0.75" PointY="18.75" />
+        <EntityTypeShape EntityType="DatabaseModel.Img" Width="1.5" PointX="3.75" PointY="0.75" />
+        <EntityTypeShape EntityType="DatabaseModel.Keep" Width="1.5" PointX="3" PointY="6.625" />
+        <EntityTypeShape EntityType="DatabaseModel.Member" Width="1.5" PointX="0.75" PointY="13.875" />
+        <EntityTypeShape EntityType="DatabaseModel.Member_Store" Width="1.5" PointX="11" PointY="9.5" />
+        <EntityTypeShape EntityType="DatabaseModel.Order" Width="1.5" PointX="14" PointY="9" />
+        <EntityTypeShape EntityType="DatabaseModel.OrderDetail" Width="1.5" PointX="5.75" PointY="1.625" />
+        <EntityTypeShape EntityType="DatabaseModel.Prod_Class_Type" Width="1.5" PointX="3" PointY="3.5" />
+        <EntityTypeShape EntityType="DatabaseModel.Prod_Img" Width="1.5" PointX="6" PointY="6.625" />
+        <EntityTypeShape EntityType="DatabaseModel.ProdFeature" Width="1.5" PointX="3" PointY="9.375" />
+        <EntityTypeShape EntityType="DatabaseModel.Product" Width="1.5" PointX="0.75" PointY="6.5" />
+        <EntityTypeShape EntityType="DatabaseModel.Quantity" Width="1.5" PointX="5.25" PointY="9.625" />
+        <EntityTypeShape EntityType="DatabaseModel.ShoppingCar" Width="1.5" PointX="3" PointY="12.75" />
+        <EntityTypeShape EntityType="DatabaseModel.Size" Width="1.5" PointX="0.75" PointY="21" />
+        <EntityTypeShape EntityType="DatabaseModel.Store" Width="1.5" PointX="8.75" PointY="3.625" />
+        <EntityTypeShape EntityType="DatabaseModel.Type" Width="1.5" PointX="0.75" PointY="11" />
+        <AssociationConnector Association="DatabaseModel.FK__Prod_Class___Cid__5224328E" />
         <AssociationConnector Association="DatabaseModel.FK__ProdFeature__Cid__373B3228" />
         <AssociationConnector Association="DatabaseModel.FK__Prod_Img__Mid__12C8C788" />
         <AssociationConnector Association="DatabaseModel.FK__Keep__Prodid__19AACF41" />
@@ -30,9 +32,9 @@
         <AssociationConnector Association="DatabaseModel.FK__ShoppingC__Useri__10216507" />
         <AssociationConnector Association="DatabaseModel.FK__Member_St__Store__160F4887" />
         <AssociationConnector Association="DatabaseModel.FK__Order__Store_Id__1881A0DE" />
-        <AssociationConnector Association="DatabaseModel.FK__Prod_Img__Pid__13BCEBC1" />
         <AssociationConnector Association="DatabaseModel.FK__Prod_Class___Pid__51300E55" />
         <AssociationConnector Association="DatabaseModel.FK__Prod_Class___Tid__531856C7" />
+        <AssociationConnector Association="DatabaseModel.FK__Prod_Img__Pid__13BCEBC1" />
         <AssociationConnector Association="DatabaseModel.FK__ProdFeature__Pid__36470DEF" />
         <AssociationConnector Association="DatabaseModel.FK__ProdFeature__Sid__382F5661" />
         <AssociationConnector Association="DatabaseModel.FK__Quantity__PFid__6BAEFA67" />

@@ -98,6 +98,13 @@ namespace Asp.net_Exercise.Models
         man=2,
         kids=3
     }
+    public enum ClassSelect
+    {
+        請選擇=0,
+        上衣=1,
+        外套=2,
+        下身=3
+    }
     //複製JSON字串再利用VisualStudio內建功能 選擇性貼上=>JSON格式
     //此為首層結構,通常不會用到此層
     public class Jsclass
