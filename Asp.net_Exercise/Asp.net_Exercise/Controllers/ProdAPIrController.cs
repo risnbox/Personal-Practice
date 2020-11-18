@@ -5,26 +5,26 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using Asp.net_Exercise.Models;
+using System.Web.Http.Cors;
 
 namespace Asp.net_Exercise.Controllers
 {
+    [EnableCors(origins: "https://aspnetexercise.azurewebsites.net", headers: "*", methods: "*")]
     public class ProdAPIrController : ApiController
     {
         DatabaseEntities DB = new DatabaseEntities();
         [HttpGet]
-        public IHttpActionResult SearchProd(string Stype, string SClass)
+        public IHttpActionResult SearchProd(string Stype)
         {
             try
             {
-                var data = (from PCT in DB.Prod_Class_Type
-                            join C in DB.Class on PCT.Class.ClassName equals SClass
+                var data = (from PCT in DB.Prod_Type
                             join T in DB.Type on PCT.Type.TypeName equals Stype
                             join P in DB.Product on PCT.Pid equals P.Id
-                            where PCT.Cid == C.Id && PCT.Tid == T.Id && PCT.Pid == P.Id
+                            where PCT.Tid == T.Id && PCT.Pid == P.Id
                             select new
                             {
                                 Prod = PCT.Product,
-                                Clas = PCT.Class,
                                 type = PCT.Type
                             }
                         ).ToList();
@@ -41,7 +41,7 @@ namespace Asp.net_Exercise.Controllers
             try
             {
                 int? data = null;
-                foreach (var i in DB.Prod_Class_Type)
+                foreach (var i in DB.Prod_Type)
                 {
                     if (i.Product.Name == name)
                     {
@@ -49,9 +49,9 @@ namespace Asp.net_Exercise.Controllers
                     }
                 }
                 var Delete1 = DB.Product.Where(m => m.Id == data).FirstOrDefault();
-                var Delete2 = DB.Prod_Class_Type.Where(m => m.Pid == data).FirstOrDefault();
+                var Delete2 = DB.Prod_Type.Where(m => m.Pid == data).FirstOrDefault();
                 DB.Product.Remove(Delete1);
-                DB.Prod_Class_Type.Remove(Delete2);
+                DB.Prod_Type.Remove(Delete2);
                 DB.SaveChanges();
                 return Ok();
             }

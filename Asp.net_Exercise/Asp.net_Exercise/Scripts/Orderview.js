@@ -24,8 +24,8 @@
 }
 
 $(function () {
-
     for (var i = 0; L > i; i++) {
+        let pay = json[i].pay == 1 ? "付款完成" : "審核中";
         $("#list tbody").append(
             "<tr><td>" + json[i].name + "</td>" +
             "<td>" + json[i].phone + "</td>" +
@@ -33,6 +33,7 @@ $(function () {
             "<td>" + json[i].store + "</td>" +
             "<td>" + json[i].tradeNo + "</td>" +
             "<td>" + json[i].time + "</td>" +
+            "<td>" + pay + "</td>" +
             "<td><input type='button' class='btn btn-default' data-oid='" + json[i].oid + "' id='" + i + "' value='詳細' /><tr/>"
         );
         $("#" + i).on("click", { Id: i }, Detail);

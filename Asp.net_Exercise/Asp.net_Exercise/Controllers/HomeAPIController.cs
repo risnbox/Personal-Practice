@@ -11,7 +11,7 @@ using System.Web.Http.Cors;
 
 namespace Asp.net_Exercise.Controllers
 {
-    [EnableCors(origins:"https://asptest.ml:45678",headers:"*",methods:"*")]
+    [EnableCors(origins: "https://aspnetexercise.azurewebsites.net", headers: "*", methods: "*")]
     public class HomeAPIController : ApiController
     {
         DatabaseEntities DB = new DatabaseEntities();
@@ -60,7 +60,7 @@ namespace Asp.net_Exercise.Controllers
             try
             {
                 //取得該類型所有商品資訊及預覽圖
-                var d = (from PCT in DB.Prod_Class_Type
+                var d = (from PCT in DB.Prod_Type
                          where PCT.Type.TypeName == TYPE
                          join PM in DB.Prod_Img on PCT.Pid equals PM.Pid
                          join Img in DB.Img on new { A = PM.Mid, B = "previewed" } equals new { A = Img.Id, B = Img.Type }

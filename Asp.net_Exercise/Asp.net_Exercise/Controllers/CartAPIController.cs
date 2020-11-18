@@ -10,7 +10,7 @@ using Asp.net_Exercise.Models;
 
 namespace Asp.net_Exercise.Controllers
 {
-    [EnableCors(origins: "https://asptest.ml:45678", headers: "*", methods: "*")]
+    [EnableCors(origins: "https://aspnetexercise.azurewebsites.net", headers: "*", methods: "*")]
     public class CartAPIController : ApiController
     {
         DatabaseEntities DB = new DatabaseEntities();
@@ -44,7 +44,22 @@ namespace Asp.net_Exercise.Controllers
                 return BadRequest(e.Message);
             }
         }
-
+        [HttpGet]
+        public string CheckPay()
+        {
+            var MTN = httpContext.Session["MerchantTradeNo"].ToString();
+            var o = DB.Order.Where(m => m.MerchantTradeNo == MTN && m.Pay == 1).FirstOrDefault();
+            if (o != null)
+            {
+                httpContext.Session.Remove("MerchantTradeNo");
+                return "true";
+            }
+            else
+            {
+                return "";
+            }
+        }
+        
 
     }
 }

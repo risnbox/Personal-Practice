@@ -8,9 +8,11 @@ using System.Web;
 using System.Threading.Tasks;
 using Asp.net_Exercise.Models;
 using Newtonsoft.Json;
+using System.Web.Http.Cors;
 
 namespace Asp.net_Exercise.Controllers
 {
+    [EnableCors(origins: "https://aspnetexercise.azurewebsites.net", headers: "*", methods: "*")]
     public class MembersAPIController : ApiController
     {
         DatabaseEntities DB = new DatabaseEntities();
