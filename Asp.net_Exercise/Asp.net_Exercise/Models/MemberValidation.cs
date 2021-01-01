@@ -67,7 +67,6 @@ namespace Asp.net_Exercise.Models
     }
     public enum CitySelect
     {
-
         台北市,
         基隆市,
         新北市,
@@ -105,13 +104,13 @@ namespace Asp.net_Exercise.Models
         public data1[] Property1 { get; set; }
     }
 
-    public class data1
+    public class data1//city
     {
         public data2[] districts { get; set; }
         public string name { get; set; }
     }
 
-    public class data2
+    public class data2//town
     {
         public string zip { get; set; }
         public string name { get; set; }

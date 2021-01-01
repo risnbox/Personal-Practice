@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Asp.net_Exercise.Models;
 using Newtonsoft.Json;
 using System.Web.Http.Cors;
+using System.Data.Entity.Validation;
 
 namespace Asp.net_Exercise.Controllers
 {
@@ -19,25 +20,27 @@ namespace Asp.net_Exercise.Controllers
         //在WebApicontroller使用Session 參考資料:https://ithelp.ithome.com.tw/articles/10229385
         HttpContext httpContext = HttpContext.Current;
         //---------------------------------------------------------------
-        public class Postdata
+        public class Postdata//WebAPI無法獨立解析參數 須建立類
         {
-            public string gender { get; set; }
-            public string phone { get; set; }
+            public string gender { get; set; }//嘗試存取使用者公開資料，若使用者未公開或未填則null
+            public string phone { get; set; }//嘗試存取使用者公開資料，若使用者未公開或未填則null
             public string id_token { get; set; }
+            public string psw { get; set; }
         }
-        [HttpPost]//WebAPI無法獨立解析參數 須建立類
-        public async Task<IHttpActionResult> GooglesignUp(Postdata postdata)
+        [HttpPost]
+        public async Task<IHttpActionResult> GooglesignUp(Postdata postdata)//接收前端參數後至Google請求使用者資訊
         {
             try
             {
                 var result = "";
                 var url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + postdata.id_token;
-                using (var Client = new HttpClient())
+                using (var Client = new HttpClient())//在Notion有整理資訊 由於我網站流量極小因此就不用static共用連線了
                 {
                     Client.Timeout = TimeSpan.FromSeconds(30);//避免資源浪費設定逾時，除非流量用量大不然其實沒必要
                     var Response = await Client.GetAsync(url);//非同步發出請求，得到回應後才會往下 參考資料:https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/concepts/async/
                     result = await Response.Content.ReadAsStringAsync();//非同步取得回應內資料，完成才會往下
                 }
+                //---------------------------------------------------------------------------
                 //解析json成匿名型別物件
                 var json = JsonConvert.DeserializeAnonymousType(result, new { email = "", sub = "", name = "" });
                 var member = new Member()//新增會員資料及免除驗證
@@ -49,6 +52,7 @@ namespace Asp.net_Exercise.Controllers
                     GoogleId = json.sub,
                     Enable = 1
                 };
+                //---------------------------------------------------------------------------
                 //查詢是否已註冊過
                 var d = DB.Member.Where(m => m.GoogleId == member.GoogleId && m.Email == member.Email).FirstOrDefault();
                 if (d == null)//要是無則註冊
@@ -60,7 +64,8 @@ namespace Asp.net_Exercise.Controllers
                 httpContext.Session["Member"] = d.Id;
                 httpContext.Session["MemberName"] = d.Name;
                 httpContext.Session["MemberEmail"] = d.Email;
-                if (DB.ShoppingCar.Where(m => m.Userid == d.Id).FirstOrDefault() == null)
+                //---------------------------------------------------------------------------
+                if (DB.ShoppingCar.Where(m => m.Userid == d.Id).FirstOrDefault() == null)//註冊後新增購物車給該user
                 {
                     var cart = new ShoppingCar() { Userid = d.Id };
                     DB.ShoppingCar.Add(cart);
@@ -77,7 +82,7 @@ namespace Asp.net_Exercise.Controllers
             }
         }
         [HttpGet]
-        public void Keep(int Pid)
+        public void Keep(int Pid)//新增至收藏
         {
             var keep = new Keep() { Userid = Convert.ToInt32(httpContext.Session["Member"].ToString()), Prodid = Pid };
             if (DB.Keep.Where(m => m.Userid == keep.Userid && m.Prodid == keep.Prodid).FirstOrDefault() == null)
@@ -87,7 +92,7 @@ namespace Asp.net_Exercise.Controllers
             }
         }
         [HttpGet]
-        public void DelKeep(int Pid)
+        public void DelKeep(int Pid)//刪除該收藏
         {
             var U = Convert.ToInt32(httpContext.Session["Member"].ToString());
             var data = DB.Keep.Where(m => m.Prodid == Pid && m.Userid == U).FirstOrDefault();
@@ -95,7 +100,7 @@ namespace Asp.net_Exercise.Controllers
             DB.SaveChanges();
         }
         [HttpGet]
-        public IHttpActionResult Keepdata()
+        public IHttpActionResult Keepdata()//收藏頁面所需資料
         {
             try
             {
@@ -118,7 +123,7 @@ namespace Asp.net_Exercise.Controllers
             }
         }
         [HttpGet]
-        public IHttpActionResult GetOrderDetail(int oid)
+        public IHttpActionResult GetOrderDetail(int oid)//訂單頁面所需資料
         {
             try
             {
@@ -140,6 +145,32 @@ namespace Asp.net_Exercise.Controllers
                             }
                             ).ToList();
                 return Ok(data);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        [HttpPost]
+        public IHttpActionResult ResetPassword(Postdata postdata)
+        {
+            try
+            {
+                var d = Convert.ToInt32(httpContext.Session["ResetPswId"].ToString());
+                var data = DB.Member.Where(m => m.Id == d).FirstOrDefault();
+                data.Password = postdata.psw;
+                try
+                {
+                    DB.SaveChanges();
+                }
+                catch(DbEntityValidationException e)//錯誤型別要引用Entity.validtion才能抓到EntityValidationErrors這個屬性
+                {
+                    //撈出模型驗證錯誤訊息 此例只有輸入密碼因此只抓第一筆
+                    var msg = e.EntityValidationErrors.Select(m => m.ValidationErrors.Select(x => x.ErrorMessage).First()).First();
+                    return BadRequest(msg);
+
+                }
+                return Ok();
             }
             catch (Exception e)
             {

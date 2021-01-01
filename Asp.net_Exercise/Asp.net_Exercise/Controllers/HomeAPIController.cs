@@ -55,7 +55,7 @@ namespace Asp.net_Exercise.Controllers
             }
         }
         [HttpGet]
-        public IHttpActionResult GetProd(string TYPE)//用來回傳women,men,kids葉面所需資料
+        public IHttpActionResult GetProd(string TYPE)//用來回傳women,men,kidsView所需資料
         {
             try
             {
@@ -63,7 +63,7 @@ namespace Asp.net_Exercise.Controllers
                 var d = (from PCT in DB.Prod_Type
                          where PCT.Type.TypeName == TYPE
                          join PM in DB.Prod_Img on PCT.Pid equals PM.Pid
-                         join Img in DB.Img on new { A = PM.Mid, B = "previewed" } equals new { A = Img.Id, B = Img.Type }
+                         join Img in DB.Img on new { A = PM.Mid, B = "previewed" } equals new { A = Img.Id, B = Img.Type }//多條件比對寫法
                          select new
                          {
                              img = Img,
@@ -77,7 +77,7 @@ namespace Asp.net_Exercise.Controllers
             }
         }
         [HttpGet]
-        public IHttpActionResult proddetalis(int Pid)
+        public IHttpActionResult proddetalis(int Pid)//回傳產品頁面所需資訊
         {
             try
             {
@@ -111,7 +111,7 @@ namespace Asp.net_Exercise.Controllers
             }
         }
         [HttpGet]
-        public IHttpActionResult AddCart(int pid, string color, string size)
+        public IHttpActionResult AddCart(int pid, string color, string size)//新增prod至購物車
         {
             try
             {

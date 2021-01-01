@@ -47,8 +47,6 @@ public partial class Member
 
     public Nullable<int> Enable { get; set; }
 
-    public Nullable<int> ErrorCount { get; set; }
-
     public string GoogleId { get; set; }
 
 

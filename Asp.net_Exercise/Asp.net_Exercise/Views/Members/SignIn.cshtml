@@ -13,15 +13,15 @@
 <script src="~/Scripts/GoogleSignin.js" defer></script>
 <script src="https://apis.google.com/js/platform.js?onload=GoogleInit" defer></script>
 <script>
-    var Google_Client_id = "@System.Configuration.ConfigurationManager.AppSettings["GoolgeApp_Cient_Id"]";
+    var Google_Client_id = "@System.Configuration.ConfigurationManager.AppSettings["GoolgeApp_Cient_Id"]";//取得Web.config內的GoogleId(網站ID)
 </script>
 
 
 @using (Html.BeginForm())
 {
     <h3 class="col-md-offset-2">登入</h3>
-    <h4 class="col-md-offset-2 text-danger">@ViewBag.SignInErrormessage</h4>
-    <div id="alert"></div>
+    <h4 class="col-md-offset-2 text-danger">@ViewBag.SignInErrormessage</h4>//MemberController Line:112
+    <div id="alert"></div>//供浮動alert視窗用 Notion內有資訊 
     <div class="form-horizontal">
         <hr />
 
@@ -31,7 +31,7 @@
                 <input type="text" name="User" class="form-control" placeholder="帳號為信箱或手機" required />
             </div>
             <div style="position:absolute;left:55%;width:30%">
-                註冊有實作信箱認證也提供測試帳號Test@test.com,Psw:Test01，對商品的CRUD則是Admin帳號才有權限因為是用自家主機架設，如有需要測試該功能請聯繫我(資訊在頁尾)給您密碼
+                可自行註冊也提供測試帳號Test@test.com,Psw:Test01
             </div>
         </div>
 
@@ -41,8 +41,8 @@
                 <input type="password" class="form-control" name="Psw" required />
             </div>
         </div>
-
-        <input type="submit" value="登入" class="col-md-offset-2 btn btn-default" />
+        <input type="submit" value="登入" class="col-md-offset-2 btn btn-success" />
         <img src="~/Img/Google.png" id="signin" style="width:200px;height:38px;cursor:pointer;padding:0,20px" />
+        <input type="button" id="forget" value="忘記密碼" class="btn btn-default" />
     </div>
 }

@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Asp.net_Exercise.Models;
 using Newtonsoft.Json;
-
+using System.Threading;
 
 namespace Asp.net_Exercise.Controllers
 {
@@ -14,6 +14,7 @@ namespace Asp.net_Exercise.Controllers
         DatabaseEntities DB = new DatabaseEntities();//建立公用DB物件
         public ActionResult Index()
         {
+            
             return View();
         }
         public ActionResult Women()

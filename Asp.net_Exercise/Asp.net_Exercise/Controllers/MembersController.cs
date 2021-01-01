@@ -29,7 +29,7 @@ namespace Asp.net_Exercise.Controllers
             if (ModelState.IsValid)
             {
                 //檢查信箱及手機是否已註冊過
-                if (DB.Member.Where(m => m.Email == Email).FirstOrDefault() != null)
+                if (DB.Member.Where(m => m.Email == Email&&m.GoogleId==null).FirstOrDefault() != null)
                 {
                     ViewBag.MemberErrorMessage = "該信箱已使用";
                     return View();
@@ -39,7 +39,6 @@ namespace Asp.net_Exercise.Controllers
                     ViewBag.MemberErrorMessage = "該手機已被使用";
                     return View();
                 }
-                //註冊成功後寫入TempData供登入頁面使用,壽命剛好至登入頁面後即會清除,Bag則因壽命問題無法套用在此處                                                        
                 else
                 {
                     if (Postback.Password != check)
@@ -47,8 +46,7 @@ namespace Asp.net_Exercise.Controllers
                         ViewBag.MemberErrorMessage = "兩次輸入密碼不一致";
                         return View();
                     }
-                    //加入啟用狀態以及驗證碼錯誤次數初始化
-                    Postback.ErrorCount = 0;
+                    //加入啟用狀態以及驗證碼
                     Postback.Enable = 0;
                     DB.Member.Add(Postback);
                     DB.SaveChanges();
@@ -56,10 +54,10 @@ namespace Asp.net_Exercise.Controllers
                     var code = Randomcode();
                     Session["Veriflcationcode"] = code;
                     //使用System.Net.Mail來寄出驗證碼
-                    EmailValidation("帳號驗證", Postback.Email, "您的驗證碼是:" + code + "<br />Time:" + DateTime.Now);
+                    SendEmail("帳號驗證", Postback.Email, "請點擊此網址: https://aspnetexercise.azurewebsites.net/members/emailvalidation?Veriflcationcode=" + code + "&id=" + Postback.Id);
                     //寫入TempData傳入SignInView來Alert提示使用者
-                    TempData["SignUpSuccess"] = "註冊成功,已寄出認證信,請收信後登入輸入驗證碼";
-                    return RedirectToAction("SignIn");
+                    TempData["SignUpSuccess"] = "註冊成功,已寄出認證信,請至信箱驗證後在登入";
+                    return RedirectToAction("SignIn");                                                   
                 }
             }
             else
@@ -82,11 +80,17 @@ namespace Asp.net_Exercise.Controllers
                 return RedirectToAction("NewProd1","product");
             }
             //檢查帳號是否存在,若無則顯示無此帳號
-            var data = DB.Member.Where(m => m.Email == User | m.Phone == User).FirstOrDefault();
+            var data = DB.Member.Where(m => m.Email == User | m.Phone == User&&m.GoogleId==null).FirstOrDefault();
             if (data != null)
             {
-                if (data.Password == Psw && data.GoogleId == null) 
+                if(data.Password == Psw) 
                 {
+                    //檢查該帳號的啟用狀態
+                    if (DB.Member.Where(m => m.Id == data.Id && m.Enable == 0).FirstOrDefault() != null)
+                    {
+                        ViewBag.SignInErrormessage = "請至信箱驗證帳號";
+                        return View();
+                    }
                     Session["Member"] = data.Id;
                     Session["MemberName"] = data.Name;
                     Session["MemberEmail"] = data.Email;
@@ -99,18 +103,7 @@ namespace Asp.net_Exercise.Controllers
                     }
                     var C = DB.ShoppingCar.Where(m => m.Userid == data.Id).FirstOrDefault();
                     Session["Cart"] = C.Id;
-                    //檢查該帳號的啟用狀態,或未啟用則進入驗證View
-                    if (DB.Member.Where(m => m.Id == data.Id && m.Enable == 0).FirstOrDefault() != null)
-                    {
-                        Session["EnableMessage"] = "驗證尚未完成,即將前往驗證頁面";
-                        return RedirectToAction("EmailValidationView");
-                    }
                     return RedirectToAction("Index","Home");
-                }
-                else if (data.GoogleId != null)
-                {
-                    ViewBag.SignInErrormessage = "該帳號為Google連動帳號,請使用Google登入";
-                    return View();
                 }
                 else
                 {
@@ -120,9 +113,47 @@ namespace Asp.net_Exercise.Controllers
             }
             else
             {
+                data = DB.Member.Where(m => m.Email == User | m.Phone == User && m.GoogleId != null).FirstOrDefault();
+                if (data != null)
+                {
+                        ViewBag.SignInErrormessage = "該帳號為Google連動帳號,請使用Google登入";
+                        return View();
+                }
                 ViewBag.SignInErrormessage = "查無此帳號";
                 return View();
             }
+        }
+
+        public ActionResult ForgetPsw()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult ForgetPsw(string email)
+        {
+            var d = DB.Member.Where(m => m.Email == email && m.GoogleId == null).Select(m=>m.Id).FirstOrDefault();
+            if (d == 0)
+            {
+                ViewBag.Msg = "該信箱未註冊";
+                return View();
+            }
+            var code = Randomcode();
+            Session["ResetPsw"] = code;
+            Session["ResetPswId"] = d;
+            var p = Session["resetpsw"];
+            //SendEmail("忘記密碼",email, "請點擊網址進入密碼重設: https://localhost:44353/members/ResetPsw?code=" + code);
+            SendEmail("忘記密碼",email,"請點擊網址進入密碼重設: https://aspnetexercise.azurewebsites.net/members/ResetPsw?code=" + code);
+            ViewBag.Msg = "請至信箱點擊網址重設密碼";
+            return View();
+        }
+        public ActionResult ResetPsw(string code)
+        {
+            if(Session["ResetPsw"].ToString() != code)
+            {
+                return RedirectToAction("index","home");
+            }
+            Session.Remove("ResetPsw");
+            return View();
         }
         
         public ActionResult SignOut()
@@ -133,7 +164,7 @@ namespace Asp.net_Exercise.Controllers
         }
         public ActionResult MemberCenter()
         {
-            //若Session為空或該會員是未啟用狀態則導回登入頁面,避免未登入或是未啟用帳戶透過網址進入
+            //若Session為空則導回登入頁面
             if (Session["Member"] == null)
             {
                 TempData["SignUpSuccess"] = "您尚未登入";
@@ -141,12 +172,6 @@ namespace Asp.net_Exercise.Controllers
             }
             var d = Convert.ToInt32(Session["Member"].ToString());
             var D = DB.Member.Where(m => m.Id == d).FirstOrDefault();
-            //確認驗證狀態
-            if (DB.Member.Where(m => m.Id == D.Id && m.Enable == 0).FirstOrDefault() != null)
-            {
-                TempData["SignUpSuccess"] = "您尚未啟用";
-                return RedirectToAction("EmailValidationView");
-            }
             //顯示會員已選擇的門市
             var Store = DB.Member_Store.Where(m => m.Member_Id == d).ToList();
             List<string> str = new List<string>();
@@ -179,7 +204,6 @@ namespace Asp.net_Exercise.Controllers
                             //postback並無Id,Enable,ErrorCount的資料,必須先指定在寫入DB
                             postback.Id = D.Id;
                             postback.Enable = D.Enable;
-                            postback.ErrorCount = D.ErrorCount;
                             DB.Entry(D).CurrentValues.SetValues(postback);
                             DB.SaveChanges();
                             ViewBag.EditErrorMessage = "修改成功";
@@ -194,8 +218,8 @@ namespace Asp.net_Exercise.Controllers
                         //信箱無更動手機變動無重複通過驗證
                         postback.Id = D.Id;
                         postback.Enable = D.Enable;
-                        postback.ErrorCount = D.ErrorCount;
                         DB.Entry(D).CurrentValues.SetValues(postback);
+                        DB.SaveChanges();
                         ViewBag.EditErrorMessage = "修改成功";
                         Session["MemberName"] = postback.Name;
                         return View();
@@ -211,10 +235,10 @@ namespace Asp.net_Exercise.Controllers
                     {
                         postback.Id = D.Id;
                         postback.Enable = D.Enable;
-                        postback.ErrorCount = D.ErrorCount;
                         DB.Entry(D).CurrentValues.SetValues(postback);
-                        ViewBag.EditErrorMessage = "修改成功";
+                        DB.SaveChanges();
                         Session["MemberName"] = postback.Name;
+                        Session["MemberEmail"] = postback.Email;
                         return View();
                     }
                     if (DB.Member.Where(m => m.Phone == postback.Phone).FirstOrDefault() != null)//信箱,手機變動且手機重複
@@ -228,29 +252,18 @@ namespace Asp.net_Exercise.Controllers
             }
             return View();
         }
-        public string RepeatEmailValidation()//重新寄出驗證信
+        public void SendEmail(string Title, string Email, string Body)//透過Gmail寄出郵件
         {
             try
             {
-                var randomcode = Randomcode();
-                EmailValidation("帳號驗證", Session["MemberEmail"] as string, "您的驗證碼是:" + randomcode + "<br />Time:" + DateTime.Now);
-                Session["Veriflcationcode"] = randomcode;
-                return "成功";
-            }
-            catch (Exception e)
-            {
-                return "寄出失敗 code:" + e;
-            }
-        }
-        public void EmailValidation(string Title, string Email, string Body)//透過Gmail寄出郵件
-        {
-            try
-            {
+                //從web.config讀取資料
+                string u = System.Configuration.ConfigurationManager.AppSettings["User"].Trim();
+                string p = System.Configuration.ConfigurationManager.AppSettings["Psw"].Trim();
                 //設定郵件相關參數
                 MailMessage Mail = new MailMessage();
                 Mail.To.Add(Email);//收件人
                 //參數屬性是寄件人名字及地址但地址似乎會被Gmail覆蓋,此處我的寄件人地址是User但實際收件顯示的依然是Host
-                Mail.From = new MailAddress(Email, "作品測試", Encoding.UTF8);
+                Mail.From = new MailAddress(u, "作品測試", Encoding.UTF8);
                 Mail.Subject = Title;//標題
                 Mail.SubjectEncoding = Encoding.UTF8;
                 Mail.Body = Body;//內容,如定義為Html信件則可加入Html語法(CSS及Javescript未試過)
@@ -259,18 +272,18 @@ namespace Asp.net_Exercise.Controllers
 
                 //寄出參數
                 SmtpClient Smtp = new SmtpClient();
-                //登入信箱用參數,在信箱內部設定:低安全性應用程式→開啟較低的應用程式存取權限,需打開則無法引用
-                Smtp.Credentials = new NetworkCredential("risnbox@gmail.com", "RISNBOX8520");
+                //登入信箱用參數,已Gmail為例:設定二階段驗證後即可啟用應用程式專用密碼透過此密碼存取可無視雲端IP不同拒絕存取的錯誤
+                Smtp.Credentials = new NetworkCredential(u, p);
                 Smtp.Host = ("smtp.gmail.com");//SMTP(簡易郵件傳輸協定)主機地址
                 Smtp.Port = 25;//連接埠
                 Smtp.EnableSsl = true;//驗證開啟(SSL)
                 Smtp.Send(Mail);//寄出
                 Smtp.Dispose();//關閉連線
-                TempData["MailValidation"] = "驗證碼寄出成功";
+                TempData["MailValidation"] = "寄出成功請至信箱收信";
             }
             catch (Exception e)
             {
-                TempData["MailValidation"] = "驗證碼寄出失敗 code:" + e;
+                TempData["MailValidation"] = "寄出失敗 code:" + e;
             }
         }
         //產生驗證碼 說明在Google書籤
@@ -278,54 +291,27 @@ namespace Asp.net_Exercise.Controllers
         {
             //定義隨機字串內的內容
             string allowwords = "QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuioplkjhgfdsazxcvbnm0123456789";
-            char[] Chr = new char[6];//字串長度
+            char[] Chr = new char[18];//字串長度
             Random rd = new Random();
-
-            for (var i = 0; i < 6; i++)//使用for迴圈獲得隨機碼
+            for (var i = 0; i < 18; i++)//使用for迴圈獲得隨機碼
             {
                 Chr[i] = allowwords[rd.Next(0, 61)];//定義亂數範圍
             }
             string code = new string(Chr);//將char轉回string
             return code;
         }
-        public ActionResult EmailValidationView()
+        [HttpGet]
+        public ActionResult EmailValidation(string Veriflcationcode, int id)
         {
-            return View();
-        }
-        [HttpPost]
-        public ActionResult EmailValidationView(string Veriflcationcode)
-        {
-            var d = Convert.ToInt32(Session["Member"].ToString());
-            var data = DB.Member.Where(m => m.Id == d).FirstOrDefault();
-            Veriflcationcode.Trim();//去除頭尾空白避免字串比較因空白出錯
-            if (string.Equals(Session["Veriflcationcode"] as string, Veriflcationcode))
+            if(Session["Veriflcationcode"].ToString() == Veriflcationcode)
             {
-
-                TempData["ValidationErrorMessage"] = "恭喜您已完成信箱驗證!即將返回首頁";
-                data.Enable = 1;//改為啟用
-                data.ErrorCount = 0;//初始化錯誤次數
-                //修改資料庫內資料已測試過重複變數一樣能作用,前者data是索引作用後者才是複寫索引到的data
-                DB.Entry(data).CurrentValues.SetValues(data);
+                var data = DB.Member.Where(m => m.Id == id && m.Enable == 0).FirstOrDefault();
+                data.Enable = 1;
                 DB.SaveChanges();
-                Session.Remove("Veriflcationcode");//清空驗證碼session
-                return RedirectToAction("Index","home");
+                TempData["ValidationErrorMessage"] = "驗證完成";
+                Session.Remove("Veriflcationcode");
             }
-            if (data.ErrorCount >= 3)
-            {
-                var code = Randomcode();//呼叫產生亂數方法
-                Session["Veriflcationcode"] = code;//由於重寄驗證碼所以Session內容須重置
-                ViewBag.ValidationErrorMessage = "驗證碼輸入錯誤次數超過3次,已重新寄出驗證信";
-                EmailValidation("帳號驗證", data.Email, Session["Veriflcationcode"] as string);
-                data.ErrorCount = 0;
-                DB.Entry(data).CurrentValues.SetValues(data);
-                DB.SaveChanges();
-                return View();
-            }
-            ViewBag.ValidationErrorMessage = "驗證碼輸入錯誤,錯誤達三次則須重新收取驗證碼";
-            data.ErrorCount++;
-            DB.Entry(data).CurrentValues.SetValues(data);
-            DB.SaveChanges();
-            return View();
+            return RedirectToAction("signin", "members");
         }
         public ActionResult KeepView()
         {
