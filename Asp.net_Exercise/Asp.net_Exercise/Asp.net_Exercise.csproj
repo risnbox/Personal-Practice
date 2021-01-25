@@ -224,19 +224,25 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Areas\BackStage\Views\web.config" />
+    <Content Include="Areas\BackStage\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\BackStage\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\BackStage\Views\Home\Index.cshtml" />
     <None Include="Properties\PublishProfiles\AspnetExercise - Web Deploy.pubxml" />
+    <None Include="Scripts\Reference\jquery-3.4.1.intellisense.js" />
+    <Content Include="Scripts\Reference\jquery-3.4.1.js" />
+    <Content Include="Scripts\Reference\jquery-3.4.1.min.js" />
+    <Content Include="Scripts\Reference\jquery-3.4.1.slim.js" />
+    <Content Include="Scripts\Reference\jquery-3.4.1.slim.min.js" />
     <Content Include="Scripts\Reference\bootstrap.js" />
     <Content Include="Scripts\Reference\bootstrap.min.js" />
-    <None Include="Scripts\Reference\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\Reference\jquery-3.4.1.slim.min.map" />
+    <Content Include="Scripts\Reference\jquery-3.4.1.min.map" />
     <Content Include="Scripts\CarPartial.js" />
     <Content Include="Scripts\CheckOut.js" />
     <Content Include="Scripts\Redirect.js" />
     <Content Include="Scripts\GoogleSignin.js" />
     <Content Include="Scripts\Index.js" />
-    <Content Include="Scripts\Reference\jquery-3.3.1.js" />
-    <Content Include="Scripts\Reference\jquery-3.3.1.min.js" />
-    <Content Include="Scripts\Reference\jquery-3.3.1.slim.js" />
-    <Content Include="Scripts\Reference\jquery-3.3.1.slim.min.js" />
     <Content Include="Content\MemberList.css" />
     <Content Include="Scripts\Keep.js" />
     <Content Include="Scripts\Store.js" />
@@ -290,7 +296,8 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\BackstageController.cs" />
+    <Compile Include="Areas\BackStage\BackStageAreaRegistration.cs" />
+    <Compile Include="Areas\BackStage\Controllers\HomeController.cs" />
     <Compile Include="Controllers\CartAPIController.cs" />
     <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\HomeAPIController.cs" />
@@ -378,8 +385,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Scripts\Reference\jquery-3.3.1.slim.min.map" />
-    <Content Include="Scripts\Reference\jquery-3.3.1.min.map" />
     <Content Include="Views\Members\SignUp.cshtml" />
     <Content Include="Views\Members\SignIn.cshtml" />
     <Content Include="Views\Members\MemberCenter.cshtml" />
@@ -395,7 +400,6 @@
     <Content Include="Views\Home\Kids.cshtml" />
     <Content Include="Views\Cart\Explanation.cshtml" />
     <Content Include="Views\Cart\RedirectView.cshtml" />
-    <Content Include="Views\Backstage\Index.cshtml" />
     <Content Include="Views\Members\ForgetPsw.cshtml" />
     <Content Include="Views\Members\ResetPsw.cshtml" />
     <None Include="Web.Debug.config">
@@ -411,6 +415,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\BackStage\Data\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

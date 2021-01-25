@@ -4,10 +4,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Asp.net_Exercise.Controllers
+namespace Asp.net_Exercise.Areas.BackStage.Controllers
 {
-    public class BackstageController : Controller
+    public class HomeController : Controller
     {
+        // GET: BackStage/Home
         public ActionResult Index()
         {
             return View();

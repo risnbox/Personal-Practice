@@ -14,7 +14,6 @@ namespace Asp.net_Exercise.Controllers
         DatabaseEntities DB = new DatabaseEntities();//建立公用DB物件
         public ActionResult Index()
         {
-            
             return View();
         }
         public ActionResult Women()
