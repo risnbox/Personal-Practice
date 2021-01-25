@@ -10,7 +10,6 @@ using Asp.net_Exercise.Models;
 
 namespace Asp.net_Exercise.Controllers
 {
-    [EnableCors(origins: "https://aspnetexercise.azurewebsites.net", headers: "*", methods: "*")]
     public class CartAPIController : ApiController
     {
         DatabaseEntities DB = new DatabaseEntities();

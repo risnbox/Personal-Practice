@@ -8,10 +8,10 @@ using System.Web.Http;
 using System.Web.SessionState;
 using Asp.net_Exercise.Models;
 using System.Web.Http.Cors;
+using System.Threading.Tasks;
 
 namespace Asp.net_Exercise.Controllers
 {
-    [EnableCors(origins: "https://aspnetexercise.azurewebsites.net", headers: "*", methods: "*")]
     public class HomeAPIController : ApiController
     {
         DatabaseEntities DB = new DatabaseEntities();
@@ -163,6 +163,24 @@ namespace Asp.net_Exercise.Controllers
             catch(Exception e)
             {
                 return BadRequest(e.Message);
+            }
+        }
+        [HttpGet]
+        async public Task<string> test()
+        {
+            string result = "";
+            try
+            {
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    var response = await httpClient.GetAsync("http://ipinfo.io/ip");
+                    result = await response.Content.ReadAsStringAsync();
+                    return result;
+                }
+            }
+            catch(Exception e)
+            {
+                return e.Message;
             }
         }
     }

@@ -131,16 +131,18 @@ namespace Asp.net_Exercise.Controllers
         [HttpPost]
         public ActionResult ForgetPsw(string email)
         {
+            //檢查是否有資料
             var d = DB.Member.Where(m => m.Email == email && m.GoogleId == null).Select(m=>m.Id).FirstOrDefault();
             if (d == 0)
             {
                 ViewBag.Msg = "該信箱未註冊";
                 return View();
             }
+            //如該信箱存在則呼叫變數Funtion並將參數存入Session
             var code = Randomcode();
             Session["ResetPsw"] = code;
             Session["ResetPswId"] = d;
-            var p = Session["resetpsw"];
+            //呼叫寄信Funtion填入相關參數
             //SendEmail("忘記密碼",email, "請點擊網址進入密碼重設: https://localhost:44353/members/ResetPsw?code=" + code);
             SendEmail("忘記密碼",email,"請點擊網址進入密碼重設: https://aspnetexercise.azurewebsites.net/members/ResetPsw?code=" + code);
             ViewBag.Msg = "請至信箱點擊網址重設密碼";
@@ -148,7 +150,7 @@ namespace Asp.net_Exercise.Controllers
         }
         public ActionResult ResetPsw(string code)
         {
-            if(Session["ResetPsw"].ToString() != code)
+            if(Session["ResetPsw"].ToString() != code)//檢查亂數是否符合
             {
                 return RedirectToAction("index","home");
             }
@@ -303,7 +305,7 @@ namespace Asp.net_Exercise.Controllers
         [HttpGet]
         public ActionResult EmailValidation(string Veriflcationcode, int id)
         {
-            if(Session["Veriflcationcode"].ToString() == Veriflcationcode)
+            if(Session["Veriflcationcode"].ToString() == Veriflcationcode)//檢查變數是否符合
             {
                 var data = DB.Member.Where(m => m.Id == id && m.Enable == 0).FirstOrDefault();
                 data.Enable = 1;

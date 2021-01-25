@@ -9,7 +9,6 @@ using System.Web.Http.Cors;
 
 namespace Asp.net_Exercise.Controllers
 {
-    [EnableCors(origins: "https://aspnetexercise.azurewebsites.net", headers: "*", methods: "*")]
     public class ProdAPIrController : ApiController
     {
         DatabaseEntities DB = new DatabaseEntities();

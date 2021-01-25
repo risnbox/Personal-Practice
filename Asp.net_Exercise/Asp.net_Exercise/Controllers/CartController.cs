@@ -267,11 +267,11 @@ namespace Asp.net_Exercise.Controllers
             string json = JsonConvert.SerializeObject(paydata);
             return json; 
         }
-        public ActionResult Explanation()
+        public ActionResult Explanation()//參數說明頁面
         {
             return View();
         }
-        public ActionResult RedirectView()
+        public ActionResult RedirectView()//綠界返回商店頁面
         {
             return View();
         }

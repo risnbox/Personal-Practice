@@ -13,14 +13,13 @@ using System.Data.Entity.Validation;
 
 namespace Asp.net_Exercise.Controllers
 {
-    [EnableCors(origins: "https://aspnetexercise.azurewebsites.net", headers: "*", methods: "*")]
     public class MembersAPIController : ApiController
     {
         DatabaseEntities DB = new DatabaseEntities();
         //在WebApicontroller使用Session 參考資料:https://ithelp.ithome.com.tw/articles/10229385
         HttpContext httpContext = HttpContext.Current;
         //---------------------------------------------------------------
-        public class Postdata//WebAPI無法獨立解析參數 須建立類
+        public class Postdata//WebAPI無法解析POST參數，須建立參考否則將顯示該控制器無此動作
         {
             public string gender { get; set; }//嘗試存取使用者公開資料，若使用者未公開或未填則null
             public string phone { get; set; }//嘗試存取使用者公開資料，若使用者未公開或未填則null
@@ -156,6 +155,7 @@ namespace Asp.net_Exercise.Controllers
         {
             try
             {
+                //取得帳號訊息
                 var d = Convert.ToInt32(httpContext.Session["ResetPswId"].ToString());
                 var data = DB.Member.Where(m => m.Id == d).FirstOrDefault();
                 data.Password = postdata.psw;
@@ -163,7 +163,7 @@ namespace Asp.net_Exercise.Controllers
                 {
                     DB.SaveChanges();
                 }
-                catch(DbEntityValidationException e)//錯誤型別要引用Entity.validtion才能抓到EntityValidationErrors這個屬性
+                catch(DbEntityValidationException e)//資料庫的錯誤型別要引用Entity.validtion才能抓到EntityValidationErrors這個屬性
                 {
                     //撈出模型驗證錯誤訊息 此例只有輸入密碼因此只抓第一筆
                     var msg = e.EntityValidationErrors.Select(m => m.ValidationErrors.Select(x => x.ErrorMessage).First()).First();

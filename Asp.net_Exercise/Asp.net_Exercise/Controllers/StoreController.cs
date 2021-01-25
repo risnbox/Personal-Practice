@@ -22,7 +22,7 @@ namespace Asp.net_Exercise.Controllers
             ViewBag.CitySelect = x;
             return View();
         }
-        public string ViewStore()
+        public string ViewStore()//回傳已選擇的商店
         {
             var d = Convert.ToInt32(Session["Member"].ToString());
             var MS = DB.Member_Store.Where(m => m.Member_Id == d).ToList();
@@ -36,7 +36,7 @@ namespace Asp.net_Exercise.Controllers
 
         }
 
-        public string Gettown(string city)
+        public string Gettown(string city)//顯示該城市的鄉鎮
         {
             //Server.MapPath可取得專案實體位置
             var data = System.IO.File.ReadAllText(Server.MapPath("~/Models/Taiwantown.json"), Encoding.UTF8);
@@ -53,7 +53,7 @@ namespace Asp.net_Exercise.Controllers
         }
 
         [HttpPost]
-        public int SelectStore(string Name, int ID, string Address, string TelNo)
+        public int SelectStore(string Name, int ID, string Address, string TelNo)//選擇商店
         {
             var d = Convert.ToInt32(Session["Member"].ToString());
             var D = DB.Member.Include("Member_Store").Where(m => m.Id == d).FirstOrDefault();
@@ -108,12 +108,13 @@ namespace Asp.net_Exercise.Controllers
                 {
                     Client.Timeout = TimeSpan.FromSeconds(30);
                     HttpResponseMessage resmsg = await Client.GetAsync(url);
+                    //711回傳的格式是XML，因此將前面版本及格式說明移除
                     var xml = await resmsg.Content.ReadAsStringAsync();
                     xml = xml.Remove(0, 38);
                     xml = xml.Replace(" ", "");
                     var doc = new XmlDocument();
-                    doc.LoadXml(xml);
-                    string json = JsonConvert.SerializeXmlNode(doc);
+                    doc.LoadXml(xml);//轉為XML物件
+                    string json = JsonConvert.SerializeXmlNode(doc);//在將xml物件轉為json
                     return json;
                 }
             }

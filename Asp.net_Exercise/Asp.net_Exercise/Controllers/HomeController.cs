@@ -29,12 +29,10 @@ namespace Asp.net_Exercise.Controllers
         {
             return View();
         }
-        
         public ActionResult ProdDetails(int pid)
         {
             ViewBag.pid = pid;
             return View();
         }
-        
     }    
 }
