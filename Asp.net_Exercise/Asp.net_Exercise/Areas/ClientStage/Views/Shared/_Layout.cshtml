@@ -1,0 +1,100 @@
+﻿@{
+    var date = DateTime.Now.ToString("MMdd");
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <link href="~/Content/Site.css?@date" rel="stylesheet" type="text/css" />
+    <link href="~/Content/bootstrap.min.css?@date" rel="stylesheet" type="text/css" />
+    <link href="~/Content/LayOut_nav.css?@date" rel="stylesheet" type="text/css" />
+
+    <script src="~/Scripts/Reference/jquery-3.4.1.min.js?@date"></script>
+    <script src="~/Scripts/Reference/bootstrap.min.js?@date"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y6MWMGK7MV"></script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v12.0&appId=920774955317229" nonce="fnb5V1qz"></script>
+    <script src="~/Scripts/LayOut.js?@date" defer></script>
+</head>
+<body>
+    <nav class="navbar navbar-collapse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle navbar-toggler-right" style="background-color: #efefef" data-toggle="collapse" data-target="#example-nav">
+                    <span class="icon-bar" style="background-color: #ccc;"></span>
+                    <span class="icon-bar" style="background-color: #ccc;"></span>
+                    <span class="icon-bar" style="background-color: #ccc;"></span>
+                </button>
+                <a href="@Url.Action("Index","Home")" class="navbar-brand"><img src="~/Img/未命名.jpg" style="width:50px" /></a>
+                <ul class="LayU">
+                    <li class="LayL"><a class="LayA h4" id="navtext" style="border-left-style:solid" href="@Url.Action("Women","Home")">WOMEN</a></li>
+                    <li class="LayL"><a class="LayA h4" id="navtext" href="@Url.Action("Man","home")">MAN</a></li>
+                    <li class="LayL"><a class="LayA h4" id="navtext" href="@Url.Action("Kids","home")">KIDS</a></li>
+                </ul>
+            </div>
+            <div class="collapse navbar-collapse navbar-expand-md" id="example-nav">
+                <ul class="nav navbar-nav navbar-right">
+                    <!--檢查Session是否為空,若是則顯示註冊及登入選項,否則顯示會員中心及登出選項-->
+                    @if (Session["Member"] == null)
+                    {
+                        <!--Class為Bootsrap內件的圖示-->
+                        <li><a style="margin-top:10px" href="@Url.Action("SignUp","members")"><span class="glyphicon glyphicon-user">註冊</span></a></li>
+                        <li><a style="margin-top:10px" href="@Url.Action("SignIn","members")"><span class="glyphicon glyphicon-log-in">登入</span></a></li>
+                    }
+                    else
+                    {
+                        if (Convert.ToInt32(Session["Member"].ToString()) == 12)
+                        {
+                            <li class="dropdown">
+                                <a href="#" style="margin-top:10px" class="dropdown-toggle" data-toggle="dropdown">
+                                    @Session["MemberName"]您好
+                                    <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="@Url.Action("NewProd", "product")"><span class="glyphicon glyphicon-user">管理商品</span></a></li>
+                                    <li><a id="logout"><span class="glyphicon glyphicon-log-out">登出</span></a></li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <!--下拉式選單在Goolge書籤有紀錄-->
+                            <li class="dropdown">
+                                <a href="#" style="margin-top:10px" class="dropdown-toggle" data-toggle="dropdown">
+                                    @Session["MemberName"]您好
+                                    <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a style="margin-top:10px" href="@Url.Action("MemberCenter", "members")"><span class="glyphicon glyphicon-pencil">修改資料</span></a></li>
+                                    <li><a style="margin-top:10px" href="@Url.Action("location", "store")"><span class="glyphicon glyphicon-map-marker">取貨地點</span></a></li>
+                                    <li><a style="margin-top:10px" href="@Url.Action("keepview", "members")"><span class="glyphicon glyphicon-star">我的收藏</span></a></li>
+                                    <li><a style="margin-top:10px" href="@Url.Action("Orderview", "members")"><span class="glyphicon glyphicon-list-alt">訂單紀錄</span></a></li>
+                                    <li><a id="logout" style="cursor:pointer;margin-top:10px"><span class="glyphicon glyphicon-log-out">登出</span></a></li>
+                                </ul>
+                            </li>
+                            <li>@Html.Action("CarPartial", "Cart")</li>
+                        }
+                    }
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+    <hr />
+    <div id="LayoutAlert"></div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <a href="@Url.Action("secrecy","members")">隱私政策說明</a>-
+            <strong><a style="color:gray" href="mailto:risnfox@gmail.com?subject=網站來信">透過信箱聯絡我</a></strong>
+            @DateTime.UtcNow.AddHours(8).ToString("yyyy/MM/dd HH:mm:ss")
+        </footer>
+    </div>
+
+
+</body>
+</html>

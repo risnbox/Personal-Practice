@@ -1,31 +1,41 @@
 ﻿function Detail(e) {
-    var Id = e.data.Id;
-    var oid = $("#" + Id).data("oid");
+    let Id = e.data.Id;
+    let oid = $("#" + Id).data("oid");
     $.ajax({
         url: "/api/membersapi/GetOrderDetail?oid=" + oid,
         type: "get",
-        success: function (json) {
-            console.log(json);
-            $("#detail tbody tr").remove();
-            var T = 0;
-            for (var i = 0; json.length > i; i++) {
-                $("#detail").append(
-                    "<tr><td class='col-md-3' style='text-align:left'>" +
-                    "<img class='img-rounded prod_img' src='/UpdataFiles/" + json[i].img + "' />" +
-                    "<h5 class='prod_name'>" + json[i].name + "</h5><span class='feature'>" + json[i].feature + "</span></td>" +
-                    "<td>" + json[i].qty + "</td><td>NT$" + json[i].price + "</td><td>NT$" + json[i].total + "</td></tr>"
-                )
-                T += json[i].total;
-            }
-            $("#Order_Total").text("NT$" + T);
+        success: json => {
+            return json;
         }
+    }).then(e => {
+        $("#detail").css("display", "table");
+        $("#detail tbody tr").remove();
+        let T = 0;
+        for (let i = 0; e.length > i; i++) {
+            $("#detail").append(
+                "<tr><td class='col-md-3' style='text-align:left'>" +
+                "<img class='img-rounded prod_img' src='/UpdataFiles/" + e[i].img + "' />" +
+                "<h5 class='prod_name'>" + e[i].name + "</h5><span class='feature'>" + e[i].feature + "</span></td>" +
+                "<td>" + e[i].qty + "</td><td>NT$" + e[i].price + "</td><td>NT$" + e[i].total + "</td></tr>"
+            )
+            T += e[i].total;
+        }
+        $("#Order_Total").text("NT$" + T);
     })
 
 }
 
+function redirect() {
+    $("#alert").text("尚未有訂單紀錄，即將回到首頁").show().delay(3000).fadeOut();
+    setTimeout(() => {
+        location.href = "/home/index";
+    }, 3000);
+}
+
 $(function () {
-    for (var i = 0; L > i; i++) {
-        let pay = json[i].pay == 1 ? "付款完成" : "審核中";
+    (!L) ? redirect() : null;
+    for (let i = 0; L > i; i++) {
+        let pay = json[i].pay == 1 ? "付款完成" : "付款失敗";
         $("#list tbody").append(
             "<tr><td>" + json[i].name + "</td>" +
             "<td>" + json[i].phone + "</td>" +

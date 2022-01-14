@@ -40,6 +40,8 @@
           <Property Name="Gender" Type="varchar" MaxLength="10" />
           <Property Name="Enable" Type="int" />
           <Property Name="GoogleId" Type="char" MaxLength="21" />
+          <Property Name="FacebookId" Type="char" MaxLength="16" />
+          <Property Name="Joindate" Type="datetime" />
         </EntityType>
         <EntityType Name="Member_Store">
           <Key>
@@ -60,10 +62,11 @@
           <Property Name="Store_Id" Type="int" Nullable="false" />
           <Property Name="User_Id" Type="int" Nullable="false" />
           <Property Name="MerchantTradeNo" Type="varchar" MaxLength="50" />
-          <Property Name="TradeDate" Type="nvarchar" MaxLength="30" />
+          <Property Name="TradeDate" Type="date" />
           <Property Name="Pay" Type="int" />
           <Property Name="TradeNo" Type="varchar" MaxLength="50" />
-          <Property Name="PaymentDate" Type="varchar" MaxLength="50" />
+          <Property Name="PaymentDate" Type="datetime" />
+          <Property Name="Total" Type="int" />
         </EntityType>
         <EntityType Name="OrderDetail">
           <Key>
@@ -546,6 +549,8 @@
           <Property Name="Gender" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="Enable" Type="Int32" />
           <Property Name="GoogleId" Type="String" MaxLength="21" FixedLength="true" Unicode="false" />
+          <Property Name="FacebookId" Type="String" MaxLength="16" FixedLength="true" Unicode="false" />
+          <Property Name="Joindate" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Keep" Relationship="DatabaseModel.FK__Keep__Userid__18B6AB08" FromRole="Member" ToRole="Keep" />
           <NavigationProperty Name="Member_Store" Relationship="DatabaseModel.FK__Member_St__Membe__02FC7413" FromRole="Member" ToRole="Member_Store" />
           <NavigationProperty Name="Order" Relationship="DatabaseModel.FK__Order__User_Id__1975C517" FromRole="Member" ToRole="Order" />
@@ -572,10 +577,11 @@
           <Property Name="Store_Id" Type="Int32" Nullable="false" />
           <Property Name="User_Id" Type="Int32" Nullable="false" />
           <Property Name="MerchantTradeNo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="TradeDate" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="TradeDate" Type="DateTime" Precision="0" />
           <Property Name="Pay" Type="Int32" />
           <Property Name="TradeNo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="PaymentDate" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PaymentDate" Type="DateTime" Precision="3" />
+          <Property Name="Total" Type="Int32" />
           <NavigationProperty Name="Member" Relationship="DatabaseModel.FK__Order__User_Id__1975C517" FromRole="Order" ToRole="Member" />
           <NavigationProperty Name="Store" Relationship="DatabaseModel.FK__Order__Store_Id__1881A0DE" FromRole="Order" ToRole="Store" />
         </EntityType>
@@ -908,6 +914,8 @@
           <EntitySetMapping Name="Member">
             <EntityTypeMapping TypeName="DatabaseModel.Member">
               <MappingFragment StoreEntitySet="Member">
+                <ScalarProperty Name="Joindate" ColumnName="Joindate" />
+                <ScalarProperty Name="FacebookId" ColumnName="FacebookId" />
                 <ScalarProperty Name="GoogleId" ColumnName="GoogleId" />
                 <ScalarProperty Name="Enable" ColumnName="Enable" />
                 <ScalarProperty Name="Gender" ColumnName="Gender" />
@@ -931,6 +939,7 @@
           <EntitySetMapping Name="Order">
             <EntityTypeMapping TypeName="DatabaseModel.Order">
               <MappingFragment StoreEntitySet="Order">
+                <ScalarProperty Name="Total" ColumnName="Total" />
                 <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
                 <ScalarProperty Name="TradeNo" ColumnName="TradeNo" />
                 <ScalarProperty Name="Pay" ColumnName="Pay" />

@@ -1,5 +1,4 @@
-﻿
-$(function () {
+﻿$(function () {
 
     $("#CitySelect").append(
         "<option value='0' disabled selected>-請選擇-</option>"
@@ -8,119 +7,110 @@ $(function () {
     $("#TownSelect").append(
         "<option value='0' disabled selected>-請先選擇縣市-</option>"
     )
-
+    if (err) {
+        $('#alert').text(err).show().delay(2000).fadeOut();
+    }
     //選市後產生該市所有行政區
-    $("#CitySelect").change(function () {
+    $("#CitySelect").change(() => {
         $("#TownSelect").empty();
-        var city = $("#CitySelect").find("option:selected").text();
+        let city = $("#CitySelect").find("option:selected").text();
         $.ajax({
             url: "/store/Gettown?city=" + city,
             type: "get",
-            success: function (data) {
-                data = JSON.parse(data);
-                for (var i in data) {
+            success: e => {
+                e = JSON.parse(e);
+                for (let i in e) {
                     $("#TownSelect").append(
-                        "<option>" + data[i] + "</option>"
+                        "<option>" + e[i] + "</option>"
                     )
                 }
             }
-        })
+        });
     })
     //透過下拉選單得到地區後取得711資料
     $("#Openbtn").on('click', function () {
         $('table #S').remove();//清空舊資料
-        var city = $('#CitySelect').find('option:selected').text();
-        var town = $('#TownSelect').find('option:selected').text();
+        let city = $('#CitySelect').find('option:selected').text();
+        let town = $('#TownSelect').find('option:selected').text();
         Getdata(city, town);
     })
     //取得711資料的Function
     function Getdata(city, town) {
         $.ajax({
-            url: "/store/Get711?city=" + city + "&town=" + town,
+            url: "/api/storeapi/Get7111?city=" + city + "&town=" + town,
             type: "get",
-            success: function (data) {
-                data = JSON.parse(data);
-                var L = data.iMapSDKOutput.GeoPosition.length;
-                for (var i = 0; L > i; i++) {//將資料新增到Table
+            success: e => {
+                let L = e.iMapSDKOutput.GeoPosition.length;
+                for (let i = 0; L > i; i++) {//將資料新增到Table
                     $("#Ltable").append(
-                        "<tr id='S'><td id='N" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].POIName + "</td>" +
-                        "<td id='A" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].Address + "</td>" +
-                        "<td id='I" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].POIID + "</td>" +
-                        "<td id='T" + i + "'>" + data.iMapSDKOutput.GeoPosition[i].Telno + "</td>" +
-                        "<td><a href='https://www.google.com.tw/maps/place/" + data.iMapSDKOutput.GeoPosition[i].Address + " 'target='_blank' class='btn btn-info'>地圖</td>" +
+                        "<tr id='S'><td id='N" + i + "'>" + e.iMapSDKOutput.GeoPosition[i].POIName + "</td>" +
+                        "<td id='A" + i + "'>" + e.iMapSDKOutput.GeoPosition[i].Address + "</td>" +
+                        "<td id='I" + i + "'>" + e.iMapSDKOutput.GeoPosition[i].POIID + "</td>" +
+                        "<td id='T" + i + "'>" + e.iMapSDKOutput.GeoPosition[i].Telno + "</td>" +
+                        "<td><a href='https://www.google.com.tw/maps/place/" + e.iMapSDKOutput.GeoPosition[i].Address + " 'target='_blank' class='btn btn-info'>地圖</td>" +
                         "<td><input class='btn btn-default' type='button' value='選擇' id='Selectbtn" + i + "'/></td></tr>"
                     )
                     $("#Selectbtn" + i).on('click', { Id: i }, SelectStore)//傳值到Function
-
                 }
             }
-        })
+        });
     }
 
     function SelectStore(e) {
-
-        var i = e.data.Id;
-        var name = $("#N" + i).text();
-        var Address = $('#A' + i).text();
-        var Id = $('#I' + i).text();
-        var TelNo = $('#T' + i).text();
+        let i = e.data.Id,name = $("#N" + i).text(),Address = $('#A' + i).text(),Id = $('#I' + i).text(),TelNo = $('#T' + i).text();
         $.ajax({
             url: "/api/storeapi/SelectStore",
             type: 'POST',
             dataType: 'text',
-            data: { Name: name, Address: Address, ID: Id, TelNo: TelNo },
-            success: e => {
-                return e;
+            data: { StoreName: name, StoreAddress: Address, StoreId: Id, StoreTelNo: TelNo },
+            success: () => {
+                $('#alert').text("成功選擇門市").show().delay(1000).fadeOut();
+                setTimeout(() => {
+                    viewstore();
+                }, 1000);
             },
             error: e => {
-                return e;
+                r = JSON.parse(e.responseText);
+                $('#alert').text(r.ExceptionMessage).show().delay(2500).fadeOut();
             }
-        }).then(e => {
-            console.log(e);
-        }).catch(e => {
-            console.log(e);
-            alert(e.JSONreqirect.Message);
-            location.reload();
-        })
+        });
     }
-    $("#ViewStore").on('click', viewstore)
+    $("#ViewStore").on('click', viewstore);
 
     function viewstore() {
         $.ajax({
-            url: "/store/ViewStore",
+            url: "/api/storeapi/ViewStore",
             type: "GET",
-            success: function (data) {
-                data = JSON.parse(data);
+            success: e => {
                 $("table #S").remove();
-                var L = data.length;
-                if (L == 0) {
-                    alert("您還未曾選取門市");
+                if (!e.length) {
+                    $('#alert').text("您還未曾選取門市").show().delay(2500).fadeOut();
                 }
                 else {
-                    for (var i = 0; L > i; i++) {
+                    for (let i = 0; e.length > i; i++) {
                         $("#Ltable").append(
-                            "<tr id='S'><td id='N" + i + "'>" + data[i].StoreName + "</td>" +
-                            "<td id='A" + i + "'>" + data[i].StoreAddress + "</td>" +
-                            "<td id='I" + i + "'>" + data[i].StoreId + "</td>" +
-                            "<td id='T" + i + "'>" + data[i].StoreTelNo + "</td>" +
-                            "<td><a href='https://www.google.com.tw/maps/place/" + data[i].StoreAddress + " 'target='_blank' class='btn btn-info'>地圖</td>" +
+                            "<tr id='S'><td id='N" + i + "'>" + e[i].StoreName + "</td>" +
+                            "<td id='A" + i + "'>" + e[i].StoreAddress + "</td>" +
+                            "<td id='I" + i + "'>" + e[i].StoreId + "</td>" +
+                            "<td id='T" + i + "'>" + e[i].StoreTelNo + "</td>" +
+                            "<td><a href='https://www.google.com.tw/maps/place/" + e[i].StoreAddress + " 'target='_blank' class='btn btn-info'>地圖</td>" +
                             "<td><input type='button' id='Sbtn" + i + "' value='刪除' class='btn btn-danger'/></tr>"
                         )
-                        $("#Sbtn" + i).on('click', { Sid: data[i].StoreId }, DeleteStore);
+                        $("#Sbtn" + i).on('click', { Sid: e[i].StoreId }, DeleteStore);
                     }
                 }
             }
-        })
+        });
     }
 
     function DeleteStore(e) {
-        var Cf = confirm("確定要移除該門市嗎?");
-        if (Cf == true) {
+        let Cf = confirm("確定要移除該門市嗎?");
+        if (Cf) {
             $.ajax({
-                url: "/store/DeleteStore?store=" + e.data.Sid,
+                url: "/api/storeapi/DeleteStore?store=" + e.data.Sid,
                 type: "Get",
-                success: function () {
-                    alert("刪除成功");
+                success: () => {
+                    $('#alert').text("刪除成功").show().delay(2000).fadeOut();
                     viewstore();
                 }
             });

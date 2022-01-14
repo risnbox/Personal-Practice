@@ -1,0 +1,63 @@
+﻿
+@{
+    var date = DateTime.Now.ToString("MMdd");
+    ViewBag.Title = "我的訂單";
+}
+<link href="~/Content/MemberList.css?@date" rel="stylesheet" type="text/css" />
+<link href="~/Content/Orderview.css?@date" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/Orderview.js?@date" defer></script>
+<script>
+    let json = @Html.Raw(ViewBag.order);
+    let L = json.length;
+</script>
+
+<div id="alert"></div>
+<div class="container">
+    <div class="row" style="padding-top:30px">
+        <div class="U list-group list-group-horizontal">
+            <a href="@Url.Action("OrderVIew","members")" class="L list-group-item active"><span>我的訂單</span></a>
+            <a href="KeepView" class="L list-group-item"><span>我的收藏</span></a>
+            <a class="L list-group-item" href="@Url.Action("Location","store")">設定取貨門市</a>
+            <a class="L list-group-item" href="@Url.Action("OrderVIew","members")">修改會員資料</a>
+        </div>
+    </div>
+</div>
+<hr/>
+<table id="list" class="table">
+    <thead>
+        <tr>
+            <th>收件人</th>
+            <th>手機</th>
+            <th>信箱</th>
+            <th>門市名稱</th>
+            <th>訂單編號</th>
+            <th>時間</th>
+            <th>付款狀態</th>
+            <th>詳細</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<hr />
+
+<table id="detail" class="table" width="80%">
+    <thead>
+        <tr>
+            <th style="text-align:left">Product</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td></td>
+            <td></td>
+            <td><h4>Order Total</h4></td>
+            <td><h4 id="Order_Total"></h4></td>
+        </tr>
+    </tfoot>
+</table>

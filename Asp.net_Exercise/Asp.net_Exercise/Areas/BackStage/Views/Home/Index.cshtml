@@ -1,7 +1,114 @@
-﻿
-@{
-    ViewBag.Title = "Index";
+﻿@{
+    ViewBag.Title = "主頁";
+    var date = DateTime.Now.ToString("MMdd");
 }
 
-<h2>Index</h2>
+<link rel="stylesheet" href="~/Content/Backstage/BIndex.css?@date" />
+<script src="https://envato.stammtec.de/themeforest/melon/plugins/flot/jquery.flot.min.js" defer></script>
+<script src="https://envato.stammtec.de/themeforest/melon/plugins/flot/jquery.flot.pie.min.js" defer></script>
+<script src="~/Scripts/Backstage/BIndex.js?@date" defer></script>
 
+
+<div class="container-fluid">
+    <div class="row" style="padding-top:15px;">
+        <div class="col-4">
+            <div class="small-box bg-info">
+                <div class="row">
+                    <h5 style="margin:15px auto 15px auto">新訂單</h5>
+                </div>
+                <div class="inner">
+                    <div class="row">
+                        <p class="col-4 box-text">七日內</p>
+                        <p class="col-4 box-text">三十日內</p>
+                    </div>
+                    <div class="row">
+                        <h3 class="col-4 box-text">@ViewBag.O7d</h3>
+                        <h3 class="col-4 box-text">@ViewBag.O31d</h3>
+                    </div>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <div class="small-box bg-danger">
+                <div class="row">
+                    <h5 style="margin:15px auto 15px auto">唯一用戶</h5>
+                </div>
+                <div class="inner">
+                    <div class="row">
+                        <p class="col-4 box-text">七日內</p>
+                        <p class="col-4 box-text">三十日內</p>
+                    </div>
+                    <div class="row">
+                        <h3 id="U7d" class="col-4 box-text">000</h3>
+                        <h3 id="U31d" class="col-4 box-text">000</h3>
+                    </div>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-person"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="small-box bg-danger">
+                <div class="row">
+                    <h5 style="margin:15px auto 15px auto">新會員</h5>
+                </div>
+                <div class="inner">
+                    <div class="row">
+                        <p class="col-4 box-text">七日內</p>
+                        <p class="col-4 box-text">三十日內</p>
+                    </div>
+                    <div class="row">
+                        <h3 class="col-4 box-text">@ViewBag.M7d</h3>
+                        <h3 class="col-4 box-text">@ViewBag.M31d</h3>
+                    </div>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-person-add"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row offset-2">
+        <div class="col-5">
+            <div class="small-box bg-warning">
+                <div class="row">
+                    <h5 style="margin:15px auto 15px auto">用戶瀏覽器分布</h5>
+                </div>
+                <div class="inner">
+                    <div class="row">
+                        <div id="ShowFlot" class="col-6" style="height:110px;"></div>
+                        <div id="Flotlabelfather" class="col-6"></div>
+                    </div>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-pie-graph"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="small-box bg-info">
+                <div class="row">
+                    <h5 style="margin:15px auto 15px auto">營業額</h5>
+                </div>
+                <div class="inner">
+                    <div class="row">
+                        <p class="col-4 box-text">七日內</p>
+                        <p class="col-4 box-text">三十日內</p>
+                    </div>
+                    <div class="row">
+                        <h3 class="col-4 box-text">@ViewBag.t7d</h3>
+                        <h3 class="col-4 box-text">@ViewBag.t31d</h3>
+                    </div>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

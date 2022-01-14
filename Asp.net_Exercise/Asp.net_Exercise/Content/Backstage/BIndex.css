@@ -1,0 +1,22 @@
+﻿.box-text {
+    text-align: center;
+}
+.FlotLabel {
+    font-size: 12pt;
+    text-align: center;
+    padding: 2px;
+    color: white;
+}
+.Flot-text {
+    display: inline-block;
+}
+.Flot-color {
+    width: 13px;
+    height: 13px;
+    border: 1px solid #ffffff;
+    margin: 0 3px -1px 0;
+    display: inline-block;
+}
+.inner{
+    height:130px;
+}

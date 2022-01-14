@@ -16,8 +16,8 @@ namespace Asp.net_Exercise.Areas.BackStage
         {
             context.MapRoute(
                 name: "BackStage_default",
-                url: "BackStage/{controller}/{action}/{id}",
-                defaults: new { action = "Index", id = UrlParameter.Optional },
+                url: "BackStage/{controller}/{action}",
+                defaults: new { Controller = "Home", action = "Index" },
                 namespaces: new[] { "Asp.net_Exercise.Areas.BackStage.Controllers" }
             );
         }

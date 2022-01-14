@@ -19,6 +19,8 @@ namespace Asp.net_Exercise.Models
             [JsonIgnore]
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
             public virtual ICollection<Member_Store> Member_Store { get; set; }
+            [JsonIgnore]
+            public virtual ICollection<Order> Order { get; set; }
         }
     }
     [MetadataType(typeof(P_TMeta))]
@@ -32,6 +34,7 @@ namespace Asp.net_Exercise.Models
             public virtual Product Product { get; set; }
         }
     }
+
     [MetadataType(typeof(MetaImg))]
     public partial class Img
     {

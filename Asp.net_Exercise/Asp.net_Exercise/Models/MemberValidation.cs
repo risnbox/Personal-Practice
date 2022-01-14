@@ -27,15 +27,21 @@ namespace Asp.net_Exercise.Models
             [EmailAddress]
             public string Email { get; set; }
             [DisplayName("手機")]
-            //關於正規表達式相關內容至Google書籤內有相關可用外掛
             [RegularExpression(@"^\s*09{1}[0-9]{8}\s*$", ErrorMessage = "手機格式錯誤")]
             public string Phone { get; set; }
             [DisplayName("密碼")]
-            //關於正規表達式相關內容至Google書籤內有相關可用外掛
             [RegularExpression(@"^\s*(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,20}\s*$", ErrorMessage = "密碼必須包含大小寫字母及數字各1,長度為6~20位數")]
             public string Password { get; set; }
             [DisplayName("姓別")]
             public string Gender { get; set; }
+            [JsonIgnore]
+            public virtual ICollection<ShoppingCar> ShoppingCar { get; set; }
+            [JsonIgnore]
+            public virtual ICollection<Keep> Keep { get; set; }
+            [JsonIgnore]
+            public virtual ICollection<Member_Store> Member_Store { get; set; }
+            [JsonIgnore]
+            public virtual ICollection<Order> Order { get; set; }
         }
     }
 

@@ -6,9 +6,9 @@ function CheckPay() {
         url: "/api/cartapi/CheckPay",
         type: "get",
         success: e => {
-            if (e != "") {
-                $('#alert').text('付款成功!即將跳轉至訂單頁面').show().delay(1500).fadeOut();//通知頁面運用 參考網址 :https://blog.csdn.net/qq_32217519/article/details/73499562?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-3.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-3.channel_param
-                setTimeout(function () { location.href = "/members/orderview"; }, 1700);
+            if (e) {
+                $('#alert').text('付款成功!即將跳轉至訂單頁面').show().delay(1500).fadeOut();
+                setTimeout(() => { location.href = "/members/orderview"; }, 1700);
             }
         }
     })

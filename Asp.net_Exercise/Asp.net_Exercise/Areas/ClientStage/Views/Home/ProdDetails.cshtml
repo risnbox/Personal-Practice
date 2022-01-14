@@ -1,0 +1,41 @@
+﻿@{
+    var date = DateTime.Now.ToString("MMdd");
+    ViewBag.Title = "產品頁面";
+}
+<link href="~/Content/ProdDetails.css?@date" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/ProdDetails.js?@date" defer></script>
+
+<script>
+    let member = "@Session["Member"]";
+    let pid = @ViewBag.pid;
+</script>
+
+<div id="Img" class="col-md-6"></div>
+<div id="Title" class="col-md-offset-6"></div>
+<div class="col-md-offset-10">
+    <span id="currency">NT$</span>
+</div>
+<hr />
+<div class="col-md-offset-6" style="padding-top:30px">
+    <a href="javascript:void(0)" onclick="SelectColor('White')"><img class="color" id="White" src="~/Img/4616901_48.jpg" /></a>
+    <a href="javascript:void(0)" onclick="SelectColor('Yello')"><img class="color" id="Yello" src="~/Img/4616902_48.jpg" /></a>
+    <a href="javascript:void(0)" onclick="SelectColor('Red')"><img class="color" id="Red" src="~/Img/4616903_48.jpg" /></a>
+</div>
+<div class="col-md-offset-6" style="height:64px">
+    <a href="javascript:void(0)" onclick="SelectSize('S')" id="S" class="Size col-md-1">S</a>
+    <a href="javascript:void(0)" onclick="SelectSize('M')" id="M" class="Size col-md-1">M</a>
+    <a href="javascript:void(0)" onclick="SelectSize('L')" id="L" class="Size col-md-1">L</a>
+    <a href="javascript:void(0)" onclick="SelectSize('XL')" id="XL" class="Size col-md-1">XL</a>
+</div>
+<div class="col-md-offset-6">
+    <a href="javascript:void(0)" onclick="Keep()" class="keep" id="keep">收藏商品</a>
+</div>
+<hr />
+<div class="col-md-offset-7">
+    <a href="javascript:void(0)" onclick="AddCart()" class="AddCart">加入購物車</a>
+</div>
+<hr style="margin-bottom: 30px;margin-top: 180px;border-top-width: 1px;width: 100%;"/>
+<div style="text-align:center">
+    <img id="Img2" style="margin-top:30px" src="~/Img/ITS_TW_0.jpg" />
+</div>
+<div id="alert"></div>

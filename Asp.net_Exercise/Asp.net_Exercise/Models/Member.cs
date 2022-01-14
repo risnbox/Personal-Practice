@@ -49,6 +49,10 @@ public partial class Member
 
     public string GoogleId { get; set; }
 
+    public string FacebookId { get; set; }
+
+    public Nullable<System.DateTime> Joindate { get; set; }
+
 
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -32,13 +32,15 @@ public partial class Order
 
     public string MerchantTradeNo { get; set; }
 
-    public string TradeDate { get; set; }
+    public Nullable<System.DateTime> TradeDate { get; set; }
 
     public Nullable<int> Pay { get; set; }
 
     public string TradeNo { get; set; }
 
-    public string PaymentDate { get; set; }
+    public Nullable<System.DateTime> PaymentDate { get; set; }
+
+    public Nullable<int> Total { get; set; }
 
 
 

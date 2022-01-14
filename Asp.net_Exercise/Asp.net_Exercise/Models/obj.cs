@@ -57,5 +57,21 @@ namespace Asp.net_Exercise.Models
             }
             return str.ToUpper();
         }
+        public class Postdata//WebAPI無法解析POST參數，須建立參考否則將顯示該控制器無此動作
+        {
+            public string Gid { get; set; }//GoogleUserId
+            public string email { get; set; }
+            public string name { get; set; }
+            public string gender { get; set; }//嘗試存取使用者公開資料，若使用者未公開或未填則null
+            public string phone { get; set; }//嘗試存取使用者公開資料，若使用者未公開或未填則null
+            public string id_token { get; set; }//使用後端存取才有用
+            public string psw { get; set; }
+        }
+        public class Fbdata
+        {
+            public string Name { get; set; }
+            public string Fbid { get; set; }
+            public string Email { get; set; }
+        }
     }
 }

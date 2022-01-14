@@ -1,0 +1,18 @@
+﻿
+@{
+    var date = DateTime.Now.ToString("MMdd");
+    ViewBag.Title = "ResetPsw";
+}
+<link type="text/css" href="~/Content/Signin.css?@date" rel="stylesheet" />
+<script src="~/Scripts/ResetPsw.js?@date" defer></script>
+
+<h3>密碼重設</h3>
+<hr />
+<div id="alert"></div>
+<div class="container">
+    <form>
+        <input id="psw" name="psw" type="password" class="form-control" placeholder="輸入新密碼" />
+        <input id="check" type="password" class="form-control" placeholder="確認密碼" />
+        <input id="btn" type="button" class="btn btn-success" value="送出" />
+    </form>
+</div>

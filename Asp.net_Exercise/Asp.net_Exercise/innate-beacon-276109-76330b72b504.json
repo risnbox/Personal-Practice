@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "innate-beacon-276109",
+  "private_key_id": "76330b72b5044001769244ec756d44904800e74f",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDhKir4BRr1FBh0\nOy2ZWlbabnnea8BC+4PZkGxCdt5D84tv6iOxNl4XpW7jxElZAUa5MQabkQ5DGHzs\nyQY20v6spXNJ6yhxMBC4/NQza7PGpE3gKNe09IQjaETpLF9QiONpkyf4Ez0WnTfu\nj2FrBmp2KMSrproSNQQ57kdw+Pr1Dl8VNWPCtpddRaCeUx/Doq7uwdY3bgzfqHvW\nnQPjC9wYhqnXTFYkm2Wiq/sC+p35Ac7PaHfNfuM5kNjcmLNVKwyM8emSwYKIfgsL\nc9cPxSf9xok6ahKJKrz24o/K7NnGBBAmYtFG9rw6JBvpHF/B0EoPjXFLBYFDSHDM\n6w4/X+sDAgMBAAECggEAWbwq9L5gIHUaS9Q714aL37CwrAZoUKmZQe9PXeuuqAkb\nNIZtJBaFSEo7l9Vl3+1kyLBzsDMOqonLW7i/28CaE6c6e6aW7wkXWQoV7cpKEuvv\nR1svoGPkd5H6CK2Q7PEpJK2re6/7JBSTMmV9DyC29BFKVBh1xoTPguDmIu1vYpLQ\nvdPHHxnJJI0wshevaHSaxaqCpaxCNqDWF6yxACxc1TZwImRtkBn2uVcJB7iy3XEY\nfmnix2txLIz9LYsmS3RThVxUT/5Wv08mNWjGGFNPMZ+LDJ8fS6Ck5BXCyliET2pB\naVsSsO7AmkTujQBFBEW9aNERtLfq44UrO45Nbf1VkQKBgQD2hJfcfqc36fAvrmfz\njHkj484XVj1lROwJijN6LlmOAiRv2bBMI77bSBE7qUrHwERBAHTCE1n3DpOrPFH4\nl1a9VWpMyawaNHvqpfs7bkCUjgTYTl7XnhdDeZqnMKCv76GiXOv2c0a3Qm4VfMhm\nLHhl9CP43DmR3vvPSfCJchJdUQKBgQDp01Bx9CeFdRW/q3JYTlo60eUaommY94+B\nKE0CTLlGGTazG/bPoB2efPOEDwRVo7gXGkIJWbILGLjp334dQ9bCktjB2Lwv609V\nKDyN4OPqLOh+VIBg1nbSfA3hUbWqQJF1Q7BcEHUSrL57CrZBFHJI3uNXgv8LPQi2\nxhRFtPueEwKBgBKIb15NS0cB2GPNSdVehzDyjGjmu+DkKJajBDG4UFVDxfd+tylS\nOqQDq///Pzb7NmZooV6B0+6l8uYZt9PnlMbRKBezxbOGpJZEejnClSpV7vlQEwNE\nyFzzRHQzTLFNY6pwL/EsQ3G9lccZxXsg9sA7dYTdEZrs16OC3ImIwOaxAoGBAOhb\n66cx/0wqDBDKaPjD8/pbtpX/K3ytFlg9Gjnc0IiOacMXWO7+qDBk7wEegyovZbLf\njxwHnFxWlvsh8wtV7MaycuA/ZtMfvVhcgcBj6Vk+g1N22ZRhyvZj/M8aCbNEMsgb\nGdiDKjQCoc9X18FYdjFf/P9r19LtNgmbUW3r6dctAoGAO49bHW7Nha/YnP3YdFQ9\nnYuZtwHLiQ8uisAkAX8rtY2eudnZEYI9bTifZY9liWtE8vApWU4t4HSWNCUvLlCM\nDGipDKOyPUiLOlEj+MNXYhktw44yRdj5XP3AVa2BjnByKC792HaRlJ1RC2c4AwtI\nDUANvmGKs4BEAdCpcOkZocE=\n-----END PRIVATE KEY-----\n",
+  "client_email": "exercise@innate-beacon-276109.iam.gserviceaccount.com",
+  "client_id": "112195081665580480768",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/exercise%40innate-beacon-276109.iam.gserviceaccount.com"
+}

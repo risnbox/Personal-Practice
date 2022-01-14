@@ -1,40 +1,125 @@
 ﻿<!DOCTYPE html>
+<!--
+这是一个入门模板页面。通过此页面从头开发新的项目。
+该页面删除了所有链接，仅提供所需的标签。
+-->
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
-    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <script src="~/Scripts/modernizr-2.8.3.js"></script>
-    <script src="~/Scripts/Reference/jquery-3.4.1.min.js"></script>
-    <script src="~/Scripts/Reference/bootstrap.min.js"></script>
-</head>
-<body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                </ul>
-            </div>
-        </div>
-    </div>
+    <meta charset="utf-8">
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AdminLTE 3 | 起始页</title>
+    @{ 
+        var date = DateTime.Now.ToString("MMdd");
+    }
 
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- 离线 Google 字体: Source Sans Pro -->
+    <link rel="stylesheet" href="~/Adminlte/css/google.css?family=Source+Sans+Pro:300,400,400i,700&display=fallback?@date">
+    <!-- Font Awesome 图标 -->
+    <link rel="stylesheet" href="~/Adminlte/plugins/fontawesome-free/css/all.min.css?@date">
+    <!-- 主题样式 -->
+    <link rel="stylesheet" href="~/Adminlte/css/adminlte.min.css?@date">
+
+    <!-- 载入脚本 -->
+    <script defer src="~/Scripts/Reference/js.cookie.min.js?@date"></script>
+    <script src="~/Scripts/Reference/jquery-3.4.1.min.js?@date"></script>
+    <script src="~/Adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js?@date"></script>
+    <script defer src="~/Adminlte/js/adminlte.min.js?@date"></script>
+    <script defer src="~/Scripts/Backstage/Blay_out.js?@date"></script>
+    <script>
+        var active = "@ViewBag.active";
+    </script>
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+
+  <!-- 导航栏 -->
+  <nav class="main-header navbar navbar-expand" style="background-color: #212529;">
+    <!-- 左侧导航栏链接 -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a id="button_1" class="nav-link" data-widget="pushmenu" href="#" role="button"><i id="icon_1" class="fas fa-angle-double-left"></i></a>
+      </li>
+    </ul>
+
+    <!-- 右侧导航栏链接 -->
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+          <i class="fas fa-expand-arrows-alt"></i>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- 主侧边栏容器 -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- 品牌 Logo -->
+    <a href="/backstage/home/index" class="brand-link">
+      <img src="~/Img/未命名.jpg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">後台管理</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+      <!-- 侧边栏菜单 -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- 使用 .nav-icon 类添加图标，
+               或使用 font-awesome 或其他任何图标字体库 -->
+          <li class="nav-item menu-open">
+            <ul class="nav nav-treeview" id="Lnav">
+              <li class="nav-item">
+                <a href="/backstage/home/index" id="index" class="nav-link">
+                  <i class="fas fa-home nav-icon"></i>
+                  <p>主頁</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/backstage/Order/Index" id="order" class="nav-link">
+                  <i class="fas fa-money-check-alt nav-icon"></i>
+                  <p>訂單管理</p>
+                </a>
+              </li>              
+              <li class="nav-item">
+                <a href="/backstage/Member/Index" id="member" class="nav-link">
+                  <i class="fas fa-user-cog nav-icon"></i>
+                  <p>會員管理</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" id="view" class="nav-link">
+                  <i class="fas fa-chart-bar nav-icon"></i>
+                  <p>流量查詢</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
     </div>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- Content Wrapper. 包含页面内容 -->
+  <div class="content-wrapper" style="background-color: #343a40;">
+    @RenderBody()
+  </div>
+  <!-- /.content-wrapper -->
+
+  <!-- Main Footer -->
+    <footer class="main-footer" style="background-color: #343a40;">
+      <a href="@Url.Action("secrecy","members")">隱私政策說明</a>-
+      <strong><a style="color:gray" href="mailto:risnfox@gmail.com?subject=網站來信">透過信箱聯絡我</a></strong>
+      @DateTime.UtcNow.AddHours(8).ToString("yyyy/MM/dd HH:mm:ss")
+    </footer>
+</div>
+<!-- ./wrapper -->
 
 
 </body>

@@ -1,0 +1,9 @@
+﻿@{
+    ViewBag.Title = "RedirectView";
+    var date = DateTime.Now.ToString("MMdd");
+}
+<script src="~/Scripts/Redirect.js?@date" defer></script>
+<link href="~/Content/Signin.css?@date" rel="stylesheet" type="text/css" />
+
+<h2>正在等待綠界回傳付款資訊</h2>
+<div id="alert"></div>

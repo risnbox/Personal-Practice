@@ -1,0 +1,49 @@
+﻿
+@{ 
+    var date = DateTime.Now.ToString("MMdd");
+    ViewBag.Title = "登入"; 
+}
+
+<script>
+    const Google_Client_id = "@System.Configuration.ConfigurationManager.AppSettings["GoolgeApp_Cient_Id"]";//取得Web.config內的GoogleId(網站ID)
+    const Imsg = "@ViewBag.SignInErrormessage", Umsg = "@TempData["SignUpSuccess"]";
+</script>
+<link href="~/Content/Signin.css?@date" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/Signin.js?@date" defer></script>
+<script src="https://apis.google.com/js/platform.js?onload=GoogleInit" defer></script>
+<div id="fb-root"></div><!--FB按鈕自動產生Code-->
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v11.0&appId=920774955317229&autoLogAppEvents=1" nonce="gTbpQJ3w"></script>
+
+<div id="alert"></div>
+
+@using (Html.BeginForm())
+{
+@Html.AntiForgeryToken()
+    <h3 class="col-md-offset-2">登入</h3>
+        <div class="form-horizontal">
+            <hr />
+            <div class="form-group">
+                <label class="control-label col-md-2">帳號</label>
+                <div class="col-md-4">
+                    <input type="text" name="User" class="form-control" placeholder="帳號為信箱或手機" required />
+                </div>
+                <div style="position:absolute;left:55%;width:50%">
+                可自行註冊也提供測試帳號Test@test.com,Psw:Test01
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">密碼</label>
+                <div class="col-md-10">
+                    <input type="password" class="form-control" name="Psw" required />
+                </div>
+            </div>
+            <input type="submit" value="登入" class="col-md-offset-2 btn btn-success" />
+            <input type="button" id="forget" value="忘記密碼" class="btn btn-default" />
+            <input type="button" id="signup" value="註冊" class="btn btn-info" />
+            <div class="login-div col-md-offset-2">
+                <img src="~/Img/Google.png" id="signin" style="width:200px;height:40px;cursor:pointer;vertical-align:bottom" />
+                <div class="fb-login-button" data-width="90" data-onlogin="CheckFbConnected();" data-scope="public_profile,email" data-size="large" data-button-type="continue_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="true"></div>
+            </div>
+        </div>                                    
+}

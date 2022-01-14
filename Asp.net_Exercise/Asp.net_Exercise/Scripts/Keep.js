@@ -3,21 +3,29 @@
     if (c) {
         $.ajax({
             url: "/api/membersapi/DelKeep?Pid=" + Pid,
-            success: function (data) {
+            success: () => {
                 $("#Father li").remove();
             }
         })
     }
 }
-$(function () {
 
-    for (var i = 0; L > i; i++) {
+function redirect() {
+    $("#alert").text("尚未有任何收藏，即將回到首頁").show().delay(3000).fadeOut();
+    setTimeout(() => {
+        location.href = "/home/index";
+    }, 3000);
+}
+
+$(function () {
+    (L) ? null : redirect();
+    for (let i = 0; L > i; i++) {
         $('#Father').append(
-            "<li class='prod' id='" + data[i].prod.Id + "'>" +
-            "<img src='/Img/btn_del.png' class='delbtn' onclick='DelKeep(" + data[i].prod.Id + ")' id='" + data[i].prod.Id + "'/>" +
-            "<a href='/home/ProdDetails?Pid=" + data[i].prod.Id + "'><img src='/UpdataFiles/" + data[i].img.FileName + "' class='img' /></a>" +
-            "<p class='name'>" + data[i].prod.Name + "</p>" +
-            "<p class='price'>NT$" + data[i].prod.Price + "</p>" +
+            "<li class='prod' id='" + e[i].prod.Id + "'>" +
+            "<img src='/Img/btn_del.png' class='delbtn' onclick='DelKeep(" + e[i].prod.Id + ")' id='" + e[i].prod.Id + "'/>" +
+            "<a href='/home/ProdDetails?Pid=" + e[i].prod.Id + "'><img src='/UpdataFiles/" + e[i].img.FileName + "' class='img' /></a>" +
+            "<p class='name'>" + e[i].prod.Name + "</p>" +
+            "<p class='price'>NT$" + e[i].prod.Price + "</p>" +
             "</li>"
         )
     }

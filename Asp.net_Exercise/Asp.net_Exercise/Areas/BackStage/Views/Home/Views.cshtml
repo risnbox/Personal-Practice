@@ -1,0 +1,36 @@
+﻿
+
+<!DOCTYPE html>
+
+<html>
+
+<body>
+    <script src="~/Scripts/Reference/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="https://envato.stammtec.de/themeforest/melon/plugins/flot/jquery.flot.min.js" defer></script>
+    <script type="text/javascript" src="https://envato.stammtec.de/themeforest/melon/plugins/flot/jquery.flot.pie.min.js" defer></script>
+    <script src="/Adminlte/js/adminlte.min.js"></script>
+    <script src="~/Adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Scripts/BIndex.js" defer></script>
+    <script src="~/Scripts/BLay_out.js"></script>
+    <script>
+        $(function () {
+            let Flotdata = [
+                { label: "Google", data: 5, color: "#17a2b8" },
+                { label: "Firefox", data: 1, color: "#7D0096" }
+            ]
+            $.plot($("#flot_placeholde"), Flotdata, {
+                    series: {
+                        pie: {
+                            show: true,
+                            innerRadius: 0.5,
+                            label: {
+                                show: true
+                            }
+                        }
+                    }
+            });
+        })
+    </script>
+    <div id="flot_placeholde" style="height:300px;width:300px"></div>
+</body>
+</html>

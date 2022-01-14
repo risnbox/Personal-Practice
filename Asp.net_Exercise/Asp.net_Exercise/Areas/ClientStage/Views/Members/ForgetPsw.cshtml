@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "ForgetPsw";
+}
+
+<h3>忘記密碼</h3>
+<hr />
+<h4 class="text-danger">@ViewBag.Msg</h4>
+@using (Html.BeginForm("forgetpsw", "members"))
+{
+    @Html.AntiForgeryToken()
+    <div class="container col-md-6">
+        <input name="email" class="form-control" style="display:inline;" placeholder="請輸入信箱" />
+        <input type="submit" class="btn btn-success" value="送出" />
+    </div>
+}
+
+
