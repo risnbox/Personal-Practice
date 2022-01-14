@@ -2213,9 +2213,6 @@
     <Content Include="Areas\ClientStage\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\ClientStage\Views\Members\Secrecy.cshtml" />
     <Content Include="Areas\ClientStage\Views\Members\Contact.cshtml" />
-    <Content Include="innate-beacon-276109-76330b72b504.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Adminlte\css\6xK1dSBYKcSV-LCoeQqfX1RYOo3qPZ7jsDJT9g.woff2" />
     <Content Include="Adminlte\css\6xK1dSBYKcSV-LCoeQqfX1RYOo3qPZ7ksDJT9g.woff2" />
     <Content Include="Adminlte\css\6xK1dSBYKcSV-LCoeQqfX1RYOo3qPZ7nsDI.woff2" />
