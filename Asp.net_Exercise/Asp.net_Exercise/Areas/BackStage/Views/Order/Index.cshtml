@@ -1,9 +1,8 @@
 ﻿
 @{
-    ViewBag.Title = "訂單查詢";
     var date = DateTime.Now.ToString("MMdd");
 }
-
+<title>訂單查詢</title>
 <link href="~/Content/Backstage/BOrder.css?@date" rel="stylesheet">
 <script src="~/Scripts/Backstage/BOrder.js?@date"></script>
 
@@ -34,7 +33,7 @@
                 </div>
                 <div class="form-group col-4 row">
                     <label class="col-4 top-h1">交易編號</label>
-                    <input type="text"  name="tid" class="col-8 form-control" placeholder="綠界交易編號" />
+                    <input type="text" name="tid" class="col-8 form-control" placeholder="綠界交易編號" />
                 </div>
                 <div class="form-group row col-12">
                     <input type="button" id="remove" class="btn btn-danger offset-4 col-1" value="清除" />

@@ -96,10 +96,18 @@ namespace Asp.net_Exercise.WebApi.ClientStage
                         Joindate = DateTime.Now
                     };
                     DB.Member.Add(member);
-                    DB.SaveChanges();
-                    var cart = new ShoppingCar() { Userid = member.Id };
-                    DB.ShoppingCar.Add(cart);
-                    DB.SaveChanges();
+                    try
+                    {
+                        DB.SaveChanges();
+                        var cart = new ShoppingCar() { Userid = member.Id };
+                        DB.ShoppingCar.Add(cart);
+                        DB.SaveChanges();
+                    }
+                    catch (DbEntityValidationException e)//資料庫的錯誤型別要引用Entity.validtion才能抓到EntityValidationErrors這個屬性
+                    {
+                        var msg = e.EntityValidationErrors.Select(m => m.ValidationErrors.Select(x => x.ErrorMessage).First()).First();
+                        return BadRequest(msg);
+                    }
                     d = member;
                 }
                 if (d.Enable == 2) { throw new Exception("該帳號已被停權"); }
@@ -107,7 +115,15 @@ namespace Asp.net_Exercise.WebApi.ClientStage
                 {
                     d.FacebookId = fbdata.Fbid;
                     d.Enable = 1;
-                    DB.SaveChanges();
+                    try
+                    {
+                        DB.SaveChanges();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        var msg = e.EntityValidationErrors.Select(m => m.ValidationErrors.Select(x => x.ErrorMessage).First()).First();
+                        return BadRequest(msg);
+                    }
                 }
                 var c = DB.ShoppingCar.Where(m => m.Userid == d.Id).FirstOrDefault();
                 httpContext.Session["Member"] = d.Id;
@@ -208,7 +224,6 @@ namespace Asp.net_Exercise.WebApi.ClientStage
                     //撈出模型驗證錯誤訊息 此例只有輸入密碼因此只抓第一筆
                     var msg = e.EntityValidationErrors.Select(m => m.ValidationErrors.Select(x => x.ErrorMessage).First()).First();
                     return BadRequest(msg);
-
                 }
                 return Ok();
             }

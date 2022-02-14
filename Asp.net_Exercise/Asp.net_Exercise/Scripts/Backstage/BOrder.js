@@ -20,7 +20,6 @@ function Table() {
         data: data,
         type: "get",
         success: e => {
-            console.log(e);
         }
     }).then(e => {
         if (e.length == 0) { $("#alert").text("查無資料").show().delay(2000).fadeOut() }

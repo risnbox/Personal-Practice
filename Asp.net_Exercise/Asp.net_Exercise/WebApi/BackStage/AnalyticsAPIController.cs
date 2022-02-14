@@ -47,6 +47,7 @@ namespace Asp.net_Exercise.WebApi.BackStage
             }
             //更新Google授權物件
             var json = "";
+            //因為用雲端無法直接從本地提取金鑰改用雲端本身的blob來存取
             using(HttpClient httpClient = new HttpClient())
             {
                 try

@@ -9,6 +9,7 @@ using Asp.net_Exercise.Models;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Data.SqlClient;
 
 namespace Asp.net_Exercise.WebApi.ClientStage
 {
@@ -17,10 +18,10 @@ namespace Asp.net_Exercise.WebApi.ClientStage
         HttpContext httpContext = HttpContext.Current;
         DatabaseEntities DB = new DatabaseEntities();
         [HttpPost]
+
         public IHttpActionResult SelectStore(Store postdata)//選擇商店
         {
             var d = Convert.ToInt32(httpContext.Session["Member"].ToString());
-            var D = DB.Member.Include("Member_Store").Where(m => m.Id == d).FirstOrDefault();
             if (DB.Store.Where(m => m.StoreId == postdata.StoreId).FirstOrDefault() == null) //檢查該門市是否已被新增過
             {
                 DB.Store.Add(postdata);
@@ -30,14 +31,14 @@ namespace Asp.net_Exercise.WebApi.ClientStage
                 throw new HttpRequestException("已選擇過該門市");
             }
             var Linkdata = new Member_Store();//新增至會員資料
-            Linkdata.Member = D;
-            Linkdata.Store = postdata;
+            Linkdata.Member_Id = Convert.ToInt32(d);
+            Linkdata.Store_Id = postdata.StoreId;
             DB.Member_Store.Add(Linkdata);
             try
             {
                 DB.SaveChanges();
             }
-            catch (Exception e)
+            catch (SqlException e)
             {
                 return BadRequest(e.Message);
             }

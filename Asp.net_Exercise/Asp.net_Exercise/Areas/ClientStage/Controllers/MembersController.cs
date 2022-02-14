@@ -27,15 +27,16 @@ namespace Asp.net_Exercise.Areas.ClientStage.Controllers
             var Phone = Postback.Phone;
             var Email = Postback.Email;
             //檢查是否通過模型驗證
+            var data = DB.Member.ToList();
             if (ModelState.IsValid)
             {
                 //檢查信箱及手機是否已註冊過
-                if (DB.Member.Where(m => m.Email == Email && m.GoogleId == null && m.FacebookId == null).Any())
+                if (data.Where(m => m.Email == Email).Any())
                 {
-                    ViewBag.MemberErrorMessage = "該信箱已使用";
+                    ViewBag.MemberErrorMessage = "該信箱已被使用";
                     return View();
                 }
-                if (DB.Member.Where(m => m.Phone == Phone).Any())
+                if (data.Where(m => m.Phone == Phone).Any())
                 {
                     ViewBag.MemberErrorMessage = "該手機已被使用";
                     return View();
@@ -57,7 +58,7 @@ namespace Asp.net_Exercise.Areas.ClientStage.Controllers
                     //使用System.Net.Mail來寄出驗證碼
                     SendEmail("帳號驗證", Postback.Email, "請點擊此網址: https://aspnetexercise.azurewebsites.net/members/emailvalidation?Veriflcationcode=" + code + "&id=" + Postback.Id);
                     //寫入TempData傳入SignInView來Alert提示使用者
-                    TempData["SignUpSuccess"] = "註冊成功,已寄出認證信,請至信箱驗證後再登入";
+                    TempData["SignUpSuccess"] = "註冊成功,已寄出認證信{{可能被判斷為垃圾郵件}},請至信箱驗證後再登入";
                     return RedirectToAction("SignIn");                                                   
                 }
             }
@@ -80,6 +81,10 @@ namespace Asp.net_Exercise.Areas.ClientStage.Controllers
             {
                 if(data.Password == Psw) 
                 {
+                    if (data.Id == 12)
+                    {
+                        return Redirect("/backstage/home/index");
+                    }
                     //檢查該帳號的啟用狀態
                     if (data.Enable == 0) 
                     {
@@ -124,6 +129,37 @@ namespace Asp.net_Exercise.Areas.ClientStage.Controllers
                 ViewBag.SignInErrormessage = "查無此帳號";
                 return View();
             }
+        }
+
+        public ActionResult EditPsw()
+        {
+            var d = Convert.ToInt32(Session["Member"].ToString());
+            if (DB.Member.Where(m => m.Id == d).Select(m => m.Password).FirstOrDefault() == null)
+            {
+                TempData["EditErrorMessage"] = "請先設定密碼";
+                return RedirectToAction("Membercenter");
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult EditPsw(EditPsw psw)
+        {
+            if (ModelState.IsValid)
+            {
+                var d = Convert.ToInt32(Session["Member"].ToString());
+                var member = DB.Member.Find(d);
+                if (member.Password == psw.oldpsw) {
+                    member.Password = psw.newpsw;
+                    DB.SaveChanges();
+                    ViewBag.EditMsg = "修改成功";
+                    return View();
+                }
+                ModelState.AddModelError("oldpsw", "舊密碼錯誤");
+                ViewBag.EditMsg = "舊密碼錯誤";
+                return View();
+            }
+            return View();
         }
 
         public ActionResult ForgetPsw()
@@ -198,30 +234,52 @@ namespace Asp.net_Exercise.Areas.ClientStage.Controllers
             var D = DB.Member.Where(m => m.Id == d).FirstOrDefault();
             if (ModelState.IsValid)
             {
-                //檢查是否為連動帳號
+                if (D.Password != null && D.Password != postback.Password)
+                {
+                    TempData["EditErrorMessage"] = "密碼錯誤";
+                    return View();
+                }
                 if (DB.Member.Where(m => m.Id != D.Id && m.Phone == postback.Phone).Any())
                 {
-                    ViewBag.EditErrorMessage = "該手機已被使用";
+                    if (postback.Phone == null)
+                    {
+                        TempData["EditErrorMessage"] = "手機為必要項";
+                        return View();
+                    }
+                    TempData["EditErrorMessage"] = "該手機已被使用";
                     return View();
                 }
                 if (DB.Member.Where(m => m.Id != D.Id && m.Email == postback.Email).Any())
                 {
-                    ViewBag.EditErrorMessage = "該信箱已被使用";
+                    TempData["EditErrorMessage"] = "該信箱已被使用";
                     return View();
                 }
                 postback.Id = D.Id;
                 postback.Enable = D.Enable;
                 postback.FacebookId = D.FacebookId;
                 postback.GoogleId = D.GoogleId;
+                if (D.Password == null) { D.Password = postback.Password; }
                 DB.Entry(D).CurrentValues.SetValues(postback);
                 DB.SaveChanges();
-                ViewBag.EditErrorMessage = "修改成功";
+                TempData["EditErrorMessage"] = "修改成功";
+                //顯示會員已選擇的門市
+                var Store = DB.Member_Store.Where(m => m.Member_Id == d).ToList();
+                List<string> str = new List<string>();
+                foreach (var i in Store)
+                {
+                    var Lt = DB.Store.Where(m => m.StoreId == i.Store_Id).ToList();
+                    foreach (var x in Lt)
+                    {
+                        str.Add(x.StoreName);
+                    }
+                }
+                ViewBag.Store = string.Join(",", str);
                 Session["MemberName"] = postback.Name;
                 return View();
             }
             else
             {
-                ViewBag.EditErrorMessage = "格式錯誤";
+                TempData["EditErrorMessage"] = "格式錯誤";
                 return View();
             }
         }

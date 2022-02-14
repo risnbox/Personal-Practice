@@ -291,12 +291,10 @@
     <Content Include="Adminlte\plugins\summernote\summernote.js.map" />
     <Content Include="Adminlte\plugins\summernote\summernote.min.js.map" />
     <Content Include="Adminlte\plugins\toastr\toastr.js.map" />
-    <Content Include="Areas\BackStage\Views\Home\Views.cshtml" />
     <Content Include="Areas\BackStage\Views\Home\Index.cshtml" />
     <Content Include="Areas\BackStage\Views\Order\Index.cshtml" />
     <Content Include="Areas\BackStage\Views\Order\Window.cshtml" />
     <Content Include="Areas\BackStage\Views\Member\Index.cshtml" />
-    <Content Include="Areas\BackStage\Views\Anaytics\Index.cshtml" />
     <None Include="Areas\BackStage\Views\Shared\_Layout.cshtml" />
     <Content Include="Adminlte\plugins\bootstrap-colorpicker\css\bootstrap-colorpicker.css" />
     <Content Include="Adminlte\plugins\bootstrap-colorpicker\css\bootstrap-colorpicker.min.css" />
@@ -2256,14 +2254,15 @@
     <Content Include="Adminlte\js\.eslintrc.json" />
     <Content Include="Adminlte\js\adminlte.js.map" />
     <Content Include="Adminlte\js\adminlte.min.js.map" />
+    <Content Include="Areas\ClientStage\Views\Members\EditPsw.cshtml" />
     <None Include="Properties\PublishProfiles\AspnetExercise - Web Deploy.pubxml" />
     <None Include="Scripts\Reference\jquery-3.4.1.intellisense.js" />
-    <Content Include="Scripts\Backstage\Anaytics.js" />
     <Content Include="Scripts\Backstage\BIndex.js" />
     <Content Include="Scripts\Backstage\Blay_out.js" />
     <Content Include="Scripts\Backstage\BMember.js" />
     <Content Include="Scripts\Backstage\BOrder.js" />
     <Content Include="Scripts\Backstage\window.js" />
+    <Content Include="Scripts\EditPsw.js" />
     <Content Include="Scripts\LayOut.js" />
     <Content Include="Scripts\Reference\jquery-3.4.1.js" />
     <Content Include="Scripts\Reference\jquery-3.4.1.min.js" />
@@ -2276,6 +2275,10 @@
     <Content Include="Scripts\CarPartial.js" />
     <Content Include="Scripts\CheckOut.js" />
     <Content Include="Scripts\Redirect.js" />
+    <Content Include="Scripts\Reference\jquery.flot.axislabels.js" />
+    <Content Include="Scripts\Reference\jquery.flot.resize.min.js" />
+    <Content Include="Scripts\Reference\jquery.validate.min.js" />
+    <Content Include="Scripts\Reference\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\Reference\js.cookie.min.js" />
     <Content Include="Scripts\Signin.js" />
     <Content Include="Scripts\Index.js" />
@@ -2337,7 +2340,6 @@
     <Compile Include="Areas\BackStage\Controllers\HomeController.cs" />
     <Compile Include="Areas\BackStage\Controllers\MemberController.cs" />
     <Compile Include="Areas\BackStage\Controllers\OrderController.cs" />
-    <Compile Include="Areas\BackStage\Controllers\AnayticsController.cs" />
     <Compile Include="Areas\ClientStage\ClientStageAreaRegistration.cs" />
     <Compile Include="WebApi\BackStage\AnalyticsAPIController.cs" />
     <Compile Include="WebApi\BackStage\BMemberAPIController.cs" />
@@ -2349,7 +2351,6 @@
     <Compile Include="WebApi\ClientStage\MembersAPIController.cs" />
     <Compile Include="Areas\ClientStage\Controllers\MembersController.cs" />
     <Compile Include="WebApi\ClientStage\ProdAPIrController.cs" />
-    <Compile Include="Areas\ClientStage\Controllers\ProductController.cs" />
     <Compile Include="WebApi\ClientStage\StoreAPIController.cs" />
     <Compile Include="Areas\ClientStage\Controllers\StoreController.cs" />
     <Compile Include="Global.asax.cs">
@@ -2432,7 +2433,6 @@
     <Content Include="Areas\ClientStage\Views\Members\SignIn.cshtml" />
     <Content Include="Areas\ClientStage\Views\Members\MemberCenter.cshtml" />
     <Content Include="Areas\ClientStage\Views\Store\Location.cshtml" />
-    <Content Include="Areas\ClientStage\Views\Product\NewProd.cshtml" />
     <Content Include="Areas\ClientStage\Views\Members\KeepView.cshtml" />
     <Content Include="Areas\ClientStage\Views\Cart\CarPartial.cshtml" />
     <Content Include="Areas\ClientStage\Views\Cart\CheckOut.cshtml" />

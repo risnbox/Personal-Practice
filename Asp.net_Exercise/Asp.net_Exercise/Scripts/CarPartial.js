@@ -24,5 +24,4 @@
             alert(e.responseJSON.Message);
         }
     });
-    
 })

@@ -68,9 +68,5 @@ namespace Asp.net_Exercise.Areas.BackStage.Controllers
             ViewBag.active = "index";
             return View();
         }
-        public ActionResult Views()
-        {
-            return View();
-        }
     }
 }

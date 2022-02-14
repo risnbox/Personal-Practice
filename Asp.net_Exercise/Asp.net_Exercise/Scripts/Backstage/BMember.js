@@ -9,7 +9,6 @@
 function Table(e) {
     $("table tbody tr").remove();
     e != null ? Tvalue = e : Tvalue = data;
-    console.log(e);
     for (let i = 0; Tvalue.length > i; i++) {
         let Google, FB, Gender, Phone, order;
         (Tvalue[i].Gender) ? Gender = Tvalue[i].Gender : Gender = '未填';

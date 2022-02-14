@@ -46,37 +46,22 @@
                     }
                     else
                     {
-                        if (Convert.ToInt32(Session["Member"].ToString()) == 12)
-                        {
-                            <li class="dropdown">
-                                <a href="#" style="margin-top:10px" class="dropdown-toggle" data-toggle="dropdown">
-                                    @Session["MemberName"]您好
-                                    <b class="caret"></b>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="@Url.Action("NewProd", "product")"><span class="glyphicon glyphicon-user">管理商品</span></a></li>
-                                    <li><a id="logout"><span class="glyphicon glyphicon-log-out">登出</span></a></li>
-                                </ul>
-                            </li>
-                        }
-                        else
-                        {
-                            <!--下拉式選單在Goolge書籤有紀錄-->
-                            <li class="dropdown">
-                                <a href="#" style="margin-top:10px" class="dropdown-toggle" data-toggle="dropdown">
-                                    @Session["MemberName"]您好
-                                    <b class="caret"></b>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a style="margin-top:10px" href="@Url.Action("MemberCenter", "members")"><span class="glyphicon glyphicon-pencil">修改資料</span></a></li>
-                                    <li><a style="margin-top:10px" href="@Url.Action("location", "store")"><span class="glyphicon glyphicon-map-marker">取貨地點</span></a></li>
-                                    <li><a style="margin-top:10px" href="@Url.Action("keepview", "members")"><span class="glyphicon glyphicon-star">我的收藏</span></a></li>
-                                    <li><a style="margin-top:10px" href="@Url.Action("Orderview", "members")"><span class="glyphicon glyphicon-list-alt">訂單紀錄</span></a></li>
-                                    <li><a id="logout" style="cursor:pointer;margin-top:10px"><span class="glyphicon glyphicon-log-out">登出</span></a></li>
-                                </ul>
-                            </li>
-                            <li>@Html.Action("CarPartial", "Cart")</li>
-                        }
+                        <!--下拉式選單在Goolge書籤有紀錄-->
+                        <li class="dropdown">
+                            <a href="#" style="margin-top:10px" class="dropdown-toggle" data-toggle="dropdown">
+                                @Session["MemberName"]您好
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a style="margin-top:10px" href="@Url.Action("EditPsw", "members")"><span class="glyphicon glyphicon-pencil">修改密碼</span></a></li>
+                                <li><a style="margin-top:10px" href="@Url.Action("MemberCenter", "members")"><span class="glyphicon glyphicon-pencil">修改資料</span></a></li>
+                                <li><a style="margin-top:10px" href="@Url.Action("location", "store")"><span class="glyphicon glyphicon-map-marker">取貨地點</span></a></li>
+                                <li><a style="margin-top:10px" href="@Url.Action("keepview", "members")"><span class="glyphicon glyphicon-star">我的收藏</span></a></li>
+                                <li><a style="margin-top:10px" href="@Url.Action("Orderview", "members")"><span class="glyphicon glyphicon-list-alt">訂單紀錄</span></a></li>
+                                <li><a id="logout" style="cursor:pointer;margin-top:10px"><span class="glyphicon glyphicon-log-out">登出</span></a></li>
+                            </ul>
+                        </li>
+                        <li>@Html.Action("CarPartial", "Cart")</li>
                     }
                 </ul>
 

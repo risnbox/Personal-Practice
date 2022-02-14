@@ -29,6 +29,7 @@
     })
     //透過下拉選單得到地區後取得711資料
     $("#Openbtn").on('click', function () {
+        $("#CitySelect").val() == 0 ? $('#alert').text("請先選擇地區").show().delay(2000).fadeOut() : null;
         $('table #S').remove();//清空舊資料
         let city = $('#CitySelect').find('option:selected').text();
         let town = $('#TownSelect').find('option:selected').text();

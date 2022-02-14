@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json;
+using Asp.net_Exercise.Models;
 
 namespace Asp.net_Exercise.Models
 {
@@ -50,7 +51,6 @@ namespace Asp.net_Exercise.Models
     {
         public class OrderValidation
         {
-
             [Required(ErrorMessage = "收件人為必填")]
             public string Name { get; set; }
             [Required(ErrorMessage = "信箱為必填")]
@@ -63,6 +63,17 @@ namespace Asp.net_Exercise.Models
             [JsonIgnore]
             public virtual Store Store { get; set; }
         }
+    }
+    public class EditPsw
+    {
+        [Required]
+        public string oldpsw { get; set; }
+        [Required]
+        [RegularExpression(@"^\s*(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,20}\s*$", ErrorMessage = "密碼必須包含大小寫字母及數字各1,長度為6~20位數")]
+        public string newpsw { get; set; }
+        [Required]
+        [Compare("newpsw",ErrorMessage ="確認密碼輸入不一致")]
+        public string check { get; set; }
     }
 
     //使用enum列舉型別來建立下拉式選單需要的項目

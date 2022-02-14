@@ -4,10 +4,13 @@
     ViewBag.Title = "登入"; 
 }
 
-<script>
-    const Google_Client_id = "@System.Configuration.ConfigurationManager.AppSettings["GoolgeApp_Cient_Id"]";//取得Web.config內的GoogleId(網站ID)
-    const Imsg = "@ViewBag.SignInErrormessage", Umsg = "@TempData["SignUpSuccess"]";
-</script>
+    <script>
+        const Google_Client_id = "@System.Configuration.ConfigurationManager.AppSettings["GoolgeApp_Cient_Id"]";//取得Web.config內的GoogleId(網站ID)
+        var Imsg, Umsg;
+    $(() => {
+        ("@ViewBag.SignInErrormessage") ? Imsg = "@ViewBag.SignInErrormessage" : ("@TempData["SignUpSuccess"]") ? Umsg = "@TempData["SignUpSuccess"]" : null;
+    })
+    </script>
 <link href="~/Content/Signin.css?@date" rel="stylesheet" type="text/css" />
 <script src="~/Scripts/Signin.js?@date" defer></script>
 <script src="https://apis.google.com/js/platform.js?onload=GoogleInit" defer></script>
@@ -28,7 +31,8 @@
                     <input type="text" name="User" class="form-control" placeholder="帳號為信箱或手機" required />
                 </div>
                 <div style="position:absolute;left:55%;width:50%">
-                可自行註冊也提供測試帳號Test@test.com,Psw:Test01
+                可自行註冊也提供測試帳號:Test@test.com, Psw:Test01<br/>
+                輸入帳號:Admin@gmail.com, Pse:Test02 可進入後台
                 </div>
             </div>
 
@@ -47,3 +51,5 @@
             </div>
         </div>                                    
 }
+
+

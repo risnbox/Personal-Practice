@@ -1,4 +1,24 @@
-﻿function SelectColor(Color) {
+﻿$(function () {
+    $.ajax({
+        url: "/api/homeapi/proddetalis?pid=" + pid,
+        type: "get",
+        success: e => {
+            if (e[0].keep) {
+                $('#keep').removeClass('keep');
+                $('#keep').addClass('keepon');
+            }
+            $("#Img").append("<img src='/UpdataFiles/" + e[0].img.FileName + "' style=' width:100%;height:500px;' />");
+            $("#Title").append("<p id='title'>" + e[0].prod.Name + "</p>");
+            $("#currency").after("<span id='price'>" + e[0].prod.Price + "</span>");
+            $("#Img2").before("<img src='/UpdataFiles/" + e[2].img.FileName + "' style='width:760px;height:910px;' />");
+        },
+        error: e => {
+            $("#alert").text(e.responseJSON.Message).show().delay(3000).fadeOut();
+        }
+    });
+});
+
+function SelectColor(Color) {
     $("img").removeClass("select");
     $("#" + Color).addClass("select");
 }
@@ -22,9 +42,7 @@ function AddAJAX(color, size) {
         url: "/api/homeapi/AddCart?pid=" + pid + "&color=" + color + "&size=" + size,
         success: () => {
             $("#alert").text("成功新增").show().delay(1500).fadeOut();
-            setTimeout(() => {
-                window.location.reload();
-            }, 2000);
+            Cart();
         },
         error: e => {
             $("#alert").text(e.responseJSON.Message).show().delay(3000).fadeOut();
@@ -44,6 +62,7 @@ function KeepAJAX(boolean) {
             success: () => {
                 $('#keep').removeClass('keepon');
                 $('#keep').addClass('keep');
+                $("#alert").text('移除成功').show().delay(3000).fadeOut();
             }
         });
     }
@@ -53,27 +72,39 @@ function KeepAJAX(boolean) {
             success: () => {
                 $('#keep').removeClass('keep');
                 $('#keep').addClass('keepon');
+                $("#alert").text('新增成功').show().delay(3000).fadeOut();
             }
         });
     }
 }
 
-$(function () {
+function Cart() {
     $.ajax({
-        url: "/api/homeapi/proddetalis?pid=" + pid,
-        type: "get",
+        url: "/api/cartapi/Partial",
         success: e => {
-            if (e[0].keep) {
-                $('#keep').removeClass('keep');
-                $('#keep').addClass('keepon');
+            $(".dropdown-menu tbody tr").remove();
+            $("#quantity").text("");
+            let L = e.length;
+            for (var i = 0; L > i; i++) {
+                $('#Tb').append(
+                    "<tr><td><a href='/Home/proddetails?pid=" + e[i].pid + "'>" + e[i].name + "</a></td>" +
+                    "<td>" + e[i].color + "</td>" +
+                    "<td>" + e[i].size + "</td>" +
+                    "<td>" + e[i].quantity + "</td></tr>"
+                )
             }
-            $("#Img").append("<img src='/UpdataFiles/" + e[0].img.FileName + "' style=' width:100%;height:500px;' />");
-            $("#Title").append("<p id='title'>" + e[0].prod.Name + "</p>");
-            $("#currency").after("<span id='price'>" + e[0].prod.Price + "</span>");
-            $("#Img2").before("<img src='/UpdataFiles/" + e[2].img.FileName + "' style='width:760px;height:910px;' />");
+            $('#quantity').append(L);
+            if (!L) {
+                $(".btn_cart").css('visibility', 'hidden');
+                $('#Tb').append("<tr><td colspan='4'><h4>購物車內尚無商品</h4></td></tr>");
+            }
+            else {
+                $(".btn_cart").css('visibility', 'visible');
+            }
         },
         error: e => {
-            $("#alert").text(e.responseJSON.Message).show().delay(3000).fadeOut();
+            alert(e.responseJSON.Message);
         }
     });
-});
+}
+

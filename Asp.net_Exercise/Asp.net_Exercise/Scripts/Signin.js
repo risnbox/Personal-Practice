@@ -6,7 +6,7 @@
     $("#signup").on('click', function () {
         location.href = "/members/signup";
     })
-    (Imsg) ? $("#alert").text(Imsg).show().delay(3000).fadeOut() : (Umsg) ? $("#alert").text(Umsg).show().delay(3000).fadeOut() : null;
+    let e = (Imsg) ? $("#alert").text(Imsg).show().delay(3000).fadeOut() : (Umsg) ? $("#alert").text(Umsg).show().delay(3000).fadeOut() : null;
 })
 
 function GoogleInit() {
@@ -30,13 +30,13 @@ function GoogleLogin() {
             'resourceName': 'people/me',
             'personFields': 'names,emailAddresses,genders,PhoneNumbers'
         }).then(res => {
-            let P = ("phoneNumbers" in res.result) ? res.result.phoneNumbers[0].value : null;//搜尋是否包含手機號碼 若有則將值寫入變數
-            P = P.replace(/ */g, "");//移除所有空白
+            let P = ("phoneNumbers" in res.result) ? res.result.phoneNumbers[0].value.replace(/ */g, "") : null;//搜尋是否包含手機號碼 若有則將值寫入變數
+            let G = ("genders" in res.result) ? res.result.genders[0].value : null;
             $.ajax({
                 url: "/api/membersapi/GooglesignUp",
                 type: "post",
                 data: {
-                    gender: res.result.genders[0].value,
+                    gender: G,
                     email: res.result.emailAddresses[0].value,
                     name : res.result.names[0].displayName.replace(/ */,""),
                     phone: P,

@@ -20,7 +20,6 @@ $(() => {
         FB.logout();
         setTimeout(() => {
             location.href = "/members/signout";
-            console.log('out');
         }, 2000);
     })
 })
