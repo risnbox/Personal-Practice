@@ -50,7 +50,7 @@ namespace Asp.net_Exercise.WebApi.ClientStage
                 }
                 return Ok(List);
             }
-            catch (Exception e)
+            catch (System.Data.Entity.Validation.DbEntityValidationException e)
             {
                 return BadRequest(e.Message);
             }

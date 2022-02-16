@@ -23,6 +23,7 @@ x64/
 *_i.h
 *.ilk
 *.meta
+Web.config
 *.obj
 *.pch
 *.pdb
