@@ -6,7 +6,7 @@
     $("#signup").on('click', function () {
         location.href = "/members/signup";
     })
-    let e = (Imsg) ? $("#alert").text(Imsg).show().delay(3000).fadeOut() : (Umsg) ? $("#alert").text(Umsg).show().delay(3000).fadeOut() : null;
+    let e = (msg) ? $("#alert").text(msg).show().delay(3000).fadeOut() : null;
 })
 
 function GoogleInit() {

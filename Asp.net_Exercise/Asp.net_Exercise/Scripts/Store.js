@@ -41,8 +41,7 @@
             url: "/api/storeapi/Get7111?city=" + city + "&town=" + town,
             type: "get",
             success: e => {
-                let L = e.iMapSDKOutput.GeoPosition.length;
-                for (let i = 0; L > i; i++) {//將資料新增到Table
+                for (let i = 0; e.iMapSDKOutput.GeoPosition.length > i; i++) {//將資料新增到Table
                     $("#Ltable").append(
                         "<tr id='S'><td id='N" + i + "'>" + e.iMapSDKOutput.GeoPosition[i].POIName + "</td>" +
                         "<td id='A" + i + "'>" + e.iMapSDKOutput.GeoPosition[i].Address + "</td>" +

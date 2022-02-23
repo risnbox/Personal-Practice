@@ -18,8 +18,8 @@ function redirect() {
 }
 
 $(function () {
-    (L) ? null : redirect();
-    for (let i = 0; L > i; i++) {
+    (e.length) ? null : redirect();
+    for (let i = 0; e.length > i; i++) {
         $('#Father').append(
             "<li class='prod' id='" + e[i].prod.Id + "'>" +
             "<img src='/Img/btn_del.png' class='delbtn' onclick='DelKeep(" + e[i].prod.Id + ")' id='" + e[i].prod.Id + "'/>" +

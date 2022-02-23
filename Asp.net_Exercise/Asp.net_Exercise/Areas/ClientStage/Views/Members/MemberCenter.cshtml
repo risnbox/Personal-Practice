@@ -7,8 +7,11 @@
 <link href="~/Content/MemberList.css?@date" rel="stylesheet" type="text/css" />
 <script>
     $(() => {
-        let err = "@TempData["CartError"]",er = "@TempData["EditErrorMessage"]";
+        let err = "@TempData["CartError"]", er = "@TempData["EditErrorMessage"]", status = @ViewBag.status, msg = Cookies.get("msg");
         (err) ? $("#alert").text(err).show().delay(3000).fadeOut() : (er) ? $("#alert").text(er).show().delay(3000).fadeOut() : null;
+        (status == 0) ? null : $("#psw").attr("placeholder", "Google(Facebook)帳戶請設定密碼");
+        $("#psw").val("");
+        (msg) ? $("#alert").text(msg).show().delay(3000).fadeOut() : null;
     })
 </script>
 
@@ -75,7 +78,7 @@
         <div class="form-group">
             <label class="control-label col-md-2">請輸入密碼</label>
             <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Password, new { @class = "form-control", @type = "password", @placeholder = "Google(Facebook)帳戶請設定密碼", @required = true })
+                @Html.TextBoxFor(m => m.Password, new { @class = "form-control", @type = "password", @id="psw", @required = true, @autocomplete = "new-password" })
                 @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
             </div>
         </div>

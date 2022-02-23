@@ -8,7 +8,6 @@
     $("table tbody").css("height", height - 56);
     Table();
 })  
-
 function Table() {
     let id = Cookies.get('data');
     (id) ? $("input[name='mid']").val(id) : null;
@@ -25,10 +24,11 @@ function Table() {
         if (e.length == 0) { $("#alert").text("查無資料").show().delay(2000).fadeOut() }
         else {
             for (let i = 0; e.length >= i; i++) {
+                let TradeNo = (e[i].TradeNo == "null") ? "付款失敗" : e[i].TradeNo;
                 $("table tbody").append("<tr><td id='bottom-td'>" + e[i].MerchantTradeNo + "</td>" +
                     "<td id='bottom-td'>" + e[i].User_Id + "</td>" +
                     "<td id='bottom-td'>" + e[i].TradeDate.substr(0, 10) + "</td>" +
-                    "<td id='bottom-td'>" + e[i].TradeNo + "</td>" +
+                    "<td id='bottom-td'>" + TradeNo + "</td>" +
                     "<td id='bottom-td'>" + e[i].Total + "</td>" +
                     "<td id='bottom-td'><input id='B" + i + "' type='button' class='btn btn-dark' value='詳細資料' /></tr>"
                 )

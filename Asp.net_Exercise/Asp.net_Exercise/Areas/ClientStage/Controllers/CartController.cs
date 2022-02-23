@@ -63,12 +63,17 @@ namespace Asp.net_Exercise.Areas.ClientStage.Controllers
             var d = Convert.ToInt32(Session["Member"].ToString());
             var c = Convert.ToInt32(Session["Cart"].ToString());
             var member =  DB.Member.Where(m => m.Id == d).FirstOrDefault();
+            if (member.Password == null && member.Member_Store.Count == 0)
+            {
+                TempData["CartError"] = "請先設定密碼及取貨地點";
+                return RedirectToAction("Membercenter", "members");
+            }
             if (member.Password == null)//檢查驗證狀態
             {
                 TempData["CartError"] = "請先設定密碼";
                 return RedirectToAction("Membercenter","members");
             }
-            if (DB.Member_Store.Where(m => m.Member_Id == d).FirstOrDefault() == null)//檢查是否設定取貨點
+            if (member.Member_Store.Count == 0)//檢查是否設定取貨點
             {
                 TempData["CartError"] = "請先選擇取貨地點";
                 return RedirectToAction("Location","store");

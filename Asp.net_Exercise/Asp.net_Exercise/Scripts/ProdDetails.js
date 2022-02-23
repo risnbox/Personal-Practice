@@ -84,8 +84,7 @@ function Cart() {
         success: e => {
             $(".dropdown-menu tbody tr").remove();
             $("#quantity").text("");
-            let L = e.length;
-            for (var i = 0; L > i; i++) {
+            for (var i = 0; e.length > i; i++) {
                 $('#Tb').append(
                     "<tr><td><a href='/Home/proddetails?pid=" + e[i].pid + "'>" + e[i].name + "</a></td>" +
                     "<td>" + e[i].color + "</td>" +
@@ -93,8 +92,8 @@ function Cart() {
                     "<td>" + e[i].quantity + "</td></tr>"
                 )
             }
-            $('#quantity').append(L);
-            if (!L) {
+            $('#quantity').append(e.length);
+            if (!e.length) {
                 $(".btn_cart").css('visibility', 'hidden');
                 $('#Tb').append("<tr><td colspan='4'><h4>購物車內尚無商品</h4></td></tr>");
             }

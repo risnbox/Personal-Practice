@@ -2287,7 +2287,6 @@
     <Content Include="Scripts\ResetPsw.js" />
     <Content Include="Scripts\Store.js" />
     <Content Include="Scripts\Reference\modernizr-2.8.3.js" />
-    <Content Include="Scripts\Newproduct.js" />
     <Content Include="Scripts\ObjTree.js" />
     <Content Include="Scripts\Orderview.js" />
     <Content Include="Scripts\ProdDetails.js" />
@@ -2350,7 +2349,6 @@
     <Compile Include="WebApi\ClientStage\HomeAPIController.cs" />
     <Compile Include="WebApi\ClientStage\MembersAPIController.cs" />
     <Compile Include="Areas\ClientStage\Controllers\MembersController.cs" />
-    <Compile Include="WebApi\ClientStage\ProdAPIrController.cs" />
     <Compile Include="WebApi\ClientStage\StoreAPIController.cs" />
     <Compile Include="Areas\ClientStage\Controllers\StoreController.cs" />
     <Compile Include="Global.asax.cs">

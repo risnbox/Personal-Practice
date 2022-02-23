@@ -6,9 +6,8 @@
 
     <script>
         const Google_Client_id = "@System.Configuration.ConfigurationManager.AppSettings["GoolgeApp_Cient_Id"]";//取得Web.config內的GoogleId(網站ID)
-        var Imsg, Umsg;
+        var msg = "@TempData["SignInMessage"]";
     $(() => {
-        ("@ViewBag.SignInErrormessage") ? Imsg = "@ViewBag.SignInErrormessage" : ("@TempData["SignUpSuccess"]") ? Umsg = "@TempData["SignUpSuccess"]" : null;
     })
     </script>
 <link href="~/Content/Signin.css?@date" rel="stylesheet" type="text/css" />
@@ -32,7 +31,7 @@
                 </div>
                 <div style="position:absolute;left:55%;width:50%">
                 可自行註冊也提供測試帳號:Test@test.com, Psw:Test01<br/>
-                輸入帳號:Admin@gmail.com, Pse:Test02 可進入後台
+                輸入帳號:Admin@gmail.com, Psw:Test02 可進入後台
                 </div>
             </div>
 

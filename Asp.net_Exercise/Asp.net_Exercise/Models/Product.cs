@@ -39,10 +39,6 @@ public partial class Product
 
     public int Price { get; set; }
 
-    public Nullable<int> cost { get; set; }
-
-    public Nullable<int> inventory { get; set; }
-
 
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

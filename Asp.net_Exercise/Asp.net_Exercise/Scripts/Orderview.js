@@ -1,6 +1,5 @@
 ﻿function Detail(e) {
-    let Id = e.data.Id;
-    let oid = $("#" + Id).data("oid");
+    let oid = $("#" + e.data.Id).data("oid");
     $.ajax({
         url: "/api/membersapi/GetOrderDetail?oid=" + oid,
         type: "get",
@@ -33,8 +32,8 @@ function redirect() {
 }
 
 $(function () {
-    (!L) ? redirect() : null;
-    for (let i = 0; L > i; i++) {
+    (!json.length) ? redirect() : null;
+    for (let i = 0; json.length > i; i++) {
         let pay = json[i].pay == 1 ? "付款完成" : "付款失敗";
         $("#list tbody").append(
             "<tr><td>" + json[i].name + "</td>" +

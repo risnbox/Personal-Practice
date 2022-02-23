@@ -26,9 +26,9 @@ public partial class Prod_Type
 
 
 
-    public virtual Product Product { get; set; }
-
     public virtual Type Type { get; set; }
+
+    public virtual Product Product { get; set; }
 
 }
 

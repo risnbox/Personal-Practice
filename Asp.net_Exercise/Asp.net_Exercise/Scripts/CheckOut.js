@@ -144,14 +144,13 @@ function NextStep2_3() {//下一步 step2=>step3
             $("#Step3-text .CO_span1").addClass("CO_span1Select");
             $("#Step3-text .CO_span2").addClass("CO_span2Select");
             $("#step3Table1 tbody").empty();
-            $("#step3Table2").empty();
+            $("#step3Table2 tbody").empty();
             $.ajax({
                 url: "/api/CartAPI/CartList",
                 type: "get",
                 success: e => {
-                    let L = e.length;
                     let T = 0;
-                    for (let i = 0; L > i; i++) {
+                    for (let i = 0; e.length > i; i++) {
                         //印出最後確認清單
                         $("#step3Table1").append(
                             "<tr><td class = 'col-md-3'><img class='img-rounded'style='width:70px;height:70px;float:left;'src='/UpdataFiles/" + e[i].Img + "' />" +
@@ -169,15 +168,15 @@ function NextStep2_3() {//下一步 step2=>step3
                     alert(e.responseJSON.Message);
                 }
             });
-            $("#step3Table2").append(//寫入確認頁面下方使用者確認資料
-                "<tr><td>" + n + "</td><td>" + p + "</td><td>" + s + "</td><td>" + E + "</td></tr>"
+            $("#step3Table2 tbody").append(//寫入確認頁面下方使用者確認資料
+                "<tr><td style='vertical-align: middle;'>" + n + "</td><td style='vertical-align: middle;'>" + p + "</td><td style='vertical-align: middle;'>" + s + "</td><td style='vertical-align: middle;'>" + E + "</td></tr>"
             );
         }
     });
 }
 
 function before3_2() {//上一步 step3=>step2
-    $("#step3Table2 tbody").remove();//刪除最終確認品項避免重複寫入
+    $("#step3Table2 tbody").empty();//刪除最終確認避免重複寫入
     $("#step3").css("display", "none");
     $("#step2").css("display", "block")
     $("#Step3-text .CO_span1").removeClass("CO_span1Select");
@@ -215,9 +214,8 @@ $(function () {
         url: "/api/cartapi/cartlist",
         type: "get",
         success: e => {
-            let L = e.length;
             let T = 0;
-            for (let i = 0; L > i; i++) {
+            for (let i = 0; e.length > i; i++) {
                 //印出購物清單
                 $("#CO_tbody").append(
                     "<tr data-id='" + i + "' id='" + i + "'><td class = 'col-md-3'><a><img class='img-rounded'style='width:70px;height:70px;float:left;'src='/UpdataFiles/" + e[i].Img + "' /></a>" +

@@ -50,6 +50,7 @@ namespace Asp.net_Exercise.Areas.ClientStage.Controllers
                     }
                     //加入啟用狀態以及驗證碼
                     Postback.Enable = 0;
+                    Postback.Joindate = DateTime.Now;
                     DB.Member.Add(Postback);
                     DB.SaveChanges();
                     //創造驗證碼
@@ -58,7 +59,7 @@ namespace Asp.net_Exercise.Areas.ClientStage.Controllers
                     //使用System.Net.Mail來寄出驗證碼
                     SendEmail("帳號驗證", Postback.Email, "請點擊此網址: https://aspnetexercise.azurewebsites.net/members/emailvalidation?Veriflcationcode=" + code + "&id=" + Postback.Id);
                     //寫入TempData傳入SignInView來Alert提示使用者
-                    TempData["SignUpSuccess"] = "註冊成功,已寄出認證信{{可能被判斷為垃圾郵件}},請至信箱驗證後再登入";
+                    TempData["SignInMessage"] = "註冊成功,已寄出認證信{{可能被判斷為垃圾郵件}},請至信箱驗證後再登入";
                     return RedirectToAction("SignIn");                                                   
                 }
             }
@@ -88,11 +89,11 @@ namespace Asp.net_Exercise.Areas.ClientStage.Controllers
                     //檢查該帳號的啟用狀態
                     if (data.Enable == 0) 
                     {
-                        ViewBag.SignInErrormessage = "請至信箱驗證帳號";
+                        TempData["SignInMessage"] = "請至信箱驗證帳號";
                         return View();
                     }
                     if (data.Enable == 2) {
-                        ViewBag.SignInErrormessage = "該帳號已被停權";
+                        TempData["SignInMessage"] = "該帳號已被停權";
                         return View();
                     }
                     Session["Member"] = data.Id;
@@ -110,7 +111,7 @@ namespace Asp.net_Exercise.Areas.ClientStage.Controllers
                 }
                 else
                 {
-                    ViewBag.SignInErrormessage = "密碼輸入錯誤";
+                    TempData["SignInMessage"] = "密碼輸入錯誤";
                     return View();
                 }
             }
@@ -118,15 +119,15 @@ namespace Asp.net_Exercise.Areas.ClientStage.Controllers
             {
                 if (DB.Member.Where(m => m.Email == User | m.Phone == User && m.GoogleId != null && m.Password == null).Any()) 
                 {
-                    ViewBag.SignInErrormessage = "該帳號為Google連動帳號且未設定密碼,請使用Google登入";
+                    TempData["SignInMessage"] = "該帳號為Google連動帳號且未設定密碼,請使用Google登入";
                     return View();
                 }
                 if (DB.Member.Where(m => m.Email == User | m.Phone == User && m.FacebookId != null && m.Password == null).Any())
                 {
-                    ViewBag.SignInErrormessage = "該帳號為Facebook連動帳號且未設定密碼,請使用Facebook登入";
+                    TempData["SignInMessage"] = "該帳號為Facebook連動帳號且未設定密碼,請使用Facebook登入";
                     return View();
                 }
-                ViewBag.SignInErrormessage = "查無此帳號";
+                TempData["SignInMessage"] = "查無此帳號";
                 return View();
             }
         }
@@ -141,7 +142,6 @@ namespace Asp.net_Exercise.Areas.ClientStage.Controllers
             }
             return View();
         }
-
         [HttpPost]
         public ActionResult EditPsw(EditPsw psw)
         {
@@ -222,6 +222,8 @@ namespace Asp.net_Exercise.Areas.ClientStage.Controllers
                     str.Add(x.StoreName);
                 }
             }
+            ViewBag.status = 0;
+            if ((D.FacebookId !=null || D.GoogleId != null)&&D.Password==null) { ViewBag.status = 1; }
             ViewBag.Store = string.Join(",", str);
             D.Password = null;
             return View(D);
@@ -234,24 +236,33 @@ namespace Asp.net_Exercise.Areas.ClientStage.Controllers
             var D = DB.Member.Where(m => m.Id == d).FirstOrDefault();
             if (ModelState.IsValid)
             {
-                if (D.Password != null && D.Password != postback.Password)
+                try
                 {
-                    TempData["EditErrorMessage"] = "密碼錯誤";
-                    return View();
-                }
-                if (DB.Member.Where(m => m.Id != D.Id && m.Phone == postback.Phone).Any())
-                {
-                    if (postback.Phone == null)
+                    if (D.Password != null && D.Password != postback.Password)
                     {
-                        TempData["EditErrorMessage"] = "手機為必要項";
-                        return View();
+                        TempData["EditErrorMessage"] = "密碼錯誤";
+                        throw new Exception("error");
                     }
-                    TempData["EditErrorMessage"] = "該手機已被使用";
-                    return View();
+                    if (DB.Member.Where(m => m.Id != D.Id && m.Phone == postback.Phone).Any())
+                    {
+                        if (postback.Phone == null)
+                        {
+                            TempData["EditErrorMessage"] = "手機為必要項";
+                            throw new Exception("error");
+                        }
+                        TempData["EditErrorMessage"] = "該手機已被使用";
+                        throw new Exception("error");
+                    }
+                    if (DB.Member.Where(m => m.Id != D.Id && m.Email == postback.Email).Any())
+                    {
+                        TempData["EditErrorMessage"] = "該信箱已被使用";
+                        throw new Exception("error");
+                    }
                 }
-                if (DB.Member.Where(m => m.Id != D.Id && m.Email == postback.Email).Any())
+                catch
                 {
-                    TempData["EditErrorMessage"] = "該信箱已被使用";
+                    ViewBag.status = 0;
+                    if ((D.FacebookId != null || D.GoogleId != null) && D.Password == null) { ViewBag.status = 1; }
                     return View();
                 }
                 postback.Id = D.Id;
@@ -273,6 +284,8 @@ namespace Asp.net_Exercise.Areas.ClientStage.Controllers
                         str.Add(x.StoreName);
                     }
                 }
+                ViewBag.status = 0;
+                if ((D.FacebookId != null || D.GoogleId != null) && D.Password == null) { ViewBag.status = 1; }
                 ViewBag.Store = string.Join(",", str);
                 Session["MemberName"] = postback.Name;
                 return View();
@@ -339,7 +352,7 @@ namespace Asp.net_Exercise.Areas.ClientStage.Controllers
                 data.Enable = 1;
                 data.Joindate = DateTime.Now;
                 DB.SaveChanges();
-                TempData["ValidationErrorMessage"] = "驗證完成";
+                TempData["SignInMessage"] = "驗證完成";
                 Session.Remove("Veriflcationcode");
             }
             return RedirectToAction("signin", "members");

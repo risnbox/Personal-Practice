@@ -26,9 +26,9 @@ public partial class Keep
 
 
 
-    public virtual Product Product { get; set; }
-
     public virtual Member Member { get; set; }
+
+    public virtual Product Product { get; set; }
 
 }
 

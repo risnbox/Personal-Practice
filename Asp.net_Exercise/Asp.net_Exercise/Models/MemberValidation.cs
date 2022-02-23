@@ -35,6 +35,11 @@ namespace Asp.net_Exercise.Models
             public string Password { get; set; }
             [DisplayName("姓別")]
             public string Gender { get; set; }
+            public DateTime? Joindate
+            {
+                get { return Joindate; }
+                set { Joindate = DateTime.Now; }
+            }
             [JsonIgnore]
             public virtual ICollection<ShoppingCar> ShoppingCar { get; set; }
             [JsonIgnore]

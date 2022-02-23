@@ -52,8 +52,6 @@ public partial class DatabaseEntities : DbContext
 
     public virtual DbSet<ProdFeature> ProdFeature { get; set; }
 
-    public virtual DbSet<Product> Product { get; set; }
-
     public virtual DbSet<Quantity> Quantity { get; set; }
 
     public virtual DbSet<ShoppingCar> ShoppingCar { get; set; }
@@ -63,6 +61,8 @@ public partial class DatabaseEntities : DbContext
     public virtual DbSet<Store> Store { get; set; }
 
     public virtual DbSet<Type> Type { get; set; }
+
+    public virtual DbSet<Product> Product { get; set; }
 
 }
 
